@@ -36,7 +36,7 @@ class RpcClient:
     async def _stdin_reader(self) -> None:
         try:
             loop = asyncio.get_event_loop()
-            reader = asyncio.StreamReader()
+            reader = asyncio.StreamReader(limit=4 * 1024 * 1024)  # 4MB — handles large structured ReadResult JSON
             protocol = asyncio.StreamReaderProtocol(reader)
             await loop.connect_read_pipe(lambda: protocol, sys.stdin)
 

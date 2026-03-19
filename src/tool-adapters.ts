@@ -76,12 +76,22 @@ function parseGrepMatches(text: string): Array<Record<string, unknown>> {
   return matches;
 }
 
+function extractPtcValue(details: unknown): { found: true; value: unknown } | null {
+  if (!isRecord(details) || !("ptcValue" in details)) {
+    return null;
+  }
+
+  return {
+    found: true,
+    value: details.ptcValue,
+  };
+}
 export function normalizeToolResult(toolName: string, result: ToolExecutionResult): NormalizedToolResult {
-  if (isRecord(result.details) && "ptcValue" in result.details) {
-    const ptcValue = result.details.ptcValue;
+  const structuredValue = extractPtcValue(result.details);
+  if (structuredValue) {
     return {
-      value: ptcValue,
-      estimatedChars: estimateChars(ptcValue),
+      value: structuredValue.value,
+      estimatedChars: estimateChars(structuredValue.value),
     };
   }
 

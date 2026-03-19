@@ -6,10 +6,39 @@ import type {
 } from "@mariozechner/pi-coding-agent";
 import type { TSchema } from "@sinclair/typebox";
 
+export type PtcExecutionPolicy = "read-only" | "mutating";
+export type PtcToolDefaultExposure = "safe-by-default" | "opt-in" | "not-safe-by-default";
 export interface PtcToolOptions {
   enabled?: boolean;
+  callable?: boolean;
   readOnly?: boolean;
+  policy?: PtcExecutionPolicy;
   pythonName?: string;
+  defaultExposure?: PtcToolDefaultExposure;
+}
+export interface NormalizedPtcToolOptions {
+  callable: boolean;
+  executionPolicy: PtcExecutionPolicy;
+  isReadOnly: boolean;
+  pythonName?: string;
+  defaultExposure?: PtcToolDefaultExposure;
+}
+
+export function normalizePtcToolOptions(ptc?: PtcToolOptions): NormalizedPtcToolOptions | undefined {
+  if (!ptc) {
+    return undefined;
+  }
+
+  const callable = ptc.callable ?? ptc.enabled ?? false;
+  const executionPolicy = ptc.policy ?? (ptc.readOnly === true ? "read-only" : "mutating");
+
+  return {
+    callable,
+    executionPolicy,
+    isReadOnly: executionPolicy === "read-only",
+    pythonName: ptc.pythonName,
+    defaultExposure: ptc.defaultExposure,
+  };
 }
 
 export type PtcToolDefinition<

@@ -12,19 +12,43 @@ import type { TSchema } from "@sinclair/typebox";
 import { Value } from "@sinclair/typebox/value";
 import { classifyBuiltinTool, validatePythonHelperNames } from "./tools/python-tool-contract";
 import type { PtcSettings } from "./contracts/settings";
-import type {
-  ActivePiToolInfo,
-  CallerMetadata,
-  ExecuteToolContext,
-  InternalToolExecute,
-  PtcToolDefinition,
-  PtcToolOptions,
-  ToolInfo,
+import {
+  normalizePtcToolOptions,
+  type ActivePiToolInfo,
+  type CallerMetadata,
+  type ExecuteToolContext,
+  type InternalToolExecute,
+  type PtcToolDefinition,
+  type PtcToolOptions,
+  type ToolInfo,
 } from "./contracts/tool-types";
 import { logWarning } from "./utils";
 
-function classifyTool(name: string, ptc?: PtcToolOptions): { isReadOnly: boolean } {
-  return classifyBuiltinTool(name, ptc);
+function normalizeStoredPtc(ptc?: PtcToolOptions): PtcToolOptions | undefined {
+  const normalized = normalizePtcToolOptions(ptc);
+  if (!normalized) {
+    return ptc;
+  }
+
+  const defaultExposure = ptc?.defaultExposure ?? normalized.defaultExposure;
+  return {
+    ...ptc,
+    enabled: ptc?.enabled ?? normalized.callable,
+    callable: normalized.callable,
+    readOnly: ptc?.readOnly ?? normalized.isReadOnly,
+    policy: normalized.executionPolicy,
+    pythonName: normalized.pythonName,
+    ...(defaultExposure !== undefined ? { defaultExposure } : {}),
+  };
+}
+
+function classifyTool(name: string, ptc?: PtcToolOptions): { isReadOnly: boolean; ptc?: PtcToolOptions } {
+  const normalized = normalizeStoredPtc(ptc);
+  if (normalized) {
+    return { isReadOnly: normalized.readOnly === true, ptc: normalized };
+  }
+
+  return { isReadOnly: classifyBuiltinTool(name, ptc).isReadOnly, ptc };
 }
 
 function hasInternalExecute(tool: ActivePiToolInfo): tool is ActivePiToolInfo & { execute: InternalToolExecute } {
@@ -69,8 +93,39 @@ function validateToolParams(tool: ToolInfo, params: unknown): void {
 export class ToolRegistry {
   private customTools = new Map<string, ToolInfo>();
   private extensionOwnedToolNames = new Set<string>();
+  private extensionExecutors = new Map<string, ToolInfo>();
 
-  constructor(private pi: ExtensionAPI) {}
+  constructor(private pi: ExtensionAPI) {
+    // Bridge: consume hashline tool executors.
+    // Remove when pi exposes getToolExecutor() on ExtensionAPI.
+    // Grep marker: "hashline:tool-executors"
+    const preEmitted = (globalThis as any).__hashlineToolExecutors;
+    if (preEmitted) {
+      this.ingestExtensionExecutors(preEmitted);
+    }
+    pi.events.on("hashline:tool-executors", (data: unknown) => {
+      this.ingestExtensionExecutors(data);
+    });
+  }
+
+  private ingestExtensionExecutors(data: unknown): void {
+    if (!data || typeof data !== "object") return;
+    for (const [, toolDef] of Object.entries(data as Record<string, unknown>)) {
+      if (!toolDef || typeof toolDef !== "object") continue;
+      const t = toolDef as { name?: string; execute?: unknown; ptc?: PtcToolOptions; parameters?: unknown };
+      if (typeof t.name !== "string" || typeof t.execute !== "function") continue;
+      const classification = classifyTool(t.name, t.ptc);
+      this.extensionExecutors.set(t.name, {
+        name: t.name,
+        description: "",
+        parameters: (t.parameters ?? { type: "object", properties: {} }) as import("@sinclair/typebox").TSchema,
+        execute: t.execute as InternalToolExecute,
+        ptc: classification.ptc,
+        source: "extension",
+        isReadOnly: classification.isReadOnly,
+      });
+    }
+  }
 
   upsertTool<TParams extends TSchema, TDetails>(tool: ToolDefinition<TParams, TDetails>): void {
     const ptc = (tool as PtcToolDefinition<TParams, TDetails>).ptc;
@@ -81,7 +136,7 @@ export class ToolRegistry {
       description: tool.description,
       parameters: tool.parameters,
       execute: tool.execute as unknown as InternalToolExecute,
-      ptc,
+      ptc: classification.ptc,
       source: "extension",
       isReadOnly: classification.isReadOnly,
     });
@@ -115,6 +170,7 @@ export class ToolRegistry {
           parameters: tool.parameters,
           source: "builtin",
           isReadOnly: classification.isReadOnly,
+          ptc: classification.ptc,
           execute: async (toolCallId, params, signal, onUpdate, ctx) =>
             await executeBuiltin(toolCallId, params, signal, onUpdate, ctx),
         });
@@ -147,6 +203,22 @@ export class ToolRegistry {
       allTools.set(builtin.name, builtin);
     }
 
+    // Bridge: overlay extension executors from EventBus.
+    // Remove when pi exposes getToolExecutor() on ExtensionAPI.
+    for (const [name, extTool] of this.extensionExecutors) {
+      const existing = allTools.get(name);
+      if (existing) {
+        allTools.set(name, {
+          ...existing,
+          execute: extTool.execute,
+          ptc: extTool.ptc ?? existing.ptc,
+          isReadOnly: extTool.isReadOnly,
+        });
+      } else {
+        allTools.set(name, extTool);
+      }
+    }
+
     for (const customTool of this.customTools.values()) {
       allTools.set(customTool.name, customTool);
     }
@@ -165,11 +237,14 @@ export class ToolRegistry {
           continue;
         }
 
+        const mergedPtc = normalizeStoredPtc(piTool.ptc ?? existing.ptc);
+        const classification = classifyTool(piTool.name, mergedPtc);
         allTools.set(piTool.name, {
           ...existing,
           description: piTool.description,
           parameters: piTool.parameters,
-          ptc: piTool.ptc ?? existing.ptc,
+          ptc: classification.ptc,
+          isReadOnly: classification.isReadOnly,
           execute: shouldUsePiOverride && hasInternalExecute(piTool) ? piTool.execute : existing.execute,
         });
         continue;
@@ -181,7 +256,7 @@ export class ToolRegistry {
         description: piTool.description,
         parameters: piTool.parameters,
         execute: shouldUsePiOverride && hasInternalExecute(piTool) ? piTool.execute : createUnavailableExecute(piTool.name),
-        ptc: piTool.ptc,
+        ptc: classification.ptc,
         source: "extension",
         isReadOnly: classification.isReadOnly,
       });
@@ -215,10 +290,14 @@ export class ToolRegistry {
       }
 
       const isBuiltin = tool.source === "builtin" || tool.source === "alias";
+      const normalizedPtc = normalizePtcToolOptions(tool.ptc);
+      if (normalizedPtc?.defaultExposure === "opt-in" && (!allowSet || !allowSet.has(tool.name))) {
+        return false;
+      }
       const isTrustedReadOnlyCustom =
         !isBuiltin &&
-        tool.ptc?.enabled === true &&
-        tool.ptc?.readOnly === true &&
+        normalizedPtc?.callable === true &&
+        normalizedPtc.isReadOnly &&
         trustedReadOnlyTools.has(tool.name);
 
       if (!settings.allowMutations) {
@@ -230,7 +309,7 @@ export class ToolRegistry {
         }
       }
 
-      return isBuiltin || tool.ptc?.enabled === true;
+      return isBuiltin || normalizedPtc?.callable === true;
     });
 
     validatePythonHelperNames(callableTools);

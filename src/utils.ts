@@ -31,10 +31,12 @@ function parseListEnv(value: string | undefined): string[] | undefined {
     return undefined;
   }
 
-  const items = value
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean);
+  const items = [...new Set(
+    value
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean)
+  )];
 
   return items.length > 0 ? items : undefined;
 }

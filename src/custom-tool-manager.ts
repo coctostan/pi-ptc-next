@@ -80,6 +80,8 @@ export class CustomToolManager {
   private readonly toolsDir: string;
   private readonly fileToTool = new Map<string, string>();
   private readonly debounceTimers = new Map<string, ReturnType<typeof setTimeout>>();
+  private readonly fileSignatures = new Map<string, string>();
+  private pollTimer: ReturnType<typeof setInterval> | null = null;
   private watcher: fs.FSWatcher | null = null;
 
   constructor(
@@ -107,10 +109,13 @@ export class CustomToolManager {
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         logWarning(`Skipping invalid custom tool ${filename} during startup: ${message}`);
+      } finally {
+        this.refreshFileSignature(filename);
       }
     }
 
     this.startWatching();
+    this.startPolling();
     return new Map(this.fileToTool);
   }
 
@@ -147,12 +152,62 @@ export class CustomToolManager {
       clearTimeout(timer);
     }
     this.debounceTimers.clear();
+    if (this.pollTimer) {
+      clearInterval(this.pollTimer);
+      this.pollTimer = null;
+    }
+    this.fileSignatures.clear();
   }
 
   private ensureToolsDir(): void {
     if (!fs.existsSync(this.toolsDir)) {
       fs.mkdirSync(this.toolsDir, { recursive: true });
     }
+  }
+
+  private refreshFileSignature(filename: string): void {
+    const filePath = path.join(this.toolsDir, filename);
+    if (!fs.existsSync(filePath)) {
+      this.fileSignatures.delete(filename);
+      return;
+    }
+
+    const stat = fs.statSync(filePath);
+    this.fileSignatures.set(filename, `${stat.mtimeMs}:${stat.size}`);
+  }
+
+  private scanForMissedChanges(): void {
+    this.ensureToolsDir();
+    const filenames = fs.readdirSync(this.toolsDir).filter((entry) => entry.endsWith(".js"));
+    const present = new Set(filenames);
+
+    for (const filename of filenames) {
+      const previousSignature = this.fileSignatures.get(filename);
+      this.refreshFileSignature(filename);
+      const currentSignature = this.fileSignatures.get(filename);
+
+      if (previousSignature !== currentSignature) {
+        void this.reconcileFile(filename);
+      }
+    }
+
+    for (const filename of Array.from(this.fileSignatures.keys())) {
+      if (!present.has(filename)) {
+        this.fileSignatures.delete(filename);
+        void this.reconcileFile(filename);
+      }
+    }
+  }
+
+  private startPolling(): void {
+    if (this.pollTimer) {
+      return;
+    }
+
+    this.pollTimer = setInterval(() => {
+      this.scanForMissedChanges();
+    }, 250);
+    this.pollTimer.unref?.();
   }
 
   private setToolActive(toolName: string): void {
@@ -196,19 +251,23 @@ export class CustomToolManager {
   }
 
   private async reconcileFile(filename: string): Promise<void> {
-    const filePath = path.join(this.toolsDir, filename);
-    if (!fs.existsSync(filePath)) {
-      this.removeFileTool(filename, `${filename} deleted`);
-      return;
-    }
-
     try {
-      const loadedTool = await loadCustomToolFile(filePath);
-      this.registerLoadedTool(loadedTool);
-    } catch (error) {
-      this.removeFileTool(filename, `${filename} became invalid`);
-      const message = error instanceof Error ? error.message : String(error);
-      logWarning(`Custom tool reload failed for ${filename}: ${message}`);
+      const filePath = path.join(this.toolsDir, filename);
+      if (!fs.existsSync(filePath)) {
+        this.removeFileTool(filename, `${filename} deleted`);
+        return;
+      }
+
+      try {
+        const loadedTool = await loadCustomToolFile(filePath);
+        this.registerLoadedTool(loadedTool);
+      } catch (error) {
+        this.removeFileTool(filename, `${filename} became invalid`);
+        const message = error instanceof Error ? error.message : String(error);
+        logWarning(`Custom tool reload failed for ${filename}: ${message}`);
+      }
+    } finally {
+      this.refreshFileSignature(filename);
     }
   }
 }

@@ -30,6 +30,13 @@ pi install git:github.com/edxeth/pi-ptc-next
 ```
 
 This fork is published publicly as **pi-ptc-next** to distinguish it from the original `pi-ptc` repository while preserving clear attribution to Chris Egersdoerfer's upstream work.
+## Combined stack quick start
+
+If you are pairing this extension with `pi-hashline-readmap`, use these docs together:
+
+- `docs/hashline-integration/START-HERE.md` — recommended combined setup and policy guidance
+- `docs/hashline-integration/DEMO.md` — canonical search -> inspect -> edit walkthrough
+- `docs/hashline-integration/HARNESS-EVALUATION.md` — why the lightweight smoke proof is currently the preferred verification point
 
 ## Why this exists
 
@@ -66,19 +73,186 @@ This implementation now focuses on provider-agnostic reliability:
 
 By default, Python code inside `code_execution` can call a safe built-in subset:
 
-- `read(path, offset=None, limit=None) -> str`
+- `read(path, *, offset=None, limit=None, symbol=None, map=None) -> Union[str, ReadResult]`
 - `glob(pattern, path='.', limit=1000) -> list[str]`
 - `find(pattern, path='.', limit=1000) -> list[str]`
-- `grep(...) -> list[dict]`
+- `grep(...) -> Union[List[GrepMatch], GrepResult]`
 - `ls(path='.', limit=500) -> list[str]`
 
 Optional tools can be enabled via environment/config policy:
 
+- `sg(pattern, *, lang=None, path=None) -> SgResult` (requires explicit opt-in via `PTC_CALLABLE_TOOLS=...,sg`)
 - `bash(...) -> dict`
-- `edit(...) -> dict`
+- `edit(...) -> AnchoredEditResult`
 - `write(...) -> dict`
 
-Custom and extension tools are **not callable from Python by default**. They must explicitly opt in with `ptc.enabled: true`.
+Custom and extension tools are **not callable from Python by default**. Prefer `ptc.callable: true` to opt in and `ptc.policy: "read-only" | "mutating"` to describe safety traits (legacy `ptc.enabled` / `ptc.readOnly` still work).
+
+## Structured override payloads (`details.ptcValue`)
+
+The helper signatures above are the **fallback normalization defaults**.
+If a callable tool returns `details.ptcValue`, that JSON-compatible value is returned to Python unchanged.
+
+This is especially important for active hashline-native overrides of `read`, `grep`, and `edit`, which can expose richer anchored payloads than the fallback signatures imply.
+
+Representative structured payloads:
+
+```json
+{
+  "tool": "read",
+  "path": "tests/fixtures/small.ts",
+  "range": {
+    "startLine": 45,
+    "endLine": 49,
+    "totalLines": 49
+  },
+  "warnings": [],
+  "truncation": null,
+  "symbol": {
+    "query": "createDemoDirectory",
+    "name": "createDemoDirectory",
+    "kind": "function",
+    "startLine": 45,
+    "endLine": 49
+  },
+  "map": {
+    "requested": false,
+    "appended": false
+  },
+  "lines": [
+    {
+      "line": 45,
+      "hash": "bf",
+      "anchor": "45:bf",
+      "raw": "export function createDemoDirectory(): UserDirectory {",
+      "display": "export function createDemoDirectory(): UserDirectory {"
+    },
+    {
+      "line": 46,
+      "hash": "9a",
+      "anchor": "46:9a",
+      "raw": "  const directory = new UserDirectory(500);",
+      "display": "  const directory = new UserDirectory(500);"
+    },
+    {
+      "line": 47,
+      "hash": "c3",
+      "anchor": "47:c3",
+      "raw": "  directory.addUser(\"Ada Lovelace\", \"ada@example.com\");",
+      "display": "  directory.addUser(\"Ada Lovelace\", \"ada@example.com\");"
+    },
+    {
+      "line": 48,
+      "hash": "e1",
+      "anchor": "48:e1",
+      "raw": "  return directory;",
+      "display": "  return directory;"
+    },
+    {
+      "line": 49,
+      "hash": "18",
+      "anchor": "49:18",
+      "raw": "}",
+      "display": "}"
+    }
+  ]
+}
+```
+
+```json
+{
+  "tool": "grep",
+  "summary": false,
+  "totalMatches": 1,
+  "records": [
+    {
+      "path": "tests/fixtures/small.ts",
+      "line": 44,
+      "hash": "7e",
+      "anchor": "44:7e",
+      "kind": "context",
+      "raw": "// This keeps fixture size stable for truncation-threshold coverage.",
+      "display": "// This keeps fixture size stable for truncation-threshold coverage."
+    },
+    {
+      "path": "tests/fixtures/small.ts",
+      "line": 45,
+      "hash": "bf",
+      "anchor": "45:bf",
+      "kind": "match",
+      "raw": "export function createDemoDirectory(): UserDirectory {",
+      "display": "export function createDemoDirectory(): UserDirectory {"
+    },
+    {
+      "path": "tests/fixtures/small.ts",
+      "line": 46,
+      "hash": "9a",
+      "anchor": "46:9a",
+      "kind": "context",
+      "raw": "  const directory = new UserDirectory(500);",
+      "display": "  const directory = new UserDirectory(500);"
+    }
+  ]
+}
+```
+
+```json
+{
+  "tool": "sg",
+  "files": [
+    {
+      "path": "demo.ts",
+      "ranges": [
+        {
+          "startLine": 2,
+          "endLine": 2
+        }
+      ],
+      "lines": [
+        {
+          "line": 2,
+          "hash": "10",
+          "anchor": "2:10",
+          "raw": "  const value = \"before\";",
+          "display": "  const value = \"before\";"
+        }
+      ]
+    }
+  ]
+}
+```
+
+```json
+{
+  "tool": "edit",
+  "ok": true,
+  "path": "sample.ts",
+  "summary": "Updated sample.ts",
+  "diff": "2:bd|const two = 2; → 2:86|const two = 22;",
+  "firstChangedLine": 2,
+  "warnings": [],
+  "noopEdits": []
+}
+```
+
+If `details.ptcValue` is absent, fallback normalization still applies (`read -> str`, `grep -> list[dict]`, `edit -> dict`).
+
+## Real compatibility harness
+
+A package-real combined proof now lives at `test/hashline-real-interop.test.ts`.
+
+Run it directly:
+```bash
+npm run build
+node --test test/hashline-real-interop.test.ts
+```
+What it validates:
+- the actual `pi-hashline-readmap` package is loaded into the runtime
+- `sg` is exposed only through the inline opt-in PTC metadata path
+- nested `code_execution` uses real `read`, `grep`, `sg`, and `edit` implementations
+- Python receives structured `details.ptcValue` payloads at each step without mocked historical shapes
+- the file really changes on disk after the `edit` step
+- `grep` confirms the mutation by matching the new content
 
 ## Model-facing usage rules
 
@@ -126,15 +300,18 @@ return {
 
 ## Result normalization
 
-pi tools are normalized before being returned to Python:
+pi tools are normalized before being returned to Python using this precedence:
 
+1. `details.ptcValue` (when present) is returned unchanged.
+2. Otherwise, fallback normalization rules are applied.
+
+Fallback defaults:
 - `read` returns a string
 - `find`, `glob`, and `ls` return `list[str]`
 - `grep` returns `list[dict]`
 - `bash`, `edit`, and `write` return dictionaries
 - empty `find`/`ls`/`grep` results become empty lists rather than English sentinel strings
-
-This makes the runtime easier for non-Anthropic models to use reliably.
+This keeps the runtime predictable for non-Anthropic models while allowing richer structured hashline payloads when active tools provide them.
 
 ## Local tool policy
 
@@ -150,14 +327,16 @@ Safe read-only built-ins are callable by default.
 
 ### Custom and extension tools
 
-These must opt in with:
+These must opt in with explicit PTC metadata:
 
 ```js
 ptc: {
-  enabled: true,
-  readOnly: true,
+  callable: true,
+  policy: "read-only",
 }
 ```
+
+Legacy `ptc.enabled: true` / `ptc.readOnly: true` still work, but new docs and examples prefer `ptc.callable` / `ptc.policy`.
 
 ## Environment variables
 
@@ -271,8 +450,8 @@ export default {
     required: ["sql"],
   },
   ptc: {
-    enabled: true,
-    readOnly: true,
+    callable: true,
+    policy: "read-only",
   },
   async execute(toolCallId, params, signal, onUpdate, ctx) {
     return {
@@ -289,6 +468,7 @@ export default {
 ```
 
 If `details.ptcValue` is present, that JSON-compatible value is returned directly to Python.
+Prefer `ptc.callable` / `ptc.policy` in new tools; `ptc.enabled` / `ptc.readOnly` remain supported for backward compatibility.
 
 ## Hot reload
 
@@ -322,6 +502,7 @@ The exact totals vary by model behavior and tool strategy, but both model famili
 
 ```bash
 npm run build
+node --test test/hashline-interop-smoke.test.ts
 npm test
 ```
 
@@ -337,7 +518,7 @@ Check one of these:
 
 - the tool is blocked by policy
 - it is mutating and `PTC_ALLOW_MUTATIONS` is disabled
-- it is a custom/extension tool without `ptc.enabled: true`
+- it is a custom/extension tool without `ptc.callable: true` (legacy `ptc.enabled: true` still works)
 
 ### Why did Python get a list instead of text?
 

@@ -1,15 +1,25 @@
-const test = require("node:test");
-const assert = require("node:assert/strict");
+const test: typeof import("node:test").test = module.require("node:test");
+import type {} from "node:test";
+const assert: typeof import("node:assert/strict") = module.require("node:assert/strict");
 
-function setModuleExports(modulePath, exports) {
+type SessionHandler = (...args: unknown[]) => unknown | Promise<unknown>;
+
+type RegisteredTool = {
+  name: string;
+  description: string;
+  [key: string]: unknown;
+};
+
+function setModuleExports(modulePath: string, exportsValue: unknown): () => void {
   const resolved = require.resolve(modulePath);
   const previous = require.cache[resolved];
   require.cache[resolved] = {
     id: resolved,
     filename: resolved,
     loaded: true,
-    exports,
-  };
+    exports: exportsValue,
+  } as unknown as NodeJS.Module;
+
   return () => {
     if (previous) {
       require.cache[resolved] = previous;
@@ -25,7 +35,7 @@ test("ptc extension bootstraps and cleans up runtime components", async () => {
     spawn() {
       throw new Error("sandbox spawn should not be used in bootstrap test");
     },
-    getRuntimeWorkspaceRoot(cwd) {
+    getRuntimeWorkspaceRoot(cwd: string) {
       return cwd;
     },
     async cleanup() {
@@ -33,11 +43,47 @@ test("ptc extension bootstraps and cleans up runtime components", async () => {
     },
   };
 
-  let managerInstance = null;
-  let codeExecutorInstance = null;
+  type FakeCustomToolManagerInstance = {
+    extensionRoot: string;
+    pi: unknown;
+    toolRegistry: unknown;
+    onToolSetChanged: () => void;
+    started: number;
+    closed: number;
+  };
 
+  type FakeCodeExecutorInstance = {
+    sandboxManager: unknown;
+    toolRegistry: unknown;
+    settings: unknown;
+    extensionRoot: string;
+  };
+
+  let managerInstance: FakeCustomToolManagerInstance = {
+    extensionRoot: "",
+    pi: null,
+    toolRegistry: null,
+    onToolSetChanged: () => undefined,
+    started: 0,
+    closed: 0,
+  };
+  let managerInitialized = false;
+  let codeExecutorInstance: FakeCodeExecutorInstance = {
+    sandboxManager: null,
+    toolRegistry: null,
+    settings: null,
+    extensionRoot: "",
+  };
+  let codeExecutorInitialized = false;
   class FakeCustomToolManager {
-    constructor(extensionRoot, pi, toolRegistry, onToolSetChanged) {
+    extensionRoot: string;
+    pi: unknown;
+    toolRegistry: unknown;
+    onToolSetChanged: () => void;
+    started: number;
+    closed: number;
+
+    constructor(extensionRoot: string, pi: unknown, toolRegistry: unknown, onToolSetChanged: () => void) {
       this.extensionRoot = extensionRoot;
       this.pi = pi;
       this.toolRegistry = toolRegistry;
@@ -45,6 +91,7 @@ test("ptc extension bootstraps and cleans up runtime components", async () => {
       this.started = 0;
       this.closed = 0;
       managerInstance = this;
+      managerInitialized = true;
     }
 
     async start() {
@@ -58,7 +105,9 @@ test("ptc extension bootstraps and cleans up runtime components", async () => {
   }
 
   class FakeToolRegistry {
-    constructor(pi) {
+    pi: unknown;
+
+    constructor(pi: unknown) {
       this.pi = pi;
     }
 
@@ -68,12 +117,18 @@ test("ptc extension bootstraps and cleans up runtime components", async () => {
   }
 
   class FakeCodeExecutor {
-    constructor(sandboxManager, toolRegistry, settings, extensionRoot) {
+    sandboxManager: unknown;
+    toolRegistry: unknown;
+    settings: unknown;
+    extensionRoot: string;
+
+    constructor(sandboxManager: unknown, toolRegistry: unknown, settings: unknown, extensionRoot: string) {
       this.sandboxManager = sandboxManager;
       this.toolRegistry = toolRegistry;
       this.settings = settings;
       this.extensionRoot = extensionRoot;
       codeExecutorInstance = this;
+      codeExecutorInitialized = true;
     }
 
     async execute() {
@@ -110,13 +165,13 @@ test("ptc extension bootstraps and cleans up runtime components", async () => {
     const extensionModule = require("../dist/index.js");
     const ptcExtension = extensionModule.default || extensionModule;
 
-    const eventHandlers = new Map();
-    const registered = [];
+    const eventHandlers = new Map<string, SessionHandler>();
+    const registered: RegisteredTool[] = [];
     const pi = {
-      registerTool(tool) {
+      registerTool(tool: RegisteredTool) {
         registered.push(tool);
       },
-      on(event, handler) {
+      on(event: string, handler: SessionHandler) {
         eventHandlers.set(event, handler);
       },
       getAllTools() {
@@ -129,14 +184,31 @@ test("ptc extension bootstraps and cleans up runtime components", async () => {
     };
 
     await ptcExtension(pi);
-    await eventHandlers.get("session_start")({}, { cwd: process.cwd() });
 
+    const onSessionStart = eventHandlers.get("session_start");
+    if (!onSessionStart) {
+      throw new Error("session_start handler not registered");
+    }
+    await onSessionStart({}, { cwd: process.cwd() });
     const codeExecutionTools = registered.filter((tool) => tool.name === "code_execution");
     assert.ok(codeExecutionTools.length >= 1);
+    const latestCodeExecutionTool = codeExecutionTools[codeExecutionTools.length - 1];
+    assert.ok(latestCodeExecutionTool);
+    assert.match(latestCodeExecutionTool.description, /ptc\.read_many.*-> list\[str\]/i);
+    assert.match(latestCodeExecutionTool.description, /ptc\.read_text.*-> str/);
+    assert.match(latestCodeExecutionTool.description, /Prefer these for string content/);
+    assert.match(latestCodeExecutionTool.description, /Use read\(path\) directly when you need structured anchored data/);
+    assert.match(latestCodeExecutionTool.description, /Do not call _rpc_call/);
+    assert.doesNotMatch(latestCodeExecutionTool.description, /details\.ptcValue/);
+    assert.doesNotMatch(latestCodeExecutionTool.description, /PTC_BLOCKED_TOOLS/);
+    assert.equal(codeExecutorInitialized, true);
     assert.equal(managerInstance.started, 1);
     assert.equal(codeExecutorInstance.sandboxManager, sandbox);
-
-    await eventHandlers.get("session_shutdown")();
+    const onSessionShutdown = eventHandlers.get("session_shutdown");
+    if (!onSessionShutdown) {
+      throw new Error("session_shutdown handler not registered");
+    }
+    await onSessionShutdown();
     assert.equal(managerInstance.closed, 1);
     assert.equal(sandbox.cleanupCalls, 1);
   } finally {

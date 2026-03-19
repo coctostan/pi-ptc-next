@@ -55,8 +55,13 @@ test("generateToolWrappers emits concise wrappers with typed result models", () 
 
   assert.match(code, /from typing import Optional, List, Dict, Any, TypedDict, Union/);
   assert.match(code, /class BashResult\(TypedDict\):/);
-  assert.match(code, /class GrepMatch\(TypedDict\):/);
+  assert.match(code, /class ReadLine\(TypedDict\):/);
+  assert.match(code, /class ReadResult\(TypedDict\):/);
+  assert.match(code, /class GrepResult\(TypedDict\):/);
+  assert.match(code, /class AnchoredEditResult\(TypedDict, total=False\):/);
+  assert.match(code, /class GrepMatch\(TypedDict, total=False\):/);
   assert.match(code, /async def read\(/);
+  assert.match(code, /\) -> Union\[str, ReadResult\]:/);
   assert.match(code, /path: str/);
   assert.doesNotMatch(code, /file_path/);
   assert.match(code, /async def glob\(/);
@@ -65,4 +70,5 @@ test("generateToolWrappers emits concise wrappers with typed result models", () 
   assert.match(code, /\) -> BashResult:/);
   assert.doesNotMatch(code, /Args:/);
   assert.match(code, /return await _rpc_call\("glob", params\)/);
+  assert.match(code, /class EditSpan\(TypedDict, total=False\):/);
 });

@@ -72,6 +72,33 @@ def _host_abspath(path: str) -> str:
     return _ptc_os.path.normpath(_ptc_os.path.join(_PTC_HOST_WORKSPACE_ROOT, path))
 
 
+def _extract_text(result: Any) -> str:
+    """Extract raw text from a ReadResult dict, or return as-is if already a string."""
+    if isinstance(result, str):
+        return result
+    if isinstance(result, dict) and "lines" in result:
+        return "\n".join(line.get("raw", "") for line in result["lines"])
+    return str(result)
+
+def _relativize_path(abs_path: str) -> str:
+    """Convert an absolute path to a workspace-relative path if under the host workspace root."""
+    if not _ptc_os.path.isabs(abs_path):
+        return abs_path
+    root = _ptc_os.path.normpath(_PTC_HOST_WORKSPACE_ROOT)
+    normed = _ptc_os.path.normpath(abs_path)
+    if normed == root or normed.startswith(f"{root}{_ptc_os.sep}"):
+        return _ptc_os.path.relpath(normed, root)
+    return abs_path
+
+
+def _normalize_grep_result(result: Any) -> Any:
+    """Normalize grep result paths to be relative to the workspace root."""
+    if not isinstance(result, dict) or "records" not in result:
+        return result
+    for record in result.get("records", []):
+        if isinstance(record, dict) and "path" in record:
+            record["path"] = _relativize_path(record["path"])
+    return result
 class _PtcHelpers:
     def __init__(self, max_parallel_tool_calls: int):
         self.max_parallel_tool_calls = max(1, max_parallel_tool_calls)
@@ -94,7 +121,8 @@ class _PtcHelpers:
         return [item if _ptc_os.path.isabs(item) else _ptc_os.path.join(base_path, item) for item in files]
 
     async def read_text(self, path: str, offset: int | None = None, limit: int | None = None) -> str:
-        return await read(path=path, offset=offset, limit=limit)
+        result = await read(path=path, offset=offset, limit=limit)
+        return _extract_text(result)
 
     async def read_many(
         self,
@@ -104,10 +132,11 @@ class _PtcHelpers:
         offset: int | None = None,
         line_limit: int | None = None,
     ) -> Sequence[str]:
-        return await self.gather_limit(
+        results = await self.gather_limit(
             [read(path=path, offset=offset, limit=line_limit) for path in paths],
             limit=max_concurrency,
         )
+        return [_extract_text(r) for r in results]
 
     async def read_tree(
         self,
@@ -133,6 +162,17 @@ class _PtcHelpers:
 
 
 ptc = _PtcHelpers(globals().get("PTC_MAX_PARALLEL_TOOL_CALLS", 8))
+
+
+# Post-process wrapper: normalize grep record paths to workspace-relative.
+# The generated grep() wrapper calls _rpc_call("grep", params) and returns
+# whatever the RPC returns. When the hashline bridge is active, record paths
+# are absolute. This wrapper normalizes them.
+_generated_grep = globals().get("grep")
+if callable(_generated_grep):
+    async def grep(**kwargs):
+        result = await _generated_grep(**kwargs)
+        return _normalize_grep_result(result)
 
 
 def _stringify_output(value: Any) -> str:

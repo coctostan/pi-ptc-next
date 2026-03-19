@@ -64,9 +64,7 @@ function buildToolDescription(currentSettings: PtcSettings, callableTools: ToolI
     : "- Local subprocess mode is active because PTC_ALLOW_UNSANDBOXED_SUBPROCESS=true. Nested tool policy still applies, but Python itself is not isolated by Docker in this mode.";
 
   return `Execute Python code with local programmatic tool calling.
-
 Use this tool when you need 3+ dependent tool calls, loops, filtering, aggregation, or large intermediate results that should stay out of the chat context. Avoid it for a single simple tool call.
-
 Important rules:
 - Top-level await is already available. Do not call asyncio.run(...).
 - Use generated helpers such as read(), glob(), find(), grep(), ls(), and ptc.* helpers. Do not call _rpc_call(...) directly.
@@ -74,35 +72,34 @@ Important rules:
 - Intermediate tool results stay local to this tool run and are not sent back to the model unless you include them in the final output.
 - Prefer compact JSON summaries over raw dumps.
 ${dockerBehavior}
-
 Prefer these patterns:
 - Many file reads from explicit paths: ptc.read_many(paths, max_concurrency=...)
 - Find and read an entire tree: ptc.read_tree(pattern=..., path=..., max_files=..., concurrency=...)
 - Bounded concurrency for arbitrary coroutines: ptc.gather_limit(coros, limit=...)
 - Relative file discovery: glob(...) or ptc.find_files(...)
 - Absolute file discovery for later read()/write(): ptc.find_files_abs(...)
-
 Python helpers currently available in this session:
 - ${callableHelperLines.join("\n- ")}
 - ptc.gather_limit(coros, limit=...) -> list
 - ptc.read_many(paths, max_concurrency=..., offset=None, line_limit=None) -> list[str]
-- ptc.read_tree(pattern=..., path='.', max_files=1000, concurrency=..., offset=None, line_limit=None) -> list[dict]
+- ptc.read_tree(pattern=..., path='.', max_files=1000, concurrency=..., offset=None, line_limit=None) -> list[dict[str, Any]]
 - ptc.find_files(pattern='**/*', path='.', max_files=1000) -> list[str]
 - ptc.find_files_abs(pattern='**/*', path='.', max_files=1000) -> list[str]
 - ptc.read_text(path, offset=None, limit=None) -> str
 - ptc.json_dump(value) -> str
-
+Prefer these for string content:
+- ptc.read_text(path) always returns str (extracts raw text from structured results)
+- ptc.read_many(paths) always returns list[str]
+- ptc.read_tree(pattern) returns list[dict] where each entry["content"] is str
+Use read(path) directly when you need structured anchored data (ReadResult with .lines[].anchor).
 Callable tool set for this session: ${callable}
-
 Example:
-
 entries = await ptc.read_tree(pattern="**/*.ts", path="src", max_files=1000, concurrency=6)
 return {
   "files": len(entries),
   "sample_lengths": [len(entry["content"]) for entry in entries[:3]],
 }`;
 }
-
 function getExtensionRoot(): string {
   return __dirname.endsWith("/dist") || __dirname.endsWith("\\dist")
     ? __dirname.replace(/[/\\]dist$/, "")
