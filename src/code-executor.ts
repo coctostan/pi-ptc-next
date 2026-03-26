@@ -38,6 +38,7 @@ ${rpcCode}
 ${toolWrappers}
 
 PTC_MAX_PARALLEL_TOOL_CALLS = ${this.settings.maxParallelToolCalls}
+PTC_MAX_OUTPUT_CHARS = ${this.settings.maxOutputChars}
 PTC_HOST_WORKSPACE_ROOT = ${JSON.stringify(hostWorkspaceRoot)}
 PTC_RUNTIME_WORKSPACE_ROOT = ${JSON.stringify(runtimeWorkspaceRoot)}
 PTC_USER_CODE_LINE_COUNT = ${userCode.split("\n").length}

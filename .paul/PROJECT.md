@@ -44,10 +44,11 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 - [x] Added bounded Python callable-tool introspection via `ptc.list_callable_tools()` / `ptc.get_tool_schema(name)` backed by session-scoped wrapper metadata derived from the live callable runtime surface — Phase 28
 - [x] Added execution-level proof plus README/tool-description guidance for `ptc.expect_kind(...)`, `ptc.list_callable_tools()`, and `ptc.get_tool_schema(name)`, including safe optional-tool branching based on the live callable session surface — Phase 29
 - [x] Added bounded Python orchestration helpers `ptc.batch_tool(...)` / `ptc.first_success(...)` with shared call-spec validation and focused execution proof — Phase 30
+- [x] Added bounded Python reduction and output-budget helpers `ptc.reduce_tool(...)` / `ptc.fit_output(...)` aligned to the session output cap, with focused execution proof — Phase 31
 ### Active (In Progress)
-- [ ] No active in-progress requirements. Phase 30 is complete.
+- [ ] No active in-progress requirements. Phase 31 is complete.
 ### Planned (Next)
-- [ ] Add bounded reducers and output-budget helpers on top of the new orchestration primitives without expanding into broader concurrency APIs — Phase 31
+- [ ] Add proof, README/tool-description updates, and ecosystem examples for composing the Milestone 12 orchestration and output-budget helpers without reopening broader runtime design — Phase 32
 ### Out of Scope
 - [ ] Long-term IR refactors during the early interop milestones
 - [ ] Broad helper ergonomics changes beyond what is required for trustworthy structured interop
@@ -117,6 +118,8 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 | Treat `ptc.list_callable_tools()` as the authoritative optional-tool branching surface in docs/examples | Optional helper availability depends on the live callable session surface, not configuration intent alone | 2026-03-26 | Active |
 | Keep Phase 30 orchestration call specs bounded to `{tool, params}` and validate them in `runtime.py` | A compact shared call-spec contract keeps the first orchestration slice generic and bounded without introducing a broader DSL | 2026-03-26 | Active |
 | Keep `ptc.first_success(...)` sequential and ordered in Phase 30 while validating `max_concurrency` only for interface consistency | Deterministic fallback behavior is easier to reason about and test than concurrent racing/cancellation in the initial orchestration helper slice | 2026-03-26 | Active |
+| Keep `ptc.fit_output(...)` aligned with the executor session output cap by default | Output-fitting defaults should match the real executor output boundary so Python-side compaction stays trustworthy and does not imply a larger safe budget than the session actually has | 2026-03-26 | Active |
+| Prefer structured preview metadata over immediate opaque string compaction in `ptc.fit_output(...)` | Bounded previews are more useful when they preserve JSON-safe shape and truncation metadata, even though that adds some runtime-local complexity | 2026-03-26 | Active |
 
 ## Success Metrics
 | Metric | Target | Current | Status |
@@ -131,6 +134,7 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 | Full real two-extension loading smoke harness with `pi-hashline-readmap` | Optional | Explicitly evaluated and deferred; lightweight smoke coverage remains the first-pass upstream verification point | Deferred |
 | Repo-owned CI verification path for the 0.8.0 release baseline | Yes | `npm run verify:ci` plus `.github/workflows/ci.yml` now verify the release-ready fork surface | Achieved |
 | Execution-level proof and user-facing docs for Milestone 11 helper ergonomics | Yes | Dedicated runtime proof, tool-description assertions, README updates, and doc-contract coverage landed in Phase 29 | Achieved |
+| Bounded reduction and output-budget helpers for Python orchestration flows | Yes | `ptc.reduce_tool(...)` and `ptc.fit_output(...)` landed with focused execution proof and executor-aligned output-budget defaults | Achieved |
 
 ## Tech Stack
 | Layer | Technology | Notes |
@@ -151,4 +155,4 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 
 ---
 *PROJECT.md — Updated when requirements or context change*
-*Last updated: 2026-03-26 after Phase 30 completion*
+*Last updated: 2026-03-26 after Phase 31 completion*

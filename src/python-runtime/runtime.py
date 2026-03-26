@@ -101,6 +101,9 @@ def _normalize_grep_result(result: Any) -> Any:
     return result
 
 _SUPPORTED_HANDLE_KINDS = {"response", "file"}
+_DEFAULT_FIT_OUTPUT_MAX_ITEMS = 10
+_DEFAULT_FIT_OUTPUT_MAX_DEPTH = 3
+_FIT_OUTPUT_KIND = "fit_output"
 
 
 def _push_response_handle(handles: list[SupportedHandle], seen: set[str], response_id: str) -> None:
@@ -234,9 +237,179 @@ def _summarize_orchestration_error(error: Exception) -> str:
     if len(summary) > 160:
         return summary[:157] + "..."
     return summary
+
+
+def _normalize_positive_int(name: str, value: Any, default: int) -> int:
+    if value is None:
+        return default
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise ValueError(f"{name} must be a positive integer (got {type(value).__name__})")
+    if value < 1:
+        raise ValueError(f"{name} must be a positive integer")
+    return value
+
+
+def _measure_json_chars(value: Any) -> int:
+    return len(_ptc_json.dumps(value, indent=2, ensure_ascii=False, sort_keys=True))
+
+
+def _normalize_fit_output_limits(
+    max_chars: Any,
+    max_items: Any,
+    max_depth: Any,
+    session_max_output_chars: int,
+) -> dict[str, int]:
+    default_chars = max(1, session_max_output_chars)
+    normalized_chars = _normalize_positive_int("max_chars", max_chars, default_chars)
+    normalized_items = _normalize_positive_int("max_items", max_items, _DEFAULT_FIT_OUTPUT_MAX_ITEMS)
+    normalized_depth = _normalize_positive_int("max_depth", max_depth, _DEFAULT_FIT_OUTPUT_MAX_DEPTH)
+    return {
+        "max_chars": min(normalized_chars, default_chars),
+        "max_items": normalized_items,
+        "max_depth": normalized_depth,
+    }
+
+
+def _json_safe_clone_for_fit_output(value: Any) -> Any:
+    try:
+        return _clone_json_value(value)
+    except Exception as error:
+        raise ValueError(
+            "fit_output only supports JSON-safe values: "
+            + _summarize_orchestration_error(error)
+        ) from error
+
+
+def _compact_fit_output_preview(
+    value: Any,
+    max_chars: int,
+    max_items: int,
+    max_depth: int,
+) -> tuple[Any, dict[str, Any]]:
+    stats = {
+        "truncated": False,
+        "omittedItems": 0,
+        "omittedKeys": 0,
+        "depthLimited": False,
+    }
+
+    if value is None or isinstance(value, (bool, int, float)):
+        return value, stats
+
+    if isinstance(value, str):
+        if len(value) <= max_chars:
+            return value, stats
+        preview = value[: max(1, max_chars - 3)] + "..."
+        stats["truncated"] = True
+        return preview, stats
+
+    if isinstance(value, list):
+        if max_depth <= 0:
+            stats["truncated"] = True
+            stats["depthLimited"] = True
+            stats["omittedItems"] = len(value)
+            return f"<list len={len(value)}>", stats
+
+        preview: list[Any] = []
+        for item in value[:max_items]:
+            compacted_item, child_stats = _compact_fit_output_preview(item, max_chars, max_items, max_depth - 1)
+            preview.append(compacted_item)
+            stats["truncated"] = stats["truncated"] or child_stats["truncated"]
+            stats["omittedItems"] += child_stats["omittedItems"]
+            stats["omittedKeys"] += child_stats["omittedKeys"]
+            stats["depthLimited"] = stats["depthLimited"] or child_stats["depthLimited"]
+
+        omitted_items = max(0, len(value) - len(preview))
+        if omitted_items > 0:
+            stats["truncated"] = True
+            stats["omittedItems"] += omitted_items
+        return preview, stats
+
+    if isinstance(value, dict):
+        if max_depth <= 0:
+            stats["truncated"] = True
+            stats["depthLimited"] = True
+            stats["omittedKeys"] = len(value)
+            return f"<dict keys={len(value)}>", stats
+
+        preview: dict[str, Any] = {}
+        for key in list(value.keys())[:max_items]:
+            compacted_value, child_stats = _compact_fit_output_preview(value[key], max_chars, max_items, max_depth - 1)
+            preview[str(key)] = compacted_value
+            stats["truncated"] = stats["truncated"] or child_stats["truncated"]
+            stats["omittedItems"] += child_stats["omittedItems"]
+            stats["omittedKeys"] += child_stats["omittedKeys"]
+            stats["depthLimited"] = stats["depthLimited"] or child_stats["depthLimited"]
+
+        omitted_keys = max(0, len(value) - len(preview))
+        if omitted_keys > 0:
+            stats["truncated"] = True
+            stats["omittedKeys"] += omitted_keys
+        return preview, stats
+
+    raise ValueError(
+        "fit_output only supports JSON-safe strings, numbers, booleans, null, lists, and dicts"
+    )
+
+
+def _describe_fit_output_kind(value: Any) -> str:
+    if value is None:
+        return "null"
+    if isinstance(value, bool):
+        return "bool"
+    if isinstance(value, int):
+        return "int"
+    if isinstance(value, float):
+        return "float"
+    if isinstance(value, str):
+        return "str"
+    if isinstance(value, list):
+        return "list"
+    if isinstance(value, dict):
+        return "dict"
+    return type(value).__name__
+
+
+def _fit_result_to_char_budget(result: dict[str, Any], max_chars: int) -> dict[str, Any]:
+    if _measure_json_chars(result) <= max_chars:
+        return result
+
+    preview_text = _ptc_json.dumps(result.get("preview"), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    result["preview"] = preview_text
+    result["stats"]["previewKind"] = "text"
+    result["stats"]["previewChars"] = len(preview_text)
+    result["truncated"] = True
+
+    while _measure_json_chars(result) > max_chars and len(result["preview"]) > 4:
+        overflow = _measure_json_chars(result) - max_chars
+        shrink_by = max(overflow + 3, 8)
+        next_length = max(1, len(result["preview"]) - shrink_by)
+        result["preview"] = result["preview"][:next_length] + "..."
+        result["stats"]["previewChars"] = len(result["preview"])
+
+    if _measure_json_chars(result) <= max_chars:
+        return result
+
+    minimal = {
+        "kind": _FIT_OUTPUT_KIND,
+        "originalKind": result.get("originalKind", "unknown"),
+        "preview": "...",
+        "truncated": True,
+    }
+    if _measure_json_chars(minimal) <= max_chars:
+        return minimal
+    return {"kind": _FIT_OUTPUT_KIND, "truncated": True}
+
+
 class _PtcHelpers:
-    def __init__(self, max_parallel_tool_calls: int, callable_tool_metadata: Sequence[dict[str, Any]] | None = None):
+    def __init__(
+        self,
+        max_parallel_tool_calls: int,
+        callable_tool_metadata: Sequence[dict[str, Any]] | None = None,
+        max_output_chars: int | None = None,
+    ):
         self.max_parallel_tool_calls = max(1, max_parallel_tool_calls)
+        self.max_output_chars = max(1, max_output_chars if isinstance(max_output_chars, int) else 25_000)
         metadata = callable_tool_metadata if callable_tool_metadata is not None else []
         self._callable_tool_metadata = [
             entry for entry in _clone_json_value(list(metadata)) if isinstance(entry, dict)
@@ -361,6 +534,71 @@ class _PtcHelpers:
 
         raise ValueError("All candidate tool calls failed: " + "; ".join(failures))
 
+    async def reduce_tool(
+        self,
+        calls: Sequence[dict[str, Any]],
+        reducer: Callable[[Any, Any], Any],
+        initial: Any,
+        max_concurrency: int | None = None,
+    ) -> Any:
+        if not callable(reducer):
+            raise ValueError("reducer must be callable")
+        results = await self.batch_tool(calls, max_concurrency=max_concurrency)
+        accumulator = initial
+        for index, result in enumerate(results):
+            try:
+                accumulator = reducer(accumulator, result)
+            except Exception as error:
+                raise ValueError(
+                    f"Reducer failed at index {index}: {_summarize_orchestration_error(error)}"
+                ) from error
+        return accumulator
+
+    def fit_output(
+        self,
+        value: Any,
+        max_chars: int | None = None,
+        max_items: int | None = None,
+        max_depth: int | None = None,
+    ) -> dict[str, Any]:
+        limits = _normalize_fit_output_limits(
+            max_chars,
+            max_items,
+            max_depth,
+            self.max_output_chars,
+        )
+        safe_value = _json_safe_clone_for_fit_output(value)
+        preview, preview_stats = _compact_fit_output_preview(
+            safe_value,
+            limits["max_chars"],
+            limits["max_items"],
+            limits["max_depth"],
+        )
+        result = {
+            "kind": _FIT_OUTPUT_KIND,
+            "originalKind": _describe_fit_output_kind(safe_value),
+            "preview": preview,
+            "truncated": bool(preview_stats["truncated"]),
+            "limits": {
+                "maxChars": limits["max_chars"],
+                "maxItems": limits["max_items"],
+                "maxDepth": limits["max_depth"],
+            },
+            "stats": {
+                "originalChars": _measure_json_chars(safe_value),
+                "previewChars": _measure_json_chars(preview),
+                "omittedItems": preview_stats["omittedItems"],
+                "omittedKeys": preview_stats["omittedKeys"],
+                "depthLimited": preview_stats["depthLimited"],
+            },
+        }
+        result["truncated"] = bool(
+            result["truncated"]
+            or result["stats"]["originalChars"] > limits["max_chars"]
+            or result["stats"]["previewChars"] > limits["max_chars"]
+        )
+        return _fit_result_to_char_budget(result, limits["max_chars"])
+
     def json_dump(self, value: Any) -> str:
         return _ptc_json.dumps(value, indent=2, ensure_ascii=False, sort_keys=True)
 
@@ -368,6 +606,7 @@ class _PtcHelpers:
 ptc = _PtcHelpers(
     globals().get("PTC_MAX_PARALLEL_TOOL_CALLS", 8),
     globals().get("_PTC_CALLABLE_TOOL_METADATA", []),
+    globals().get("PTC_MAX_OUTPUT_CHARS", 25_000),
 )
 
 

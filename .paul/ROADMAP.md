@@ -6,20 +6,18 @@ Brownfield PALS adoption for `pi-ptc-next`, focused on hashline-native runtime i
 ## Current Milestone
 **Milestone 12 — High-Level Orchestration Helpers** (0.11.0)
 Status: 🚧 In Progress
-Phases: 1 of 3 complete
+Phases: 2 of 3 complete
 | Phase | Name | Plans | Status | Completed |
 |-------|------|-------|--------|-----------|
 | 30 | Core Orchestration Primitives | 1/1 | ✅ Complete | 2026-03-26 |
-| 31 | Bounded Reduction and Output-Budget Helpers | TBD | Not started | - |
+| 31 | Bounded Reduction and Output-Budget Helpers | 1/1 | ✅ Complete | 2026-03-26 |
 | 32 | Proof and Ecosystem Docs | TBD | Not started | - |
 ### Phase 30: Core Orchestration Primitives
 Focus: Add generic `ptc.batch_tool(...)` and `ptc.first_success(...)` helpers that reduce repeated multi-tool invocation boilerplate while preserving provider-agnostic behavior.
 Plans: 1/1 complete — see `.paul/phases/30-core-orchestration-primitives/30-01-SUMMARY.md`
-
 ### Phase 31: Bounded Reduction and Output-Budget Helpers
 Focus: Add bounded reducers and output-budget helpers that keep large intermediate results local and return compact structured outcomes without introducing broader concurrency APIs.
-Plans: TBD (defined during /paul:plan)
-
+Plans: 1/1 complete — see `.paul/phases/31-bounded-reduction-and-output-budget-helpers/31-01-SUMMARY.md`
 ### Phase 32: Proof and Ecosystem Docs
 Focus: Add focused proof plus docs/examples for composing hashline, codegraph, and web-tool style flows with the new orchestration helpers.
 Plans: TBD (defined during /paul:plan)
@@ -153,4 +151,4 @@ Suggested implementation branch from project docs:
 - `feat/hashline-native-interop`
 
 ---
-*Last updated: 2026-03-26 after Phase 30 completion*
+*Last updated: 2026-03-26 after Phase 31 completion*

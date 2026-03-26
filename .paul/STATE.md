@@ -4,17 +4,17 @@
 See: `.paul/PROJECT.md`
 
 **Core value:** `pi-ptc-next` should execute the same active Pi tool implementations that the user sees in chat.
-**Current focus:** Phase 30 is complete; prepare the plan for Phase 31.
+**Current focus:** Phase 31 is complete; prepare the plan for Phase 32.
 ## Current Position
 Milestone: Milestone 12 — High-Level Orchestration Helpers
-Phase: 31 of 32 (Bounded Reduction and Output-Budget Helpers) — Ready to Plan
+Phase: 32 of 32 (Proof and Ecosystem Docs) — Ready to Plan
 Plan: Not started
 Status: Ready for PLAN
-Last activity: 2026-03-26 11:11:52 EDT — Committed Phase 30 closure and transitioned to Phase 31
+Last activity: 2026-03-26 12:02:26 EDT — Unified .paul/phases/31-bounded-reduction-and-output-budget-helpers/31-01-PLAN.md and transitioned to Phase 32
 Progress:
-- Milestone 12 — High-Level Orchestration Helpers: [███□□□□□□□] 33% ○
+- Milestone 12 — High-Level Orchestration Helpers: [███████□□□] 67% ○
 - Phase 30 — Core Orchestration Primitives: [██████████] 100% ✓
-- Phase 31 — Bounded Reduction and Output-Budget Helpers: [□□□□□□□□□□] 0% ○
+- Phase 31 — Bounded Reduction and Output-Budget Helpers: [██████████] 100% ✓
 - Phase 32 — Proof and Ecosystem Docs: [□□□□□□□□□□] 0% ○
 - Milestone 11 — Result-Kind and Tool Introspection Helpers: [██████████] 100% ✓
 - Phase 29 — Proof and Docs: [██████████] 100% ✓
@@ -65,24 +65,27 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Safe optional-tool branching guidance now points models at `ptc.list_callable_tools()` as the authoritative live session surface before calling optional helpers like `sg`
 - Phase 30 keeps orchestration call specs bounded to `{"tool": str, "params": object}` and validates them in `runtime.py` rather than introducing a broader orchestration DSL
 - `ptc.first_success(...)` now uses ordered sequential fallback semantics in Phase 30; `max_concurrency` is validated for interface consistency, while broader concurrent race behavior remains deferred
+- `ptc.fit_output(...)` now defaults to the executor session output cap so Python-side compaction stays aligned with the real final output boundary
+- Phase 31 intentionally returns structured preview metadata from `ptc.fit_output(...)` instead of collapsing immediately to an opaque string
 
 ### Deferred Issues
 - Bridge teardown when pi adds getToolExecutor()
+- `src/python-runtime/runtime.py` is now a significant debt hotspot at 656 lines after Phases 30-31 helper additions; future changes should avoid casual growth without justification
 
 ### Git State
-- Phase closure commit: `feat(30-core-orchestration-primitives): add bounded orchestration helpers`
+- Phase closure commit: `feat(31-bounded-reduction-and-output-budget-helpers): add reduction and fit-output helpers`
 - Branch: `feat/hashline-native-interop`
 - Feature branches merged: none (git workflow mode: none)
 
 ## Session Continuity
-Last session: 2026-03-26 11:11:52 EDT
-Stopped at: Phase 30 complete, ready to plan Phase 31
+Last session: 2026-03-26 12:02:26 EDT
+Stopped at: Phase 31 complete, ready to plan Phase 32
 Next action: /paul:plan
 Resume file: .paul/ROADMAP.md
 Resume context:
-- Phase 30 shipped `ptc.batch_tool(...)` and `ptc.first_success(...)` in `src/python-runtime/runtime.py`
-- Shared runtime-local call-spec validation now enforces a bounded `{tool, params}` contract for orchestration helpers
-- Focused execution proof in `test/orchestration-helper.test.ts` is green, and full verification passed at `123` passing / `0` failing with the audit baseline unchanged (`0 critical / 2 high / 2 moderate / 1 low`)
+- Phase 31 shipped executor-aligned output-budget plumbing plus bounded `ptc.reduce_tool(...)` and `ptc.fit_output(...)`
+- Focused execution proof in `test/reduction-helper.test.ts` is green, and full verification passed at `127` passing / `0` failing with the audit baseline unchanged (`0 critical / 2 high / 2 moderate / 1 low`)
+- Phase 32 is now the proof/docs slice for documenting and proving the full Milestone 12 helper surface without reopening broader runtime design
 
 ---
-*STATE.md — Updated after every significant action (last updated: 2026-03-26 11:11:52 EDT)*
+*STATE.md — Updated after every significant action (last updated: 2026-03-26 12:02:26 EDT)*
