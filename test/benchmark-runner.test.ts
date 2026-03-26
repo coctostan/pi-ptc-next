@@ -10,6 +10,7 @@ import {
   getDefaultBenchmarkResultPath,
   getProviderModelSlug,
   resolveBenchmarkEvalsPath,
+  readBenchmarkRun,
   runBenchmarkCli,
   runBenchmarkSuite,
   writeBenchmarkRun,
@@ -30,6 +31,13 @@ type RecipeTargetShape = {
 type BenchmarkRunShape = Parameters<typeof writeBenchmarkRun>[1];
 
 const seededEvalsPath = path.resolve(process.cwd(), ".pi", "evals", "ptc");
+const seededRecipeCaseIds = [
+  "recipe-codegraph-web-evidence-merge",
+  "recipe-graph-compact-ranking",
+  "recipe-hashline-anomaly-summary",
+  "recipe-web-answer-comparison",
+] as const;
+const seededRecipeBaselinePath = path.join(seededEvalsPath, "baselines", "local__seeded__recipes.json");
 
 function makeTempDir() {
   return mkdtempSync(path.join(tmpdir(), "ptc-benchmark-"));
@@ -150,6 +158,47 @@ test("runBenchmarkSuite preserves recipe-target metadata for seeded M4 recipe ca
   );
   assert.deepEqual(run.results[0].recipe_target?.repos, ["pi-codegraph", "pi-web-tools"]);
   assert.equal(run.results[1].recipe_target?.output_contract.max_items, 5);
+});
+
+test("seeded recipe baseline fixture matches deterministic recipe-only benchmark output", async () => {
+  const baseline = readBenchmarkRun(seededRecipeBaselinePath);
+  const generated = await runBenchmarkSuite({
+    provider: "local",
+    model: "seeded",
+    evalsPath: seededEvalsPath,
+    caseIds: [...seededRecipeCaseIds],
+    timestamp: baseline.generated_at,
+  });
+
+  assert.deepEqual(baseline, generated);
+  assert.equal(baseline.summary.total_cases, seededRecipeCaseIds.length);
+  assert.deepEqual(
+    baseline.results.map((record: { result: { case_id: string } }) => record.result.case_id),
+    [...seededRecipeCaseIds]
+  );
+});
+
+test("seeded recipe baseline fixture stays comparable through benchmark runner helpers", async () => {
+  const baseline = readBenchmarkRun(seededRecipeBaselinePath);
+  const rerun = await runBenchmarkSuite({
+    provider: "local",
+    model: "seeded",
+    evalsPath: seededEvalsPath,
+    caseIds: [...seededRecipeCaseIds],
+    timestamp: baseline.generated_at,
+    baselinePath: seededRecipeBaselinePath,
+  });
+
+  assert.deepEqual(rerun.comparison, {
+    baseline_path: seededRecipeBaselinePath,
+    regressions: [],
+  });
+
+  const tempDir = makeTempDir();
+  const writtenPath = path.join(tempDir, "recipe-results.json");
+  writeBenchmarkRun(writtenPath, rerun);
+
+  assert.deepEqual(readBenchmarkRun(writtenPath), rerun);
 });
 
 test("compareBenchmarkRuns reports routing and recovery regressions deterministically", () => {
@@ -370,7 +419,11 @@ test("deterministic benchmark executor derives recovery hints from eval rules", 
   assert.equal(observation.observed_first_path, "code_execution");
   assert.equal(observation.recovery_attempted, true);
   assert.equal(observation.failure_class, "async-wrapper-iterated");
-  assert.deepEqual(JSON.parse(observation.output), {
+  const output = observation.output;
+  if (typeof output !== "string") {
+    assert.fail("expected deterministic benchmark executor to return JSON output");
+  }
+  assert.deepEqual(JSON.parse(output), {
     case_id: "recovery-async-wrapper-iterated",
     provider: "local",
     model: "seeded",

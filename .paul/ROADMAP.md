@@ -6,22 +6,22 @@ Brownfield PALS adoption for `pi-ptc-next`, focused on hashline-native runtime i
 ## Current Milestone
 **Milestone 13 — Ecosystem Examples and Recipes** (0.12.0)
 Status: 🚧 In Progress
-Phases: 1 of 3 complete
+Phases: 2 of 3 complete
 | Phase | Name | Plans | Status | Completed |
 |-------|------|-------|--------|-----------|
 | 33 | Recipe Targets and Example Contracts | 1/1 | ✅ Complete | 2026-03-26 |
-| 34 | Cross-Repo Recipes and Benchmark Fixtures | TBD | Not started | - |
-| 35 | Proof and Ecosystem Documentation | TBD | Not started | - |
+| 34 | Cross-Repo Recipes and Benchmark Fixtures | 1/1 | ✅ Complete | 2026-03-26 |
+| 35 | Proof and Ecosystem Documentation | TBD | Ready to plan | - |
 ### Phase 33: Recipe Targets and Example Contracts
 Focus: Define adjacent-repo recipe targets, compact example-contract expectations, and benchmark-style constraints for ecosystem composition work derived from the M4 build map.
 Plans: 1/1 complete — see `.paul/phases/33-recipe-targets-and-example-contracts/33-01-SUMMARY.md`
 ### Phase 34: Cross-Repo Recipes and Benchmark Fixtures
 Focus: Add concrete recipe artifacts and small benchmark-style examples for graph, web, and anchored-file workflows that keep large intermediate results local.
-Plans: TBD (defined during /paul:plan)
+Plans: 1/1 complete — see `.paul/phases/34-cross-repo-recipes-and-benchmark-fixtures/34-01-SUMMARY.md`
 ### Phase 35: Proof and Ecosystem Documentation
 Focus: Finalize user-facing docs and focused proof that at least one real example per adjacent repo composes cleanly through PTC without turning it into domain-specific logic.
 Plans: TBD (defined during /paul:plan)
-Next: /paul:plan for Phase 34.
+Next: Run `/paul:plan` for Phase 35.
 ## Completed Milestones
 <details>
 <summary>Milestone 12 — High-Level Orchestration Helpers (0.11.0) - 2026-03-26 (3 phases)</summary>
@@ -165,4 +165,4 @@ Suggested implementation branch from project docs:
 - `feat/hashline-native-interop`
 
 ---
-*Last updated: 2026-03-26 after Phase 33 completion*
+*Last updated: 2026-03-26 after Phase 34 plan creation*

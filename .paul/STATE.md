@@ -4,17 +4,17 @@
 See: `.paul/PROJECT.md`
 
 **Core value:** `pi-ptc-next` should execute the same active Pi tool implementations that the user sees in chat.
-**Current focus:** Phase 33 is unified and transitioned; Phase 34 is ready to plan.
+**Current focus:** Phase 35 planning is next; Phase 34 is complete.
 ## Current Position
 Milestone: Milestone 13 — Ecosystem Examples and Recipes
-Phase: 34 of 35 (Cross-Repo Recipes and Benchmark Fixtures)
+Phase: 35 of 35 (Proof and Ecosystem Documentation) — Ready to plan
 Plan: Not started
-Status: Ready to plan
-Last activity: 2026-03-26 13:36:13 EDT — Completed Phase 33 and transitioned to Phase 34
+Status: Ready for next PLAN
+Last activity: 2026-03-26 14:56:33 EDT — Completed Phase 34 transition commit and moved to Phase 35 planning
 Progress:
-- Milestone 13 — Ecosystem Examples and Recipes: [███░░░░░░░] 33%
-- Phase 34 — Cross-Repo Recipes and Benchmark Fixtures: [░░░░░░░░░░] 0%
+- Milestone 13 — Ecosystem Examples and Recipes: [███████░░░] 67%
 - Phase 35 — Proof and Ecosystem Documentation: [░░░░░░░░░░] 0%
+- Phase 34 — Cross-Repo Recipes and Benchmark Fixtures: [██████████] 100% ✓
 - Phase 33 — Recipe Targets and Example Contracts: [██████████] 100% ✓
 - Milestone 12 — High-Level Orchestration Helpers: [██████████] 100% ✓
 - Phase 32 — Proof and Ecosystem Docs: [██████████] 100% ✓
@@ -41,7 +41,7 @@ Progress:
 Current loop state:
 ```text
 PLAN ──▶ APPLY ──▶ UNIFY
-  ✓        ✓        ✓     [Loop complete - ready for next PLAN]
+  ○        ○        ○     [Ready for new PLAN]
 ```
 
 ## Accumulated Context
@@ -77,28 +77,32 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - 2026-03-26: Task 3 retry corrected an expected recipe workflow string in `test/benchmark-runner.test.ts`; no runtime/product contract change was required
 - Phase 33 kept the first M4 slice additive by introducing optional `recipe_target` eval metadata, benchmark passthrough, and four deterministic seeded recipe cases instead of a broader recipe DSL
 - The touched Phase 33 benchmark/eval tests now use import-based syntax and `process.cwd()` path resolution so the modified files pass targeted TypeScript diagnostics without changing package-wide module mode
+- Phase 34 keeps cross-repo recipe artifacts under `.pi/evals/ptc/recipes/` plus a deterministic recipe-only benchmark baseline at `.pi/evals/ptc/baselines/local__seeded__recipes.json`, without changing runtime/helper/doc surfaces
+- Because `.pi/` is gitignored in this fork, Phase 34 proof for recipe artifacts relies on direct file existence/content checks plus focused eval/benchmark tests instead of git diff/status alone
+- Phase 34 kept the planned scope additive even though the focused test edits landed early during APPLY to lock artifact and baseline alignment coherently
 
 ### Deferred Issues
 - Bridge teardown when pi adds getToolExecutor()
 - `src/python-runtime/runtime.py` is now a significant debt hotspot at 656 lines after Phases 30-31 helper additions; future changes should avoid casual growth without justification
 - Existing docs/test hotspots remain in `README.md` (821 lines), `src/index.ts` (423 lines), and `test/index.test.ts` (1219 lines); future proof/docs work should keep using focused companion files or extract sections before growing those anchors further
+- Full-suite verification still includes the unrelated failing `test/hashline-real-interop.mjs`; Phase 34 kept the failure count unchanged while focused eval/benchmark proof passed
 
 ### Git State
-- Last committed checkpoint: `feat(33-recipe-targets-and-example-contracts): add deterministic M4 recipe targets`
+- Last committed checkpoint: latest Phase 34 transition commit on `feat/hashline-native-interop`
 - Branch: `feat/hashline-native-interop`
-- Phase 33 closure commit: latest Phase 33 closure commit on `feat/hashline-native-interop`
+- Phase 34 closure commit: latest Phase 34 closure commit on `feat/hashline-native-interop`
 - Feature branches merged: none (git workflow mode: none)
 - Unrelated local artifact still present: `.codegraph/`
 
 ## Session Continuity
-Last session: 2026-03-26 13:36:13 EDT
-Stopped at: Phase 33 complete, ready to plan Phase 34
-Next action: /paul:plan for Phase 34
-Resume file: .paul/phases/33-recipe-targets-and-example-contracts/33-01-SUMMARY.md
+Last session: 2026-03-26 14:56:33 EDT
+Stopped at: Phase 34 complete, transition committed, ready to plan Phase 35
+Next action: Run /paul:plan for Phase 35
+Resume file: .paul/ROADMAP.md
 Resume context:
-- Phase 33 added additive `recipe_target` eval metadata, benchmark-record passthrough, four deterministic M4 recipe cases, and focused proof in the benchmark/eval suites
-- Full verification is green at `135` passing / `0` failing, up from the Phase 32 baseline of `132` passing / `0` failing
-- Dependency audit remains unchanged at `0 critical / 2 high / 2 moderate / 1 low`, and Phase 35 still owns user-facing recipe docs/guidance updates
+- Phase 34 is closed with summary `.paul/phases/34-cross-repo-recipes-and-benchmark-fixtures/34-01-SUMMARY.md`
+- Concrete recipe artifacts and the deterministic recipe-only baseline now exist as the material that Phase 35 should document and prove
+- Keep the next phase focused on user-facing docs and ecosystem proof, not on reopening runtime/helper semantics or expanding the recipe artifact surface
 
 ---
-*STATE.md — Updated after every significant action (last updated: 2026-03-26 13:39:29 EDT)*
+*STATE.md — Updated after every significant action (last updated: 2026-03-26 14:56:33 EDT)*

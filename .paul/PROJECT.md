@@ -47,9 +47,10 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 - [x] Added bounded Python reduction and output-budget helpers `ptc.reduce_tool(...)` / `ptc.fit_output(...)` aligned to the session output cap, with focused execution proof — Phase 31
 - [x] Added execution-level ecosystem proof plus README/tool-description guidance for `ptc.batch_tool(...)`, `ptc.first_success(...)`, `ptc.reduce_tool(...)`, and `ptc.fit_output(...)`, including compact hashline/codegraph/web composition examples — Phase 32
 ### Active (In Progress)
-- [ ] Add concrete cross-repo recipe artifacts and small benchmark-style examples for graph, web, anchored-file, and mixed evidence workflows — Phase 34
-### Planned (Next)
 - [ ] Finalize user-facing docs and focused ecosystem proof for the recipe workflow corpus once the concrete fixtures land — Phase 35
+### Validated (Shipped)
+- [x] Added concrete cross-repo recipe artifacts plus a deterministic recipe-only benchmark baseline for graph, web, hashline, and mixed evidence workflows — Phase 34
+### Planned (Next)
 ### Out of Scope
 - [ ] Long-term IR refactors during the early interop milestones
 - [ ] Broad helper ergonomics changes beyond what is required for trustworthy structured interop
@@ -161,4 +162,4 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 
 ---
 *PROJECT.md — Updated when requirements or context change*
-*Last updated: 2026-03-26 after Phase 33 completion*
+*Last updated: 2026-03-26 after Phase 34 completion*

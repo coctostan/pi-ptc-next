@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { parseEvalCase, validateEvalCase } from "../dist/eval-cases.js";
 
@@ -23,9 +23,14 @@ const recipeCaseFiles = [
   "recipe-hashline-anomaly-summary.json",
   "recipe-web-answer-comparison.json",
 ] as const;
+const recipeArtifactsDir = path.resolve(process.cwd(), ".pi", "evals", "ptc", "recipes");
 
 function readCase(fileName: string) {
   return JSON.parse(readFileSync(path.join(casesDir, fileName), "utf8"));
+}
+
+function readRecipeArtifact(workflow: string) {
+  return readFileSync(path.join(recipeArtifactsDir, `${workflow}.py`), "utf8");
 }
 
 test("seeded PTC eval case files exist for routing, recovery, and recipe buckets", () => {
@@ -53,6 +58,33 @@ test("seeded recipe cases expose compact recipe-target metadata for M4 workflows
     assert.equal(parsed.recipe_target.workflow.length > 0, true);
     assert.equal(parsed.recipe_target.output_contract.format, "json");
     assert.equal(parsed.recipe_target.output_contract.max_items > 0, true);
+  }
+});
+
+test("seeded recipe cases map workflow metadata to concrete internal recipe artifacts", () => {
+  for (const fileName of recipeCaseFiles) {
+    const parsed = parseEvalCase(readCase(fileName), fileName);
+
+    assert.ok(parsed.recipe_target);
+    const workflow = parsed.recipe_target.workflow;
+    const artifactPath = path.join(recipeArtifactsDir, `${workflow}.py`);
+
+    assert.equal(path.basename(artifactPath, ".py"), workflow);
+    assert.equal(existsSync(artifactPath), true);
+  }
+});
+
+test("seeded recipe artifacts use bounded helper patterns before the final compact return", () => {
+  for (const fileName of recipeCaseFiles) {
+    const parsed = parseEvalCase(readCase(fileName), fileName);
+
+    assert.ok(parsed.recipe_target);
+    const artifact = readRecipeArtifact(parsed.recipe_target.workflow);
+
+    assert.match(artifact, /return ptc\.fit_output\(/);
+    assert.match(artifact, /ptc\.(batch_tool|reduce_tool|first_success|extract_handles|first_handle|list_callable_tools)\(/);
+    assert.doesNotMatch(artifact, /asyncio\.run\(/);
+    assert.doesNotMatch(artifact, /_rpc_call\(/);
   }
 });
 
