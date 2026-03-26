@@ -11,7 +11,7 @@ Phases: 2 of 3 complete
 |-------|------|-------|--------|-----------|
 | 33 | Recipe Targets and Example Contracts | 1/1 | ✅ Complete | 2026-03-26 |
 | 34 | Cross-Repo Recipes and Benchmark Fixtures | 1/1 | ✅ Complete | 2026-03-26 |
-| 35 | Proof and Ecosystem Documentation | TBD | Ready to plan | - |
+| 35 | Proof and Ecosystem Documentation | 1/TBD | Planning | - |
 ### Phase 33: Recipe Targets and Example Contracts
 Focus: Define adjacent-repo recipe targets, compact example-contract expectations, and benchmark-style constraints for ecosystem composition work derived from the M4 build map.
 Plans: 1/1 complete — see `.paul/phases/33-recipe-targets-and-example-contracts/33-01-SUMMARY.md`

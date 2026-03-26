@@ -4,13 +4,13 @@
 See: `.paul/PROJECT.md`
 
 **Core value:** `pi-ptc-next` should execute the same active Pi tool implementations that the user sees in chat.
-**Current focus:** Phase 35 planning is next; Phase 34 is complete.
+**Current focus:** Phase 35 APPLY complete — ready for UNIFY.
 ## Current Position
 Milestone: Milestone 13 — Ecosystem Examples and Recipes
-Phase: 35 of 35 (Proof and Ecosystem Documentation) — Ready to plan
-Plan: Not started
-Status: Ready for next PLAN
-Last activity: 2026-03-26 14:56:33 EDT — Completed Phase 34 transition commit and moved to Phase 35 planning
+Phase: 35 of 35 (Proof and Ecosystem Documentation) — APPLY complete
+Plan: 35-01 executed, all tasks PASS
+Status: APPLY complete, ready for UNIFY
+Last activity: 2026-03-26 — Executed 35-01-PLAN.md (2 tasks, 2 PASS, 0 failures)
 Progress:
 - Milestone 13 — Ecosystem Examples and Recipes: [███████░░░] 67%
 - Phase 35 — Proof and Ecosystem Documentation: [░░░░░░░░░░] 0%
@@ -36,12 +36,10 @@ Progress:
 - Milestone 3 — Python Ergonomics and Metadata: [██████████] 100% ✓
 - Milestone 2 — Structured Results Contract: [██████████] 100% ✓
 - Milestone 1 — Active Tool Runtime Seam: [██████████] 100% ✓
-
-## Loop Position
 Current loop state:
 ```text
 PLAN ──▶ APPLY ──▶ UNIFY
-  ○        ○        ○     [Ready for new PLAN]
+  ✓        ✓        ○     [APPLY complete, ready for UNIFY]
 ```
 
 ## Accumulated Context
@@ -95,14 +93,9 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Unrelated local artifact still present: `.codegraph/`
 
 ## Session Continuity
-Last session: 2026-03-26 14:56:33 EDT
-Stopped at: Phase 34 complete, transition committed, ready to plan Phase 35
-Next action: Run /paul:plan for Phase 35
-Resume file: .paul/ROADMAP.md
-Resume context:
-- Phase 34 is closed with summary `.paul/phases/34-cross-repo-recipes-and-benchmark-fixtures/34-01-SUMMARY.md`
-- Concrete recipe artifacts and the deterministic recipe-only baseline now exist as the material that Phase 35 should document and prove
-- Keep the next phase focused on user-facing docs and ecosystem proof, not on reopening runtime/helper semantics or expanding the recipe artifact surface
-
+Last session: 2026-03-26
+Stopped at: APPLY complete for plan 35-01
+Next action: Run /paul:unify .paul/phases/35-proof-and-ecosystem-documentation/35-01-PLAN.md
+Resume file: .paul/phases/35-proof-and-ecosystem-documentation/35-01-PLAN.md
 ---
-*STATE.md — Updated after every significant action (last updated: 2026-03-26 14:56:33 EDT)*
+*STATE.md — Updated after every significant action (last updated: 2026-03-26)*

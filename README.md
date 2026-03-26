@@ -760,6 +760,37 @@ Successful `code_execution` runs also expose additive request metadata in tool r
 }
 ```
 
+### Recipe workflows
+
+Recipe workflows are bounded Python scripts that compose PTC helpers (`batch_tool`, `first_success`, `reduce_tool`, `fit_output`, etc.) to solve adjacent-repo analysis tasks. They prove that `pi-ptc-next` orchestration helpers compose into real multi-tool workflows without adding domain-specific logic to the extension itself.
+
+Current recipes live under `.pi/evals/ptc/recipes/`:
+
+| Workflow | Recipe File | Key PTC Helpers | Purpose |
+|----------|-------------|-----------------|----------|
+| graph | `graph-compact-ranking.py` | `reduce_tool`, `fit_output` | Ranked symbol-graph analysis with bounded reduction |
+| web | `web-answer-comparison.py` | `batch_tool`, `extract_handles`, `fit_output` | Web-search answer comparison with handle-aware output |
+| hashline | `hashline-anomaly-summary.py` | `batch_tool`, `fit_output` | Anchored file anomaly detection via batched read/grep |
+| mixed | `codegraph-web-evidence-merge.py` | `first_success`, `extract_handles`, `fit_output` | Cross-source evidence merge (codegraph + web) |
+
+Each recipe uses `ptc.fit_output(...)` as the final bounded return step so large intermediate tool results stay local to Python.
+
+Run the recipe benchmark subset using the same CLI documented above:
+
+```bash
+node dist/run-benchmarks.js \
+  --provider local \
+  --model seeded \
+  --evals-path .pi/evals/ptc \
+  --baseline .pi/evals/ptc/baselines/local__seeded__recipes.json
+```
+
+The deterministic recipe-only baseline at `.pi/evals/ptc/baselines/local__seeded__recipes.json` covers all four workflow types.
+
+To add a new recipe:
+1. Create a seeded eval case with `recipe_target` metadata under `.pi/evals/ptc/cases/`
+2. Add the `.py` recipe artifact under `.pi/evals/ptc/recipes/` using only PTC helpers (no domain-specific imports)
+3. Run `node --test test/eval-cases.test.ts test/recipe-ecosystem-proof.test.ts` to verify alignment
 ## Further reading
 
 - Technical findings and implementation notes: [`docs/PTC-RESEARCH.md`](docs/PTC-RESEARCH.md)
