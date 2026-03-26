@@ -4,18 +4,22 @@
 See: `.paul/PROJECT.md`
 
 **Core value:** `pi-ptc-next` should execute the same active Pi tool implementations that the user sees in chat.
-**Current focus:** Milestone 12 is complete; define the next milestone from a clean closed baseline.
+**Current focus:** Milestone 13 is open; plan the first ecosystem-recipes phase from the M4 build-map requirements.
 ## Current Position
-Milestone: Milestone 12 — High-Level Orchestration Helpers
-Phase: 32 of 32 (Proof and Ecosystem Docs) — Complete
-Plan: 32-01 UNIFY complete
-Status: Milestone 12 complete, ready for the next milestone
-Last activity: 2026-03-26 13:01:49 EDT — Unified Phase 32 and closed Milestone 12
+Milestone: Milestone 13 — Ecosystem Examples and Recipes
+Phase: 33 of 35 (Recipe Targets and Example Contracts)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-03-26 13:14:47 EDT — Created Milestone 13 from the M4 ecosystem-recipes build map
 Progress:
+- Milestone 13 — Ecosystem Examples and Recipes: [░░░░░░░░░░] 0%
+- Phase 33 — Recipe Targets and Example Contracts: [░░░░░░░░░░] 0%
+- Phase 34 — Cross-Repo Recipes and Benchmark Fixtures: [░░░░░░░░░░] 0%
+- Phase 35 — Proof and Ecosystem Documentation: [░░░░░░░░░░] 0%
 - Milestone 12 — High-Level Orchestration Helpers: [██████████] 100% ✓
-- Phase 30 — Core Orchestration Primitives: [██████████] 100% ✓
-- Phase 31 — Bounded Reduction and Output-Budget Helpers: [██████████] 100% ✓
 - Phase 32 — Proof and Ecosystem Docs: [██████████] 100% ✓
+- Phase 31 — Bounded Reduction and Output-Budget Helpers: [██████████] 100% ✓
+- Phase 30 — Core Orchestration Primitives: [██████████] 100% ✓
 - Milestone 11 — Result-Kind and Tool Introspection Helpers: [██████████] 100% ✓
 - Phase 29 — Proof and Docs: [██████████] 100% ✓
 - Phase 28 — Python Tool Introspection: [██████████] 100% ✓
@@ -37,7 +41,7 @@ Progress:
 Current loop state:
 ```text
 PLAN ──▶ APPLY ──▶ UNIFY
-  ✓        ✓        ✓     [Loop complete - milestone closed]
+  ○        ○        ○     [Ready for first PLAN]
 ```
 
 ## Accumulated Context
@@ -77,20 +81,20 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Existing docs/test hotspots remain in `README.md` (821 lines), `src/index.ts` (423 lines), and `test/index.test.ts` (1219 lines); future proof/docs work should keep using focused companion files or extract sections before growing those anchors further
 
 ### Git State
-- Last committed phase closure: `feat(31-bounded-reduction-and-output-budget-helpers): add reduction and fit-output helpers`
+- Last committed checkpoint: `feat(milestones-9-12): checkpoint shipped helpers, docs, and proof`
 - Branch: `feat/hashline-native-interop`
-- Phase 32 closure commit: pending (unify completed, but unrelated local worktree changes remain outside the phase scope)
+- Worktree: clean immediately before Milestone 13 creation
 - Feature branches merged: none (git workflow mode: none)
 
 ## Session Continuity
-Last session: 2026-03-26 13:01:49 EDT
-Stopped at: Milestone 12 complete after Phase 32 UNIFY
-Next action: /paul:milestone
+Last session: 2026-03-26 13:14:47 EDT
+Stopped at: Milestone 13 created, ready to plan Phase 33
+Next action: /paul:plan for Phase 33
 Resume file: .paul/ROADMAP.md
 Resume context:
-- Milestone 12 is fully closed: orchestration helpers, reduction/output fitting, ecosystem proof, and user-facing docs are aligned
-- Verification is green at `132` passing / `0` failing, and the audit baseline remains unchanged at `0 critical / 2 high / 2 moderate / 1 low`
-- Local phase-closure commit remains pending because unrelated working-tree changes were present during UNIFY
+- Milestone 13 now tracks the M4 ecosystem-examples work from `~/pi/workspace/thinkingspace/plans/2026-03-24-agent-ecosystem/pi-ptc-next.md`
+- The milestone starts with Phase 33 to define recipe targets and example contracts before implementation and final proof/docs
+- Recent Milestones 9-12 work is checkpointed in `c020a08`, and the worktree was clean before milestone creation
 
 ---
-*STATE.md — Updated after every significant action (last updated: 2026-03-26 13:01:49 EDT)*
+*STATE.md — Updated after every significant action (last updated: 2026-03-26 13:14:47 EDT)*

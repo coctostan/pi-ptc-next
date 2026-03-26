@@ -4,25 +4,38 @@
 Brownfield PALS adoption for `pi-ptc-next`, focused on hashline-native runtime interop and structured Python integration.
 
 ## Current Milestone
-**Milestone 12 — High-Level Orchestration Helpers** (0.11.0)
-Status: ✅ Complete
-Phases: 3 of 3 complete
+**Milestone 13 — Ecosystem Examples and Recipes** (0.12.0)
+Status: 🚧 In Progress
+Phases: 0 of 3 complete
 | Phase | Name | Plans | Status | Completed |
 |-------|------|-------|--------|-----------|
-| 30 | Core Orchestration Primitives | 1/1 | ✅ Complete | 2026-03-26 |
-| 31 | Bounded Reduction and Output-Budget Helpers | 1/1 | ✅ Complete | 2026-03-26 |
-| 32 | Proof and Ecosystem Docs | 1/1 | ✅ Complete | 2026-03-26 |
-### Phase 30: Core Orchestration Primitives
-Focus: Add generic `ptc.batch_tool(...)` and `ptc.first_success(...)` helpers that reduce repeated multi-tool invocation boilerplate while preserving provider-agnostic behavior.
-Plans: 1/1 complete — see `.paul/phases/30-core-orchestration-primitives/30-01-SUMMARY.md`
-### Phase 31: Bounded Reduction and Output-Budget Helpers
-Focus: Add bounded reducers and output-budget helpers that keep large intermediate results local and return compact structured outcomes without introducing broader concurrency APIs.
-Plans: 1/1 complete — see `.paul/phases/31-bounded-reduction-and-output-budget-helpers/31-01-SUMMARY.md`
-### Phase 32: Proof and Ecosystem Docs
-Focus: Add focused proof plus docs/examples for composing hashline, codegraph, and web-tool style flows with the new orchestration helpers.
-Plans: 1/1 complete — see `.paul/phases/32-proof-and-ecosystem-docs/32-01-SUMMARY.md`
-Next: Define the next milestone when ready.
+| 33 | Recipe Targets and Example Contracts | TBD | Not started | - |
+| 34 | Cross-Repo Recipes and Benchmark Fixtures | TBD | Not started | - |
+| 35 | Proof and Ecosystem Documentation | TBD | Not started | - |
+### Phase 33: Recipe Targets and Example Contracts
+Focus: Define adjacent-repo recipe targets, compact example-contract expectations, and benchmark-style constraints for ecosystem composition work derived from the M4 build map.
+Plans: TBD (defined during /paul:plan)
+### Phase 34: Cross-Repo Recipes and Benchmark Fixtures
+Focus: Add concrete recipe artifacts and small benchmark-style examples for graph, web, and anchored-file workflows that keep large intermediate results local.
+Plans: TBD (defined during /paul:plan)
+### Phase 35: Proof and Ecosystem Documentation
+Focus: Finalize user-facing docs and focused proof that at least one real example per adjacent repo composes cleanly through PTC without turning it into domain-specific logic.
+Plans: TBD (defined during /paul:plan)
+Next: /paul:plan for Phase 33.
 ## Completed Milestones
+<details>
+<summary>Milestone 12 — High-Level Orchestration Helpers (0.11.0) - 2026-03-26 (3 phases)</summary>
+
+| Phase | Name | Plans | Completed |
+|-------|------|-------|-----------|
+| 30 | Core Orchestration Primitives | 1/1 | 2026-03-26 |
+| 31 | Bounded Reduction and Output-Budget Helpers | 1/1 | 2026-03-26 |
+| 32 | Proof and Ecosystem Docs | 1/1 | 2026-03-26 |
+Notes:
+- Milestone 12 added `ptc.batch_tool(...)`, `ptc.first_success(...)`, `ptc.reduce_tool(...)`, and `ptc.fit_output(...)` as bounded orchestration/output-budget helpers for Python flows.
+- Focused runtime proof plus README and generated `code_execution` guidance now cover compact hashline, codegraph, and web-tool composition examples for the helper surface.
+
+</details>
 <details>
 <summary>Milestone 11 — Result-Kind and Tool Introspection Helpers (0.10.0) - 2026-03-26 (3 phases)</summary>
 
@@ -152,4 +165,4 @@ Suggested implementation branch from project docs:
 - `feat/hashline-native-interop`
 
 ---
-*Last updated: 2026-03-26 after Phase 32 completion*
+*Last updated: 2026-03-26 after Milestone 13 creation*
