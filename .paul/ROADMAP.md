@@ -4,7 +4,24 @@
 Brownfield PALS adoption for `pi-ptc-next`, focused on hashline-native runtime interop and structured Python integration.
 
 ## Current Milestone
-_(No active milestone — Milestone 13 is complete. Define next milestone via `/paul:milestone`.)_
+**Milestone 14 — Live Tool Audit and Stress Testing** (0.13.0)
+Status: 🚧 In Progress
+Phases: 0 of 3 complete
+| Phase | Name | Plans | Status | Completed |
+|-------|------|-------|--------|-----------|
+| 36 | Systematic Functionality Audit | TBD | Not started | - |
+| 37 | Stress and Edge Case Testing | TBD | Not started | - |
+| 38 | Composition Patterns and Audit Scorecard | TBD | Not started | - |
+### Phase 36: Systematic Functionality Audit
+Focus: Test each core wrapper (read, grep, find, ls, glob) and each ptc.* helper individually with real tool calls against the live repo. Rate each as working / partial / broken. Also test RPC bridge, ptcValue passthrough, and error boundaries.
+Plans: TBD (defined during /paul:plan)
+### Phase 37: Stress and Edge Case Testing
+Focus: Push boundaries on large file reads, high concurrency, missing/unavailable tool handling, malformed inputs, output budget limits, empty/null results, timeout behavior, and error recovery paths.
+Plans: TBD (defined during /paul:plan)
+### Phase 38: Composition Patterns and Audit Scorecard
+Focus: Chain helpers into realistic multi-tool workflows, run recipe-style patterns live, and produce the final audit scorecard with per-capability ratings, gap analysis, and recommended next milestone scope.
+Plans: TBD (defined during /paul:plan)
+Next: Run `/paul:plan` for Phase 36.
 ## Completed Milestones
 <details>
 <summary>Milestone 13 — Ecosystem Examples and Recipes (0.12.0) - 2026-03-26 (3 phases)</summary>
@@ -161,4 +178,4 @@ Suggested implementation branch from project docs:
 - `feat/hashline-native-interop`
 
 ---
-*Last updated: 2026-03-26 after Phase 34 plan creation*
+*Last updated: 2026-03-26 after Milestone 14 creation*
