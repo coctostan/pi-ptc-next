@@ -16,6 +16,37 @@ Completed milestone log for this project.
 | Milestone 11 — Result-Kind and Tool Introspection Helpers | 2026-03-26 | approximately 1 hour 20 minutes | 3 phases, 3 plans |
 | Milestone 12 — High-Level Orchestration Helpers | 2026-03-26 | approximately 2 hours | 3 phases, 3 plans |
 | Milestone 13 — Ecosystem Examples and Recipes | 2026-03-26 | ~2 hours | 3 phases, 3 plans |
+| Milestone 14 — Live Tool Audit and Stress Testing | 2026-03-26 | ~1.5 hours | 3 phases, 3 plans |
+
+---
+
+## ✅ Milestone 14 — Live Tool Audit and Stress Testing (0.13.0)
+
+**Completed:** 2026-03-26
+**Duration:** ~1.5 hours
+
+### Stats
+
+| Metric | Value |
+|--------|-------|
+| Phases | 3 |
+| Plans | 3 |
+| Tests added | 51 |
+| Files changed | 6 |
+
+### Key Accomplishments
+
+- Systematic live-tool audit of all 21 Python helpers with real tool calls — 18 working, 3 broken (shared glob/limit bug)
+- Pipeline audit of 8 capabilities: RPC bridge, ptcValue passthrough, error handling — 6 working, 2 partial
+- Stress testing under concurrency (10+ parallel), large files (1000 lines), output budget pressure, and error chains — all pass
+- 7 multi-tool composition workflows proving helpers chain correctly end-to-end
+- Final consolidated audit report with per-capability ratings, gap analysis, and remediation priorities
+
+### Key Decisions
+
+- Document bugs as assert.rejects tests rather than skipping — keeps audit honest and repeatable
+- batch_tool fail-fast behavior documented as design choice, not bug — models should use try/except
+- Audit is observation-only: no runtime source fixes during the milestone
 
 ---
 
