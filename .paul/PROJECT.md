@@ -47,12 +47,12 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 - [x] Added bounded Python reduction and output-budget helpers `ptc.reduce_tool(...)` / `ptc.fit_output(...)` aligned to the session output cap, with focused execution proof — Phase 31
 - [x] Added execution-level ecosystem proof plus README/tool-description guidance for `ptc.batch_tool(...)`, `ptc.first_success(...)`, `ptc.reduce_tool(...)`, and `ptc.fit_output(...)`, including compact hashline/codegraph/web composition examples — Phase 32
 ### Active (In Progress)
-- [ ] Stress and edge case testing for all Python helpers and pipeline capabilities — Phase 37
-- [ ] Composition patterns and final audit scorecard — Phase 38
+_(No active requirements — Milestone 14 complete)_
 ### Validated (Shipped)
-- [x] Systematic live-tool audit of all 21 Python helpers and 8 pipeline capabilities with real tool calls, producing per-capability ratings: 83% working, 7% partial, 10% broken (3 helpers share glob/limit bug) — Phase 36
-- [x] Added user-facing recipe workflow documentation and focused ecosystem composition proof validating all four workflow types compose through PTC helpers without domain-specific imports — Phase 35
-- [x] Added concrete cross-repo recipe artifacts plus a deterministic recipe-only benchmark baseline for graph, web, hashline, and mixed evidence workflows — Phase 34
+- [x] Full live audit: 51 tests across 3 phases proving 94% of helpers work, with stress testing (concurrency, large files, output budgets) and 7 multi-tool composition workflows all passing. 1 P0 bug found (glob/limit), 2 P1, 2 P2 issues documented — Milestone 14
+- [x] Systematic live-tool audit of all 21 Python helpers and 8 pipeline capabilities — Phase 36
+- [x] Added user-facing recipe workflow documentation and ecosystem composition proof — Phase 35
+- [x] Added concrete cross-repo recipe artifacts plus deterministic benchmark baseline — Phase 34
 ### Planned (Next)
 ### Out of Scope
 - [ ] Long-term IR refactors during the early interop milestones
@@ -165,4 +165,4 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 
 ---
 *PROJECT.md — Updated when requirements or context change*
-*Last updated: 2026-03-26 after Phase 36 completion*
+*Last updated: 2026-03-26 after Phase 38 completion (Milestone 14 complete)*

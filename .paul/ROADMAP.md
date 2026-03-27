@@ -4,25 +4,22 @@
 Brownfield PALS adoption for `pi-ptc-next`, focused on hashline-native runtime interop and structured Python integration.
 
 ## Current Milestone
-**Milestone 14 — Live Tool Audit and Stress Testing** (0.13.0)
-Status: 🚧 In Progress
-Phases: 2 of 3 complete
-| Phase | Name | Plans | Status | Completed |
-|-------|------|-------|--------|-----------|
-| 36 | Systematic Functionality Audit | 1/1 | ✅ Complete | 2026-03-26 |
-| 37 | Stress and Edge Case Testing | 1/1 | ✅ Complete | 2026-03-26 |
-| 38 | Composition Patterns and Audit Scorecard | TBD | Not started | - |
-### Phase 36: Systematic Functionality Audit
-Focus: Test each core wrapper (read, grep, find, ls, glob) and each ptc.* helper individually with real tool calls against the live repo. Rate each as working / partial / broken. Also test RPC bridge, ptcValue passthrough, and error boundaries.
-Plans: 1/1 complete — see `.paul/phases/36-systematic-functionality-audit/36-01-SUMMARY.md`
-### Phase 37: Stress and Edge Case Testing
-Focus: Push boundaries on large file reads, high concurrency, missing/unavailable tool handling, malformed inputs, output budget limits, empty/null results, timeout behavior, and error recovery paths.
-Plans: 1/1 complete — see `.paul/phases/37-stress-and-edge-case-testing/37-01-SUMMARY.md`
-### Phase 38: Composition Patterns and Audit Scorecard
-Focus: Chain helpers into realistic multi-tool workflows, run recipe-style patterns live, and produce the final audit scorecard with per-capability ratings, gap analysis, and recommended next milestone scope.
-Plans: TBD (defined during /paul:plan)
-Next: Run `/paul:plan` for Phase 38.
+_(No active milestone — Milestone 14 is complete. Define next milestone via `/paul:milestone`.)_
 ## Completed Milestones
+<details>
+<summary>Milestone 14 — Live Tool Audit and Stress Testing (0.13.0) - 2026-03-26 (3 phases)</summary>
+
+| Phase | Name | Plans | Completed |
+|-------|------|-------|-----------|
+| 36 | Systematic Functionality Audit | 1/1 | 2026-03-26 |
+| 37 | Stress and Edge Case Testing | 1/1 | 2026-03-26 |
+| 38 | Composition Patterns and Audit Scorecard | 1/1 | 2026-03-26 |
+Notes:
+- 51 live-tool tests added: 21 helper + 8 pipeline + 15 stress + 7 composition
+- 94% capabilities working, 1 P0 bug (glob/limit breaks find_files/find_files_abs/read_tree)
+- Final audit: `.paul/phases/38-composition-patterns-and-audit-scorecard/FINAL-AUDIT.md`
+
+</details>
 <details>
 <summary>Milestone 13 — Ecosystem Examples and Recipes (0.12.0) - 2026-03-26 (3 phases)</summary>
 

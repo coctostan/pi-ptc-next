@@ -19,3 +19,4 @@
 | 2026-03-26 | 35-proof-and-ecosystem-documentation | 152 passing / 1 failing (`node --test`; unchanged pre-existing `test/hashline-real-interop.mjs` failure) | not run separately | clean via `npm run build` | n/a | ↑ improving |
 | 2026-03-26 | 36-systematic-functionality-audit | 181 passing / 1 failing (`node --test`; unchanged pre-existing failure) | not run separately | clean via `npm run build` | n/a | ↑ improving |
 | 2026-03-26 | 37-stress-and-edge-case-testing | 196 passing / 1 failing (`node --test`; unchanged pre-existing failure) | not run separately | clean via `npm run build` | n/a | ↑ improving |
+| 2026-03-26 | 38-composition-patterns-and-audit-scorecard | 203 passing / 1 failing (`node --test`; unchanged pre-existing failure) | not run separately | clean via `npm run build` | n/a | ↑ improving |
