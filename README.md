@@ -80,6 +80,7 @@ Common auto-routing signals:
 - prompts like "compact JSON only" or "keep intermediate results out of chat"
 
 This behavior is enabled by default with `PTC_AUTO_ROUTE=true`.
+The `code_execution` tool is also surfaced through Pi prompt metadata: a one-line `promptSnippet` appears in the default `Available tools` section, and active-only `promptGuidelines` summarize when to prefer Python-backed batching versus direct tools. Auto-routing remains a conservative fallback for strong PTC-shaped prompts.
 
 ## Why this exists
 
@@ -327,6 +328,7 @@ Important runtime rules:
 - Do **not** call `_rpc_call(...)` directly; use the generated wrappers and `ptc.*` helpers
 - Prefer returning compact JSON or summaries
 - Intermediate tool results stay local unless you explicitly print or return them
+- Use the callable tool list in the `code_execution` description before adding extra introspection calls; call `ptc.list_callable_tools()` only when branching on optional tools or when a needed tool may be unavailable
 
 ## Python helpers
 
@@ -498,6 +500,7 @@ ptc: {
 ```
 
 Legacy `ptc.enabled: true` / `ptc.readOnly: true` still work, but new docs and examples prefer `ptc.callable` / `ptc.policy`.
+Custom tools may also declare Pi prompt metadata. PTC preserves `promptSnippet` and `promptGuidelines` when registering custom tools, so direct custom-tool registrations and PTC-managed custom tools expose the same prompt guidance fields.
 
 Recommended routing patterns:
 - `callers: ["direct"]` — user-facing tool that the model should call directly
@@ -671,10 +674,11 @@ This fork now implements a local/provider-agnostic equivalent of Anthropic's `al
 Important practical points:
 
 - `code_execution` is still just a tool choice from the model's perspective; nothing native in pi forces a model to use it.
-- To improve reliability, the extension now adds two layers of steering:
-  - stronger `code_execution` tool descriptions/examples
+- To improve reliability, the extension now adds three layers of steering:
+  - a Pi `promptSnippet` that makes `code_execution` visible in the default `Available tools` section
+  - active-only `promptGuidelines` for high-level routing rules
   - prompt-time auto-routing for requests that look like clear PTC fits
-- Auto-routing is deliberately conservative and avoids prompts that look like editing or implementation tasks.
+- Auto-routing is deliberately conservative, avoids prompts that look like editing or implementation tasks, and skips duplicate prompt text when Pi's `systemPromptOptions` already carry equivalent `code_execution` guidance.
 
 ### Bounded async-only recovery
 

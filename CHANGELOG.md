@@ -2,6 +2,15 @@
 
 This changelog tracks notable release-facing changes for the fork repository `pi-ptc-next` and its current publish target `pi-ptc-advanced`.
 
+## Unreleased
+
+### Added
+- `code_execution` now registers Pi prompt metadata (`promptSnippet` and active-only `promptGuidelines`) so the default system prompt exposes when to use Python-backed batching, aggregation, and compact results.
+- PTC-managed custom tools now preserve user-authored `promptSnippet` and `promptGuidelines` when registering with Pi.
+
+### Changed
+- Prompt-time auto-routing now skips duplicate routing text when Pi `systemPromptOptions` already include equivalent `code_execution` guidance. The local compatibility target remains the latest Mario-scope Pi packages from Phase 46, not a hard `@earendil-works/*` migration.
+
 ## 0.15.0 — 2026-03-27
 
 ### Added
