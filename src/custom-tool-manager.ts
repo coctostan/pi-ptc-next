@@ -11,6 +11,8 @@ function buildRegisteredTool(definition: PtcToolDefinition): PtcToolDefinition {
     name: definition.name,
     label: definition.label || definition.name,
     description: definition.description || definition.name,
+    promptSnippet: definition.promptSnippet,
+    promptGuidelines: definition.promptGuidelines,
     parameters: definition.parameters,
     execute: definition.execute,
     ptc: definition.ptc,

@@ -22,6 +22,30 @@ import { ToolRegistry } from "./tool-registry";
 import type { ExecutionDetails, PtcSettings, PtcToolDefinition, SandboxManager, ToolInfo } from "./types";
 import { debugLog, isMutationPrompt, loadSettingsFromEnv, shouldAutoRoutePromptToCodeExecution } from "./utils";
 
+const CODE_EXECUTION_PROMPT_SNIPPET =
+  "Run Python with local Pi tool calls for repo-wide analysis, batching, aggregation, and compact results.";
+
+const CODE_EXECUTION_PROMPT_GUIDELINES = [
+  "Use code_execution for repo-wide analysis, repeated lookups, grouping, ranking, counting, or other tasks with 3+ dependent tool calls.",
+  "Use direct tools instead for one-file reads, one-off grep/find calls, or small inspections.",
+  "Keep large intermediate results inside Python and return only the compact final answer the user needs.",
+  "Use the callable tool list in the code_execution description; call ptc.list_callable_tools() only when branching on optional tools or when the needed tool may be unavailable.",
+];
+
+const CODE_EXECUTION_AUTO_ROUTE_PROMPT =
+  "This request is a strong fit for code_execution. Prefer calling code_execution first and keep large intermediate results inside Python unless the user explicitly asked to see them.";
+
+interface PtcSystemPromptOptions {
+  selectedTools?: string[];
+  promptGuidelines?: string[];
+}
+
+interface PtcBeforeAgentStartEvent {
+  prompt?: string;
+  systemPrompt: string;
+  systemPromptOptions?: PtcSystemPromptOptions;
+}
+
 function renderExecutingCode(
   codeLines: string[],
   currentLine: number,
@@ -95,7 +119,7 @@ Important rules:
 ${dockerBehavior}
 Prefer these patterns:
 - Many file reads from explicit paths: ptc.read_many(paths, max_concurrency=...)
-- Find and read an entire tree: ptc.read_tree(pattern=..., path=..., max_files=..., concurrency=...)
+- Inspect ptc.list_callable_tools() before branching on optional tools; otherwise use the callable tool list below directly.
 - Bounded concurrency for arbitrary coroutines: ptc.gather_limit(coros, limit=...)
 - Relative file discovery: glob(...) or ptc.find_files(...)
 - Absolute file discovery for later read()/write(): ptc.find_files_abs(...)
@@ -119,13 +143,13 @@ Python helpers currently available in this session:
 - ptc.first_handle(value, kind=None) -> Optional[SupportedHandle]
 - ptc.json_dump(value) -> str
 - Use orchestration helpers for repeated multi-tool calls, ordered fallback logic, or bounded final-output shaping.
-- Inspect ptc.list_callable_tools() before branching on optional tools; only the current callable session surface is guaranteed.
+- Use the callable tool list below directly unless your Python code needs to branch on optional tools.
 Prefer these for string content:
 - ptc.read_text(path) always returns str (extracts raw text from structured results)
 - ptc.read_many(paths) always returns list[str]
 - ptc.read_tree(pattern) returns list[dict] where each entry["content"] is str
 Use read(path) directly when you need structured anchored data (ReadResult with .lines[].anchor).
-Callable tool set for this session: ${callable}
+Callable tool set for this session: ${callable || "(none)"}. Use this list directly unless your Python code needs to branch on optional tools.
 Example:
 entries = await ptc.read_tree(pattern="**/*.ts", path="src", max_files=1000, concurrency=6)
 return {
@@ -167,6 +191,8 @@ function buildCodeExecutionTool(
     name: "code_execution",
     label: "Code Execution",
     description: buildToolDescription(currentSettings, callableTools),
+    promptSnippet: CODE_EXECUTION_PROMPT_SNIPPET,
+    promptGuidelines: CODE_EXECUTION_PROMPT_GUIDELINES,
     parameters: Type.Object({
       code: Type.String({
         description:
@@ -242,13 +268,42 @@ function areToolListsEqual(left: string[], right: string[]): boolean {
   return left.length === right.length && left.every((value, index) => value === right[index]);
 }
 
+function textHasCodeExecutionRoutingGuidance(text: string | undefined): boolean {
+  if (!text || !/\bcode_execution\b/i.test(text)) {
+    return false;
+  }
+
+  return /repo-wide|repeated lookup|grouping|ranking|counting|3\+ dependent|large intermediate|compact|batch|aggregat/i.test(text);
+}
+
+function shouldAppendAutoRoutePrompt(
+  currentSystemPrompt: string,
+  systemPromptOptions: PtcSystemPromptOptions | undefined
+): boolean {
+  if (textHasCodeExecutionRoutingGuidance(currentSystemPrompt)) {
+    return false;
+  }
+
+  const selectedTools = systemPromptOptions?.selectedTools ?? [];
+  const promptGuidelines = systemPromptOptions?.promptGuidelines ?? [];
+  if (
+    selectedTools.includes("code_execution") &&
+    promptGuidelines.some((guideline) => textHasCodeExecutionRoutingGuidance(guideline))
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
 function applyAutoRouting(
   pi: ExtensionAPI,
   toolRegistry: ToolRegistry,
   settings: PtcSettings,
   sessionState: PtcSessionState,
   prompt: string,
-  currentSystemPrompt: string
+  currentSystemPrompt: string,
+  systemPromptOptions?: PtcSystemPromptOptions
 ): { systemPrompt?: string } | undefined {
   if (!settings.autoRoute || !shouldAutoRoutePromptToCodeExecution(prompt)) {
     return undefined;
@@ -274,10 +329,12 @@ function applyAutoRouting(
     debugLog("Auto-routed prompt to code_execution", { prompt, activeTools, nextActiveTools });
   }
 
+  if (!shouldAppendAutoRoutePrompt(currentSystemPrompt, systemPromptOptions)) {
+    return undefined;
+  }
+
   return {
-    systemPrompt:
-      `${currentSystemPrompt}\n\n` +
-      "This request is a strong fit for code_execution. Prefer calling code_execution first and keep large intermediate results inside Python unless the user explicitly asked to see them.",
+    systemPrompt: `${currentSystemPrompt}\n\n${CODE_EXECUTION_AUTO_ROUTE_PROMPT}`,
   };
 }
 
@@ -339,7 +396,7 @@ function handleBeforeAgentStart(
   toolRegistry: ToolRegistry,
   settings: PtcSettings,
   sessionState: PtcSessionState,
-  event: { prompt?: string; systemPrompt: string }
+  event: PtcBeforeAgentStartEvent
 ): { systemPrompt?: string } | undefined {
   sessionState.pendingRecoveryPrompt = null;
   sessionState.recoveryAllowed = typeof event.prompt === "string" ? !isMutationPrompt(event.prompt) : true;
@@ -349,7 +406,7 @@ function handleBeforeAgentStart(
     return undefined;
   }
 
-  return applyAutoRouting(pi, toolRegistry, settings, sessionState, event.prompt, event.systemPrompt);
+  return applyAutoRouting(pi, toolRegistry, settings, sessionState, event.prompt, event.systemPrompt, event.systemPromptOptions);
 }
 
 function handleContext(sessionState: PtcSessionState, event: { messages: Array<Record<string, unknown>> }) {

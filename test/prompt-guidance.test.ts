@@ -135,19 +135,20 @@ test("code_execution registers prompt metadata for Pi default system prompts", a
     const codeExecutionTools = harness.registered.filter((tool) => tool.name === "code_execution");
     assert.ok(codeExecutionTools.length >= 1);
     const latestCodeExecutionTool = codeExecutionTools[codeExecutionTools.length - 1];
-    assert.ok(latestCodeExecutionTool.promptSnippet);
-    assert.match(latestCodeExecutionTool.promptSnippet, /code_execution/i);
-    assert.match(latestCodeExecutionTool.promptSnippet, /repo-wide|multi-step|analysis/i);
-
-    assert.ok(Array.isArray(latestCodeExecutionTool.promptGuidelines));
-    assert.ok(latestCodeExecutionTool.promptGuidelines.length >= 2);
-    assert.ok(
-      latestCodeExecutionTool.promptGuidelines.some((guideline) => /direct tools|one-file|one-off/i.test(guideline)),
-      "promptGuidelines should preserve direct-tool boundary guidance"
+    assert.equal(
+      latestCodeExecutionTool.promptSnippet,
+      "Run Python with local Pi tool calls for repo-wide analysis, batching, aggregation, and compact results."
     );
+
+    assert.deepEqual(latestCodeExecutionTool.promptGuidelines, [
+      "Use code_execution for repo-wide analysis, repeated lookups, grouping, ranking, counting, or other tasks with 3+ dependent tool calls.",
+      "Use direct tools instead for one-file reads, one-off grep/find calls, or small inspections.",
+      "Keep large intermediate results inside Python and return only the compact final answer the user needs.",
+      "Use the callable tool list in the code_execution description; call ptc.list_callable_tools() only when branching on optional tools or when the needed tool may be unavailable.",
+    ]);
     assert.ok(
-      latestCodeExecutionTool.promptGuidelines.some((guideline) => /compact|intermediate|large/i.test(guideline)),
-      "promptGuidelines should preserve compact-output or intermediate-result guidance"
+      latestCodeExecutionTool.promptGuidelines.some((guideline) => /call ptc\.list_callable_tools\(\) only/i.test(guideline)),
+      "promptGuidelines should avoid encouraging unconditional callable-tool introspection"
     );
   } finally {
     harness.cleanup();
