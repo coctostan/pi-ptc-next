@@ -120,10 +120,14 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Full-suite verification now passes at `207` passing / `0` failing after Phase 41 APPLY; maintain this as the new baseline for subsequent milestones
 - Phase 44 removed packaged Python bytecode/cache artifacts from the tarball surface and added packed-artifact installability proof; preserve this publish-surface invariant in future release work
 
+### Fixes
+| Fix 45-02 (standard, PARTIAL): bump CI Actions `node-version` 20→22 to fix `.ts` test loader | Phase 45 side-loop | `.github/workflows/ci.yml`, `.paul/phases/45-pi-api-and-documentation-delta-audit/45-02-FIX.md`, `.paul/phases/45-pi-api-and-documentation-delta-audit/45-02-FIX-SUMMARY.md` (commit `e777394`) |
+| Fix 45-02 newly visible: CI now executes 207 tests (was 0); 26 fail across 3 pre-existing classes — (1) ungitignored `.pi/evals/ptc/baselines` + `recipes/*.py`, (2) missing `pi-hashline-readmap`, (3) missing `ast-grep`/`sg` | Phase 45 / Phase 48 candidate | Routing decision pending: follow-on `/paul:fix` vs defer to Phase 48 vs accept-as-is |
+
 ### Git State
 - Last committed checkpoint: `6fef3f4` (`docs(phase-45): pi compat audit (45-01)`) on `feat/hashline-native-interop`
 - Branch: `feat/hashline-native-interop` (pushed to origin)
-- Open PR: [#1](https://github.com/coctostan/pi-ptc-next/pull/1) `feat/hashline-native-interop -> main` (mergeable; CI `Verify release baseline` FAILURE due to pre-existing Actions Node 20.20.2 `.ts` runner issue)
+- Open PR: [#1](https://github.com/coctostan/pi-ptc-next/pull/1) `feat/hashline-native-interop -> main` (mergeable; CI `Verify release baseline` still FAILURE after Fix 45-02 because the Node-22 bump revealed 26 pre-existing CI fixture/env failures — see Fixes table)
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; validate tag/version alignment before any publish action
 ## Session Continuity
 Last session: 2026-05-11
