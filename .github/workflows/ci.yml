@@ -25,10 +25,11 @@ jobs:
       - name: Install ast-grep CLI
         run: npm install -g @ast-grep/cli
 
-      - name: Install pi-hashline-readmap
+      - name: Clone pi-hashline-readmap as sibling repo
         run: |
-          npm install -g pi-hashline-readmap@^0.8.6
-          echo "PI_HASHLINE_READMAP_ROOT=$(npm root -g)/pi-hashline-readmap" >> "$GITHUB_ENV"
+          git clone --depth 1 --branch v0.8.6 https://github.com/coctostan/pi-hashline-readmap.git ../pi-hashline-readmap \
+            || git clone --depth 1 https://github.com/coctostan/pi-hashline-readmap.git ../pi-hashline-readmap
+          echo "PI_HASHLINE_READMAP_ROOT=$GITHUB_WORKSPACE/../pi-hashline-readmap" >> "$GITHUB_ENV"
 
       - name: Run repo verification suite
         run: npm run verify:ci
