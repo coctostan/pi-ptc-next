@@ -10,14 +10,14 @@ Phases: 0 of 4 complete
 
 | Phase | Name | Plans | Status | Completed |
 |-------|------|-------|--------|-----------|
-| 45 | Pi API and Documentation Delta Audit | TBD | Not started | - |
+| 45 | Pi API and Documentation Delta Audit | 1/1 | Planning complete | - |
 | 46 | Extension Runtime Compatibility Alignment | TBD | Not started | - |
 | 47 | System Prompt and Tool Guidance Optimization | TBD | Not started | - |
 | 48 | Compatibility Proof and Release Readiness | TBD | Not started | - |
 
 ### Phase 45: Pi API and Documentation Delta Audit
 Focus: Compare `pi-ptc-advanced` against both the installed local Pi package and latest published Pi package/docs/source to identify API drift, deprecated assumptions, new extension capabilities, and prompt/tool-description convention changes.
-Plans: TBD (defined during /paul:plan)
+Plans: 45-01 planned — audit-only compatibility delta against local/latest Pi docs, extension APIs, and prompt/tool guidance.
 
 ### Phase 46: Extension Runtime Compatibility Alignment
 Focus: Apply compatibility improvements in extension registration, lifecycle, tool metadata, runtime execution, callable-tool exposure, and fallback behavior based on the Phase 45 audit.
@@ -234,4 +234,4 @@ Suggested implementation branch from project docs:
 - `feat/hashline-native-interop`
 
 ---
-*Last updated: 2026-05-11 after Milestone 17 creation*
+*Last updated: 2026-05-11 after Plan 45-01 creation*
