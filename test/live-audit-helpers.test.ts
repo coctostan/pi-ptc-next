@@ -178,7 +178,7 @@ function createAuditExecutor(maxOutputChars = 4_000) {
     async cleanup() {},
   };
 
-  return new CodeExecutor(
+  const executor = new CodeExecutor(
     sandboxManager,
     toolRegistry as any,
     {
@@ -197,10 +197,14 @@ function createAuditExecutor(maxOutputChars = 4_000) {
     },
     process.cwd()
   );
-}
 
-const exec = (executor: any, code: string) =>
-  executor.execute(code, { cwd: process.cwd(), ctx: { cwd: process.cwd() } as any });
+  (executor as any).__workspace = workspace;
+  return executor;
+}
+const exec = (executor: any, code: string) => {
+  const cwd = (executor as any).__workspace || process.cwd();
+  return executor.execute(code, { cwd, ctx: { cwd } as any });
+};
 
 // ═══════════════════════════════════════════
 // CORE WRAPPERS
@@ -247,32 +251,25 @@ test("audit: ptc.read_many() returns list of strings", async () => {
   assert.ok(result.output.includes("2"), `read_many should return 2, got: ${result.output}`);
 });
 
-test("audit: ptc.read_tree() — KNOWN BUG: glob() rejects limit kwarg", async () => {
+test("audit: ptc.read_tree() returns bounded path/content entries", async () => {
   const executor = createAuditExecutor();
-  // BUG: ptc.find_files -> glob(limit=...) but glob() wrapper doesn't accept limit
-  await assert.rejects(
-    exec(executor, 'r = await ptc.read_tree(pattern="*.txt", max_files=5)\nreturn str(r)'),
-    /unexpected keyword argument/,
-    "read_tree should fail because glob() rejects limit kwarg"
-  );
+  const result = await exec(executor,
+    'r = await ptc.read_tree(pattern="*.txt", max_files=1)\nok = len(r) == 1 and isinstance(r[0], dict) and "path" in r[0] and "content" in r[0] and isinstance(r[0]["content"], str)\nreturn str(len(r)) + "|" + str(ok)');
+  assert.ok(result.output.includes("1|True"), `read_tree should return one bounded entry with path/content, got: ${result.output}`);
 });
 
-test("audit: ptc.find_files() — KNOWN BUG: glob() rejects limit kwarg", async () => {
+test("audit: ptc.find_files() returns bounded relative paths", async () => {
   const executor = createAuditExecutor();
-  await assert.rejects(
-    exec(executor, 'r = await ptc.find_files(pattern="*.txt")\nreturn str(r)'),
-    /unexpected keyword argument/,
-    "find_files should fail because glob() rejects limit kwarg"
-  );
+  const result = await exec(executor,
+    'r = await ptc.find_files(pattern="*.txt", max_files=1)\nis_rel = len(r) == 1 and all(not p.startswith("/") for p in r)\nreturn str(len(r)) + "|" + str(is_rel)');
+  assert.ok(result.output.includes("1|True"), `find_files should return one bounded relative path, got: ${result.output}`);
 });
 
-test("audit: ptc.find_files_abs() — KNOWN BUG: glob() rejects limit kwarg", async () => {
+test("audit: ptc.find_files_abs() returns bounded absolute paths", async () => {
   const executor = createAuditExecutor();
-  await assert.rejects(
-    exec(executor, 'r = await ptc.find_files_abs(pattern="*.txt")\nreturn str(r)'),
-    /unexpected keyword argument/,
-    "find_files_abs should fail because glob() rejects limit kwarg"
-  );
+  const result = await exec(executor,
+    'import os\nr = await ptc.find_files_abs(pattern="*.txt", max_files=1)\nis_abs = len(r) == 1 and all(os.path.isabs(p) for p in r)\nreturn str(len(r)) + "|" + str(is_abs)');
+  assert.ok(result.output.includes("1|True"), `find_files_abs should return one bounded absolute path, got: ${result.output}`);
 });
 
 test("audit: ptc.read_text() returns a string", async () => {

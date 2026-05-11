@@ -191,32 +191,35 @@ def _normalize_callable_tool_name(name: str) -> str:
     return normalized
 
 
-def _normalize_orchestration_calls(calls: Any) -> list[dict[str, Any]]:
+def _normalize_orchestration_calls(
+    calls: Any,
+    *,
+    allow_empty: bool = False,
+) -> list[dict[str, Any]]:
     if not isinstance(calls, Sequence) or isinstance(calls, (str, bytes, bytearray)):
+        if allow_empty:
+            raise ValueError("Tool calls must be a sequence of call specs")
         raise ValueError("Tool calls must be a non-empty sequence of call specs")
     if len(calls) == 0:
+        if allow_empty:
+            return []
         raise ValueError("Tool calls must be a non-empty sequence of call specs")
-
     normalized_calls: list[dict[str, Any]] = []
     for index, entry in enumerate(calls):
         if not isinstance(entry, dict):
             raise ValueError(f"Call spec at index {index} must be an object")
-
         tool_name = entry.get("tool")
         if not isinstance(tool_name, str) or not tool_name.strip():
             raise ValueError(f"Call spec at index {index} must include a non-empty 'tool' string")
-
         params = entry.get("params", {})
         if params is None:
             params = {}
         if not isinstance(params, dict):
             raise ValueError(f"Call spec at index {index} for tool '{tool_name.strip()}' must use an object for 'params'")
-
         normalized_calls.append({
             "tool": tool_name.strip(),
             "params": dict(params),
         })
-
     return normalized_calls
 
 
@@ -228,6 +231,20 @@ def _normalize_orchestration_limit(limit: Any, default_limit: int) -> int:
     if limit < 1:
         raise ValueError("max_concurrency must be a positive integer")
     return limit
+
+_BATCH_ON_ERROR_RAISE = "raise"
+_BATCH_ON_ERROR_COLLECT = "collect"
+
+
+def _normalize_batch_on_error(on_error: Any) -> str:
+    if on_error is None:
+        return _BATCH_ON_ERROR_RAISE
+    if not isinstance(on_error, str):
+        raise ValueError("on_error must be one of: 'raise', 'collect'")
+    normalized = on_error.strip().lower()
+    if normalized not in {_BATCH_ON_ERROR_RAISE, _BATCH_ON_ERROR_COLLECT}:
+        raise ValueError("on_error must be one of: 'raise', 'collect'")
+    return normalized
 
 
 def _summarize_orchestration_error(error: Exception) -> str:
@@ -436,7 +453,28 @@ class _PtcHelpers:
         return await _ptc_asyncio.gather(*[_runner(coro) for coro in coroutines])
 
     async def find_files(self, pattern: str, path: str = ".", max_files: int = 1000) -> Sequence[str]:
-        return await glob(pattern=pattern, path=path, limit=max_files)
+        normalized_max_files = _normalize_positive_int("max_files", max_files, 1000)
+        files = await glob(pattern=pattern, path=path)
+        json_candidate: str | None = None
+        if isinstance(files, str):
+            json_candidate = files
+        elif (
+            isinstance(files, Sequence)
+            and not isinstance(files, (str, bytes, bytearray))
+            and len(files) == 1
+            and isinstance(files[0], str)
+        ):
+            json_candidate = files[0]
+
+        if isinstance(json_candidate, str):
+            try:
+                parsed = _ptc_json.loads(json_candidate)
+                if isinstance(parsed, list):
+                    files = parsed
+            except Exception:
+                if isinstance(files, str):
+                    files = [line for line in files.splitlines() if line.strip()]
+        return [str(item) for item in list(files)[:normalized_max_files]]
 
     async def find_files_abs(self, pattern: str, path: str = ".", max_files: int = 1000) -> Sequence[str]:
         files = await self.find_files(pattern=pattern, path=path, max_files=max_files)
@@ -462,14 +500,63 @@ class _PtcHelpers:
         return [_extract_text(r) for r in results]
 
 
-    async def batch_tool(self, calls: Sequence[dict[str, Any]], max_concurrency: int | None = None) -> list[Any]:
-        normalized_calls = _normalize_orchestration_calls(calls)
+    async def batch_tool(
+        self,
+        calls: Sequence[dict[str, Any]],
+        max_concurrency: int | None = None,
+        *,
+        on_error: str | None = None,
+    ) -> Any:
+        normalized_calls = _normalize_orchestration_calls(calls, allow_empty=True)
+        mode = _normalize_batch_on_error(on_error)
+        if len(normalized_calls) == 0:
+            if mode == _BATCH_ON_ERROR_COLLECT:
+                return {
+                    "kind": "batch_partial",
+                    "mode": mode,
+                    "results": [],
+                    "stats": {"total": 0, "succeeded": 0, "failed": 0},
+                }
+            return []
         concurrency = _normalize_orchestration_limit(max_concurrency, self.max_parallel_tool_calls)
-        results = await self.gather_limit(
-            [_rpc_call(entry["tool"], dict(entry["params"])) for entry in normalized_calls],
+        if mode == _BATCH_ON_ERROR_RAISE:
+            results = await self.gather_limit(
+                [_rpc_call(entry["tool"], dict(entry["params"])) for entry in normalized_calls],
+                limit=concurrency,
+            )
+            return list(results)
+        async def _collect_call(entry: dict[str, Any], index: int) -> dict[str, Any]:
+            try:
+                value = await _rpc_call(entry["tool"], dict(entry["params"]))
+                return {
+                    "index": index,
+                    "tool": entry["tool"],
+                    "ok": True,
+                    "value": value,
+                }
+            except Exception as error:
+                return {
+                    "index": index,
+                    "tool": entry["tool"],
+                    "ok": False,
+                    "error": _summarize_orchestration_error(error),
+                }
+        collected = await self.gather_limit(
+            [_collect_call(entry, index) for index, entry in enumerate(normalized_calls)],
             limit=concurrency,
         )
-        return list(results)
+        succeeded = sum(1 for item in collected if item.get("ok"))
+        failed = len(collected) - succeeded
+        return {
+            "kind": "batch_partial",
+            "mode": mode,
+            "results": list(collected),
+            "stats": {
+                "total": len(collected),
+                "succeeded": succeeded,
+                "failed": failed,
+            },
+        }
 
     async def read_tree(
         self,

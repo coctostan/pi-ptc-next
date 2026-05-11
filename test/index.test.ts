@@ -201,7 +201,8 @@ test("ptc extension bootstraps and cleans up runtime components", async () => {
     assert.ok(latestCodeExecutionTool);
     assert.match(latestCodeExecutionTool.description, /ptc\.read_many.*-> list\[str\]/i);
     assert.match(latestCodeExecutionTool.description, /ptc\.read_text.*-> str/);
-    assert.match(latestCodeExecutionTool.description, /await ptc\.batch_tool\(calls, max_concurrency=None\) -> list\[Any\]/);
+    assert.match(latestCodeExecutionTool.description, /await ptc\.batch_tool\(calls, max_concurrency=None, on_error=None\) -> list\[Any\] \| dict\[str, Any\]/);
+    assert.match(latestCodeExecutionTool.description, /on_error='collect' returns a kind=\"batch_partial\" envelope/);
     assert.match(latestCodeExecutionTool.description, /await ptc\.first_success\(calls, max_concurrency=None\) -> Any/);
     assert.match(latestCodeExecutionTool.description, /await ptc\.reduce_tool\(calls, reducer, initial, max_concurrency=None\) -> Any/);
     assert.match(latestCodeExecutionTool.description, /ptc\.fit_output\(value, max_chars=None, max_items=None, max_depth=None\) -> dict\[str, Any\]/);

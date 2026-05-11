@@ -107,7 +107,8 @@ Python helpers currently available in this session:
 - ptc.find_files(pattern='**/*', path='.', max_files=1000) -> list[str]
 - ptc.find_files_abs(pattern='**/*', path='.', max_files=1000) -> list[str]
 - ptc.read_text(path, offset=None, limit=None) -> str
-- await ptc.batch_tool(calls, max_concurrency=None) -> list[Any]
+- await ptc.batch_tool(calls, max_concurrency=None, on_error=None) -> list[Any] | dict[str, Any]
+-   - on_error='collect' returns a kind="batch_partial" envelope with per-call success/error entries instead of raising on first failure
 - await ptc.first_success(calls, max_concurrency=None) -> Any
 - await ptc.reduce_tool(calls, reducer, initial, max_concurrency=None) -> Any
 - ptc.fit_output(value, max_chars=None, max_items=None, max_depth=None) -> dict[str, Any]

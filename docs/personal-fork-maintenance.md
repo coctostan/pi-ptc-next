@@ -1,17 +1,15 @@
 # Personal Fork Maintenance
 
-This document is the maintainer runbook for the personal `pi-ptc-next` fork.
-
+This document is the maintainer runbook for the `pi-ptc-next` fork repository and its current publish target, `pi-ptc-advanced`.
 It covers the repo-local workflow that should remain stable across sessions:
 - start Pi with the preferred personal analysis profile
 - run the routine verification bundle for day-to-day checks
 - run the full verification bundle when confidence needs to be higher
 - run the CI-parity verification bundle used by GitHub Actions
-- run a release-package verification pass for the current 0.8.0 baseline
+- run a release-package verification pass for the current `pi-ptc-advanced@0.15.0` baseline
 - handle sync and upgrade work as explicit manual git operations instead of hidden automation
-The current release target for this fork is **0.8.0**. This runbook now covers both verification-only CI automation and the package-surface verification needed for that release baseline, while leaving tagging, publishing, and broader git workflow operations as explicit manual concerns.
+The current documented release target for this fork is **`pi-ptc-advanced@0.15.0`**. This runbook covers verification-only CI automation and the package-surface verification needed for that baseline while still leaving tagging, publishing, and broader git workflow operations as explicit manual concerns.
 ## Day-to-day workflow
-
 ### 1. Start Pi with the personal analysis profile
 
 From the repo root:
@@ -31,20 +29,15 @@ For normal local maintenance, use the focused verification entrypoint:
 ```bash
 npm run verify:personal
 ```
-
 Current focused coverage:
 - `npm run build`
 - `node --test test/tool-registry.test.ts test/hashline-default-exposure.test.ts test/utils.test.ts test/hashline-interop-smoke.test.ts`
-
 Use this after routine local changes, dependency refreshes that are expected to be low risk, or Pi/tool-surface checks.
-
 ### 3. Run the higher-confidence verification path when needed
 For larger updates or before treating the fork as revalidated, run:
-
 ```bash
 npm run verify:personal:full
 ```
-
 This currently runs the full repo test path via `npm test`.
 Use the full path when:
 - you changed multiple files
@@ -52,7 +45,6 @@ Use the full path when:
 - you rebased onto a newer upstream or fork base
 - Pi changed in a way that may affect runtime/tool visibility
 ### 4. Run the CI-parity verification bundle
-
 When you want to reproduce the verification path used by GitHub Actions locally, run:
 
 ```bash
@@ -71,13 +63,14 @@ When you want to confirm what would actually ship for the current release baseli
 npm run verify:release-package
 ```
 
-This command builds the repo, validates the expected package metadata, and checks the `npm pack --dry-run` tarball surface for the current **0.8.0** target.
+This command builds the repo, validates the expected package metadata, checks the `npm pack --dry-run` tarball surface for the current **`pi-ptc-advanced@0.15.0`** target, and proves a clean install from the packed tarball in a temporary directory.
 
-Use it before treating the fork as release-ready, after metadata changes, or after dependency updates that may affect the published package surface.
+Use it before treating the fork as release-ready, after metadata changes, or after documentation/dependency updates that may affect the published package surface or installability proof.
 
-Release reference docs for this baseline:
+Release reference docs for the active baseline:
 - [`CHANGELOG.md`](../CHANGELOG.md)
-- [`docs/releases/0.8.0.md`](./releases/0.8.0.md)
+- [`docs/releases/0.15.0.md`](./releases/0.15.0.md)
+- Historical baseline: [`docs/releases/0.8.0.md`](./releases/0.8.0.md)
 ## Manual sync and upgrade boundary
 
 Phase 20 intentionally keeps git and remote operations manual.
@@ -120,8 +113,9 @@ If a rebase or merge needs conflict resolution, handle that manually first, then
 - automated tagging or npm publish flow
 - PR automation
 - remote creation/fetch/rebase/push strategy decisions
+- automated tagging or manual-operator publish execution beyond the documented verification gate (the repo proves tarball cleanliness/installability, but the actual release/publish step remains manual)
 - reopening the archived upstream-submission prep flow (see `.paul/milestones/0.6.0-UPSTREAM-PR-ARTIFACTS.md` for historical reference only)
-The repo now includes a verification-only CI workflow, but release publication and git workflow choices remain separate manual concerns.
+The repo includes a verification-only CI workflow, but release publication and git workflow choices remain separate manual concerns.
 
 ## Quick reference
 ```bash

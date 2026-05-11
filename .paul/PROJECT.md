@@ -9,9 +9,9 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 ## Current State
 | Attribute | Value |
 |-----------|-------|
-| Version | 0.8.0 |
+| Version | 0.15.0 |
 | Status | Prototype |
-| Last Updated | 2026-03-26 |
+| Last Updated | 2026-03-29 |
 
 ## Requirements
 ### Validated (Shipped)
@@ -47,13 +47,20 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 - [x] Added bounded Python reduction and output-budget helpers `ptc.reduce_tool(...)` / `ptc.fit_output(...)` aligned to the session output cap, with focused execution proof — Phase 31
 - [x] Added execution-level ecosystem proof plus README/tool-description guidance for `ptc.batch_tool(...)`, `ptc.first_success(...)`, `ptc.reduce_tool(...)`, and `ptc.fit_output(...)`, including compact hashline/codegraph/web composition examples — Phase 32
 ### Active (In Progress)
-_(No active requirements — Milestone 14 complete)_
+- [ ] No active phase requirement currently open; define the next milestone before adding new active scope.
 ### Validated (Shipped)
+- [x] Restored the P0 file-discovery helper path by removing `glob(limit=...)` dependency and proving bounded success for `ptc.read_tree()`, `ptc.find_files()`, and `ptc.find_files_abs()` in live audit coverage — Phase 39
+- [x] Improved syntax/compile-time error surfacing so pre-terminal Python failures now expose actionable `SyntaxError`/traceback context instead of generic RPC closure messaging — Phase 40
+- [x] Added bounded `batch_tool` collect-mode partial envelope support (`kind: "batch_partial"`) with deterministic stress/orchestration proof and updated helper guidance/README contracts — Phase 41
+- [x] Renamed the package publish surface to `pi-ptc-advanced` at `0.15.0`, aligned root lock metadata, and tightened release-package verification to assert the new package identity while intentionally deferring broader docs/history updates — Phase 42
+- [x] Aligned README, changelog, maintainer docs, and a new `0.15.0` release note with the `pi-ptc-advanced` publish target while preserving explicit `pi-ptc-next` / upstream lineage and manual publish boundaries — Phase 43
+- [x] Finalized the `0.15.0` publish-readiness gate by excluding packaged Python bytecode artifacts, proving clean installability from the packed tarball, and aligning maintainer/release guidance to the final bounded manual-publish model — Phase 44
 - [x] Full live audit: 51 tests across 3 phases proving 94% of helpers work, with stress testing (concurrency, large files, output budgets) and 7 multi-tool composition workflows all passing. 1 P0 bug found (glob/limit), 2 P1, 2 P2 issues documented — Milestone 14
 - [x] Systematic live-tool audit of all 21 Python helpers and 8 pipeline capabilities — Phase 36
 - [x] Added user-facing recipe workflow documentation and ecosystem composition proof — Phase 35
 - [x] Added concrete cross-repo recipe artifacts plus deterministic benchmark baseline — Phase 34
 ### Planned (Next)
+- [ ] Next milestone not yet defined.
 ### Out of Scope
 - [ ] Long-term IR refactors during the early interop milestones
 - [ ] Broad helper ergonomics changes beyond what is required for trustworthy structured interop
@@ -74,7 +81,7 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 
 **Technical Context:**
 - Existing codebase detected: TypeScript npm package / Pi extension with Python runtime support
-- Package name: `@cegersdo/pi-ptc`
+- Package name: `pi-ptc-advanced`
 - Key source areas: `src/index.ts`, `src/code-executor.ts`, `src/custom-tool-manager.ts`, `src/tool-registry.ts`, `src/tool-adapters.ts`, `src/rpc-protocol.ts`
 - Maintainer-facing integration docs now live in `README.md`; deeper local planning/history artifacts live under `.paul/`
 - Current branch is `feat/hashline-native-interop`
@@ -128,6 +135,7 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 | Close Milestone 12 with focused ecosystem proof and guidance instead of reopening runtime semantics | Phases 30-31 already shipped the helper behavior; the remaining gap was trustworthy proof and user-facing guidance aligned to the existing surface. | 2026-03-26 | Active |
 | Keep Phase 33 scoped to additive eval/benchmark recipe-target contracts and deterministic seeded cases | The first M4 slice needed stable machine-readable recipe targets and bounded output expectations without expanding runtime semantics or docs scope prematurely | 2026-03-26 | Active |
 | Convert the new recipe-contract test files to import-based syntax and `process.cwd()` path resolution instead of changing package module mode | The phase surfaced local diagnostics in touched test files, and the smallest fix was file-local syntax/path cleanup rather than a package-wide module-policy change | 2026-03-26 | Active |
+| Keep Phase 39 file-discovery remediation bounded to helper-side `max_files` slicing + payload normalization instead of broad runtime refactors | Fixes the audit P0 root cause while preserving runtime surface stability and avoiding hotspot churn in `runtime.py` | 2026-03-27 | Active |
 
 ## Success Metrics
 | Metric | Target | Current | Status |
@@ -140,7 +148,7 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 | Python helper ergonomics for structured anchored builtin results | Yes | Builtin contracts, wrappers, and `code_execution` guidance now expose richer anchored result models | Achieved |
 | Explicit metadata/policy contract for extension tools | Yes | `ptc.callable` / `ptc.policy` normalization, legacy compatibility, policy tests, and combined-stack guidance landed | Achieved |
 | Full real two-extension loading smoke harness with `pi-hashline-readmap` | Optional | Explicitly evaluated and deferred; lightweight smoke coverage remains the first-pass upstream verification point | Deferred |
-| Repo-owned CI verification path for the 0.8.0 release baseline | Yes | `npm run verify:ci` plus `.github/workflows/ci.yml` now verify the release-ready fork surface | Achieved |
+| Repo-owned CI verification path for the 0.15.0 publish baseline | Yes | `npm run verify:ci` remains available while package metadata and release-package verification now target `pi-ptc-advanced@0.15.0` | Achieved |
 | Execution-level proof and user-facing docs for Milestone 11 helper ergonomics | Yes | Dedicated runtime proof, tool-description assertions, README updates, and doc-contract coverage landed in Phase 29 | Achieved |
 | Bounded reduction and output-budget helpers for Python orchestration flows | Yes | `ptc.reduce_tool(...)` and `ptc.fit_output(...)` landed with focused execution proof and executor-aligned output-budget defaults | Achieved |
 | Ecosystem-style proof and user-facing docs for Milestone 12 orchestration/output-budget helpers | Yes | Dedicated runtime proof, README examples, tool-description guidance, and doc-contract coverage landed in Phase 32 | Achieved |
@@ -165,4 +173,4 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 
 ---
 *PROJECT.md — Updated when requirements or context change*
-*Last updated: 2026-03-26 after Phase 38 completion (Milestone 14 complete)*
+*Last updated: 2026-03-29 after Phase 44 completion and Milestone 16 closure*

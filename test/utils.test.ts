@@ -14,10 +14,15 @@ test("estimateTokensFromChars uses simple 4-char heuristic", () => {
   assert.equal(estimateTokensFromChars(5), 2);
 });
 
-test("truncateOutput appends truncation notice", () => {
-  const result = truncateOutput("abcdefghij", 5);
-  assert.match(result, /^abcde/);
+test("truncateOutput respects maxOutputChars while appending truncation notice when possible", () => {
+  const result = truncateOutput("x".repeat(200), 80);
+  assert.ok(result.length <= 80, `Result should be <= maxOutputChars, got ${result.length}`);
   assert.match(result, /Output truncated/);
+});
+
+test("truncateOutput falls back to a hard cut when maxOutputChars is too small for notice", () => {
+  const result = truncateOutput("abcdefghij", 5);
+  assert.equal(result, "abcde");
 });
 
 test("validateUserCode rejects asyncio.run", () => {

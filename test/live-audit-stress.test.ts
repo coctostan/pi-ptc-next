@@ -173,10 +173,9 @@ test("stress: gather_limit with 8 coroutines, limit=3 — bounded", async () => 
   assert.ok(stats.maxActiveCalls <= 3, `Max active should be ≤3, got: ${stats.maxActiveCalls}`);
 });
 
-test("stress: batch_tool with 2 of 5 failing — partial success", async () => {
+test("stress: batch_tool collect mode captures mixed success/failure results", async () => {
   const stats: RuntimeStats = { activeCalls: 0, maxActiveCalls: 0, seenCalls: [] };
   const executor = createStressExecutor(stats);
-  // batch_tool may raise on first failure or collect errors — audit which behavior occurs
   const result = await exec(executor, [
     "calls = [",
     '  {"tool": "read", "params": {"path": "ok-1.txt"}},',
@@ -185,16 +184,16 @@ test("stress: batch_tool with 2 of 5 failing — partial success", async () => {
     '  {"tool": "failing_tool", "params": {"msg": "fail2"}},',
     '  {"tool": "read", "params": {"path": "ok-3.txt"}},',
     "]",
-    "try:",
-    "  r = await ptc.batch_tool(calls)",
-    '  return ptc.json_dump({"behavior": "all_returned", "count": len(r)})',
-    "except Exception as e:",
-    '  return ptc.json_dump({"behavior": "raised", "error": str(e)[:200]})',
+    "partial = await ptc.batch_tool(calls, on_error='collect')",
+    "return ptc.json_dump(partial)",
   ].join("\n"));
   const parsed = JSON.parse(result.output);
-  // Document whichever behavior occurs — both are valid audit findings
-  assert.ok(parsed.behavior === "all_returned" || parsed.behavior === "raised",
-    `Should either return all or raise, got: ${JSON.stringify(parsed)}`);
+  assert.equal(parsed.kind, "batch_partial");
+  assert.equal(parsed.mode, "collect");
+  assert.equal(parsed.stats.total, 5);
+  assert.equal(parsed.stats.succeeded, 3);
+  assert.equal(parsed.stats.failed, 2);
+  assert.deepEqual(parsed.results.map((entry: any) => entry.ok), [true, false, true, false, true]);
 });
 
 test("stress: first_success with 3 failures then 1 success", async () => {
@@ -334,16 +333,13 @@ test("stress: reduce_tool with all-failing calls", async () => {
     `Should handle all-failing reduce, got: ${JSON.stringify(parsed)}`);
 });
 
-test("stress: empty batch_tool([]) rejects — non-empty required", async () => {
+test("stress: empty batch_tool([]) returns empty list", async () => {
   const stats: RuntimeStats = { activeCalls: 0, maxActiveCalls: 0, seenCalls: [] };
   const executor = createStressExecutor(stats);
-  // AUDIT FINDING: batch_tool([]) raises ValueError instead of returning [].
-  // This is a design choice — empty call lists are rejected at validation.
-  await assert.rejects(
-    exec(executor, "await ptc.batch_tool([])"),
-    /non-empty sequence/,
-    "Empty batch_tool should reject"
-  );
+  const result = await exec(executor,
+    'r = await ptc.batch_tool([])\nreturn ptc.json_dump({"count": len(r)})');
+  const parsed = JSON.parse(result.output);
+  assert.equal(parsed.count, 0, "Empty batch_tool should return []");
 });
 
 test("stress: empty read_many([]) returns empty list", async () => {

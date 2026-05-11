@@ -1,6 +1,6 @@
 {
-  "name": "@cegersdo/pi-ptc",
-  "version": "0.8.0",
+  "name": "pi-ptc-advanced",
+  "version": "0.15.0",
   "description": "Programmatic Tool Calling (PTC) extension for pi-coding-agent - enables Python code execution with async tool calls",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -24,7 +24,8 @@
   },
   "files": [
     "dist",
-    "src/python-runtime",
+    "src/python-runtime/runtime.py",
+    "src/python-runtime/rpc.py",
     "tools"
   ],
   "pi": {

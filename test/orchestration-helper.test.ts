@@ -168,6 +168,35 @@ test("ptc.batch_tool preserves input order while respecting bounded concurrency"
   ]);
 });
 
+test("ptc.batch_tool collect mode returns bounded partial results without raising", async () => {
+  const stats: RuntimeStats = { activeCalls: 0, maxActiveCalls: 0, seenCalls: [] };
+  const executor = createExecutor(stats);
+
+  const result = await executor.execute(
+    [
+      "partial = await ptc.batch_tool([",
+      '  {"tool": "record_value", "params": {"value": "ok-1", "delayMs": 5}},',
+      '  {"tool": "always_fail", "params": {"label": "boom", "message": "boom"}},',
+      '  {"tool": "record_value", "params": {"value": "ok-2", "delayMs": 5}},',
+      "], on_error='collect')",
+      "return partial",
+    ].join("\n"),
+    {
+      cwd: process.cwd(),
+      ctx: ({ cwd: process.cwd() } as any),
+    },
+  );
+
+  const parsed = JSON.parse(result.output);
+  assert.equal(parsed.kind, "batch_partial");
+  assert.equal(parsed.mode, "collect");
+  assert.equal(parsed.stats.total, 3);
+  assert.equal(parsed.stats.succeeded, 2);
+  assert.equal(parsed.stats.failed, 1);
+  assert.deepEqual(parsed.results.map((entry: any) => entry.ok), [true, false, true]);
+  assert.match(parsed.results[1].error, /boom/);
+});
+
 test("ptc.first_success returns the first successful ordered candidate and stops after success", async () => {
   const stats: RuntimeStats = { activeCalls: 0, maxActiveCalls: 0, seenCalls: [] };
   const executor = createExecutor(stats);
@@ -224,10 +253,21 @@ test("orchestration helpers reject invalid call specs with clear bounded errors"
   const stats: RuntimeStats = { activeCalls: 0, maxActiveCalls: 0, seenCalls: [] };
   const executor = createExecutor(stats);
 
+  const emptyBatchResult = await executor.execute(
+    [
+      "r = await ptc.batch_tool([])",
+      "return r",
+    ].join("\n"),
+    {
+      cwd: process.cwd(),
+      ctx: ({ cwd: process.cwd() } as any),
+    },
+  );
+  assert.deepEqual(JSON.parse(emptyBatchResult.output), []);
   await assert.rejects(
     executor.execute(
       [
-        "await ptc.batch_tool([])",
+        "await ptc.first_success([])",
         "return 'unreachable'",
       ].join("\n"),
       {

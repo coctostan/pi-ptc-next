@@ -118,6 +118,44 @@ test("RpcProtocol rejects clean exits without a terminal protocol message", asyn
   await assert.rejects(protocol.waitForCompletion(), /before completing the RPC protocol/);
 });
 
+test("RpcProtocol surfaces pre-terminal Python syntax stderr as actionable execution errors", async () => {
+  const proc = new FakeProcess();
+  const protocol = new RpcProtocol(proc as unknown as ChildProcess, async () => null, "def broken(\nreturn 1");
+
+  proc.stderr.write([
+    "Traceback (most recent call last):",
+    '  File "<string>", line 1',
+    "    def broken(",
+    "              ^",
+    "SyntaxError: '(' was never closed",
+  ].join("\n"));
+  proc.emit("exit", 1);
+  proc.stdout.end();
+
+  await assert.rejects(protocol.waitForCompletion(), (err: any) => {
+    assert.match(err.message, /Python execution error/);
+    assert.match(err.message, /SyntaxError/);
+    assert.match(err.message, /Traceback/);
+    assert.ok(!err.message.includes("stdout closed"), `Expected actionable syntax context, got: ${err.message}`);
+    return true;
+  });
+});
+
+test("RpcProtocol keeps non-python stderr shutdowns as transport errors", async () => {
+  const proc = new FakeProcess();
+  const protocol = new RpcProtocol(proc as unknown as ChildProcess, async () => null, "print('hello')");
+
+  proc.stderr.write("fatal: transport closed unexpectedly\n");
+  proc.emit("exit", 1);
+  proc.stdout.end();
+
+  await assert.rejects(protocol.waitForCompletion(), (err: any) => {
+    assert.match(err.message, /before completing the RPC protocol/);
+    assert.match(err.message, /fatal: transport closed unexpectedly/);
+    return true;
+  });
+});
+
 test("RpcProtocol accepts a buffered complete frame that arrives after exit", async () => {
   const proc = new FakeProcess();
   const protocol = new RpcProtocol(proc as unknown as ChildProcess, async () => null, "print('hello')");

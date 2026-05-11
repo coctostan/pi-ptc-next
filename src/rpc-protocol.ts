@@ -147,6 +147,36 @@ function serializeError(error: unknown): RpcErrorPayload {
   };
 }
 
+const PYTHON_TRACEBACK_SIGNATURE = /Traceback \(most recent call last\):/;
+const PYTHON_PRE_TERMINAL_ERROR_SIGNATURE = /\b(?:SyntaxError|IndentationError|TabError|ImportError|ModuleNotFoundError)\b/;
+const PYTHON_ERROR_LINE_SIGNATURE = /\b[A-Za-z_][\w.]*Error(?::|\b)/;
+
+function looksLikePythonPreTerminalFailure(stderrText: string): boolean {
+  if (!stderrText) {
+    return false;
+  }
+
+  return (
+    PYTHON_TRACEBACK_SIGNATURE.test(stderrText) ||
+    PYTHON_PRE_TERMINAL_ERROR_SIGNATURE.test(stderrText)
+  );
+}
+
+function extractPythonFailureSummary(stderrText: string): string | null {
+  const lines = stderrText
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+
+  for (let i = lines.length - 1; i >= 0; i -= 1) {
+    if (PYTHON_ERROR_LINE_SIGNATURE.test(lines[i])) {
+      return lines[i];
+    }
+  }
+
+  return lines.at(-1) ?? null;
+}
+
 export class RpcProtocol {
   private lineReader: readline.Interface;
   private completionPromise: Promise<CodeExecutionResult>;
@@ -156,7 +186,9 @@ export class RpcProtocol {
   private stdout = "";
   private userCodeLines: string[];
   private completed = false;
-  private unexpectedExitMessage: string | null = null;
+  private processExitCode: number | null = null;
+  private processExitSignal: NodeJS.Signals | null = null;
+  private sawProcessExit = false;
   private startedAt = Date.now();
   private nestedToolCalls = 0;
   private nestedToolNames: string[] = [];
@@ -192,23 +224,31 @@ export class RpcProtocol {
         return;
       }
 
-      this.rejectUnexpectedTransport(
-        this.unexpectedExitMessage || "RPC stdout closed before a terminal protocol message was received."
-      );
-    });
+      queueMicrotask(() => {
+        if (this.completed) {
+          return;
+        }
 
+        this.rejectOnce(this.buildUnexpectedCloseError());
+      });
+    });
     proc.stderr?.on("data", (data) => {
       this.stderr += data.toString();
     });
-
     proc.on("exit", (code, exitSignal) => {
       if (this.completed) {
         return;
       }
 
-      const exitDescriptor = exitSignal ? `signal ${exitSignal}` : code === null ? "unknown status" : `code ${code}`;
-      const stderrSuffix = this.stderr.trim() ? `\n${this.stderr.trim()}` : "";
-      this.unexpectedExitMessage = `Python process exited with ${exitDescriptor} before completing the RPC protocol.${stderrSuffix}`;
+      this.recordProcessExit(code, exitSignal);
+    });
+
+    proc.on("close", (code, exitSignal) => {
+      if (this.completed) {
+        return;
+      }
+
+      this.recordProcessExit(code, exitSignal);
     });
 
     proc.on("error", (err) => {
@@ -236,6 +276,46 @@ export class RpcProtocol {
     }, 5000);
   }
 
+  private recordProcessExit(code: number | null, exitSignal: NodeJS.Signals | null): void {
+    this.sawProcessExit = true;
+    this.processExitCode = code;
+    this.processExitSignal = exitSignal;
+  }
+
+  private getExitDescriptor(): string {
+    if (this.processExitSignal) {
+      return `signal ${this.processExitSignal}`;
+    }
+
+    const resolvedCode = this.processExitCode ?? this.proc.exitCode;
+    if (resolvedCode !== null) {
+      return `code ${resolvedCode}`;
+    }
+
+    return "unknown status";
+  }
+
+  private buildUnexpectedTransportMessage(stderrText: string): string {
+    if (!this.sawProcessExit && this.proc.exitCode === null && !stderrText) {
+      return "RPC stdout closed before a terminal protocol message was received.";
+    }
+
+    const stderrSuffix = stderrText ? `\n${stderrText}` : "";
+    return `Python process exited with ${this.getExitDescriptor()} before completing the RPC protocol.${stderrSuffix}`;
+  }
+
+  private buildUnexpectedCloseError(): Error {
+    const stderrText = this.stderr.trim();
+    if (looksLikePythonPreTerminalFailure(stderrText)) {
+      const summary =
+        extractPythonFailureSummary(stderrText) ||
+        `Python process exited with ${this.getExitDescriptor()} before completing the RPC protocol.`;
+      return new PtcPythonError(summary, stderrText);
+    }
+
+    return new PtcTransportError(this.buildUnexpectedTransportMessage(stderrText));
+  }
+
   private appendStdout(text: string): void {
     if (!text) {
       return;
@@ -260,9 +340,6 @@ export class RpcProtocol {
     this.completionReject(error);
   }
 
-  private rejectUnexpectedTransport(message: string): void {
-    this.rejectOnce(new PtcTransportError(message));
-  }
 
   private buildExecutionDetails(overrides?: Partial<ExecutionDetails>): ExecutionDetails {
     return {

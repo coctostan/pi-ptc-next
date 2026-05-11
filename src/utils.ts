@@ -121,13 +121,36 @@ export function shouldAutoRoutePromptToCodeExecution(prompt: string): boolean {
 }
 
 export function truncateOutput(output: string, maxOutputChars: number = DEFAULT_MAX_OUTPUT_SIZE): string {
-  if (output.length <= maxOutputChars) {
+  const normalizedMaxChars = Math.max(1, maxOutputChars);
+  if (output.length <= normalizedMaxChars) {
     return output;
   }
 
-  const truncated = output.substring(0, maxOutputChars);
-  const truncationNotice = `\n\n[Output truncated - showing first ${maxOutputChars} characters of ${output.length}]`;
-  return truncated + truncationNotice;
+  const buildNotice = (shownChars: number) =>
+    `\n\n[Output truncated - showing first ${shownChars} characters of ${output.length}]`;
+
+  let notice = buildNotice(normalizedMaxChars);
+  let payloadBudget = normalizedMaxChars - notice.length;
+
+  if (payloadBudget <= 0) {
+    return output.substring(0, normalizedMaxChars);
+  }
+
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    const shownChars = Math.max(0, payloadBudget);
+    notice = buildNotice(shownChars);
+    const nextBudget = normalizedMaxChars - notice.length;
+    if (nextBudget === payloadBudget) {
+      break;
+    }
+    payloadBudget = nextBudget;
+    if (payloadBudget <= 0) {
+      return output.substring(0, normalizedMaxChars);
+    }
+  }
+
+  const bounded = output.substring(0, Math.max(0, payloadBudget)) + notice;
+  return bounded.length <= normalizedMaxChars ? bounded : bounded.substring(0, normalizedMaxChars);
 }
 
 export function formatPythonError(message: string, traceback?: string): string {

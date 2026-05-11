@@ -17,6 +17,37 @@ Completed milestone log for this project.
 | Milestone 12 — High-Level Orchestration Helpers | 2026-03-26 | approximately 2 hours | 3 phases, 3 plans |
 | Milestone 13 — Ecosystem Examples and Recipes | 2026-03-26 | ~2 hours | 3 phases, 3 plans |
 | Milestone 14 — Live Tool Audit and Stress Testing | 2026-03-26 | ~1.5 hours | 3 phases, 3 plans |
+| Milestone 15 — Bug Fixes and Helper Hardening | 2026-03-27 | ~2 hours | 3 phases, 3 plans |
+
+---
+
+## ✅ Milestone 15 — Bug Fixes and Helper Hardening (0.14.0)
+
+**Completed:** 2026-03-27
+**Duration:** ~2 hours
+
+### Stats
+
+| Metric | Value |
+|--------|-------|
+| Phases | 3 |
+| Plans | 3 |
+| Files changed | 13 |
+
+### Key Accomplishments
+
+- Repaired the P0 file-discovery helper path by removing `glob(limit=...)` dependency and restoring bounded success for `ptc.read_tree()`, `ptc.find_files()`, and `ptc.find_files_abs()`.
+- Hardened `RpcProtocol` unexpected-close classification so syntax/compile-time Python failures now surface actionable `PtcPythonError` context instead of generic transport closure messaging.
+- Added bounded `batch_tool(..., on_error='collect')` partial-result behavior (`kind: "batch_partial"`) while preserving default fail-fast semantics.
+- Aligned behavior consistency follow-ups by making `batch_tool([])` return `[]` and enforcing truncation outputs to respect `maxOutputChars` caps.
+- Refreshed helper contracts, orchestration/live-audit proof, and README/code_execution guidance; full suite ended green at `207` passing / `0` failing.
+
+### Key Decisions
+
+- Keep milestone fixes surgical at helper/RPC boundaries and avoid broad runtime refactors inside known hotspot files.
+- Preserve deterministic default `batch_tool` fail-fast behavior; require explicit `on_error='collect'` for partial-result collection.
+- Treat output truncation limits as hard boundaries and keep truncation notices best-effort within the same budget.
+- Keep github-flow merge-gate automation deferred while mixed historical working-tree changes remain unresolved.
 
 ---
 

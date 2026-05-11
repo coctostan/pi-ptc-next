@@ -134,19 +134,19 @@ test("pipeline: ptcValue structured payload passes through RPC", async () => {
 // ERROR BOUNDARIES
 // ═══════════════════════════════════════════
 
-test("pipeline: syntax error crashes the process (caught as RPC close)", async () => {
+test("pipeline: syntax error surfaces actionable Python context", async () => {
   const executor = createPipelineExecutor();
-  // AUDIT FINDING: Python syntax errors crash the subprocess rather than
-  // returning a structured PtcPythonError. The RPC bridge catches this as
-  // "stdout closed" which is functional but not ideal for error reporting.
   await assert.rejects(
     exec(executor, "def broken(\nreturn 1"),
     (err: any) => {
+      const hasActionableSyntaxContext =
+        err.message.includes("SyntaxError") || err.message.includes("Traceback");
+      assert.ok(hasActionableSyntaxContext, `Expected SyntaxError/Traceback context, got: ${err.message}`);
       assert.ok(
-        err.message.includes("SyntaxError") ||
-        err.message.includes("stdout closed") ||
-        err.message.includes("syntax"),
-        `Should be caught (syntax or RPC close), got: ${err.message}`);
+        !err.message.includes("stdout closed before a terminal protocol message") &&
+          !err.message.includes("RPC stdout closed"),
+        `Should not fall back to generic transport-close messaging, got: ${err.message}`
+      );
       return true;
     }
   );
@@ -183,11 +183,8 @@ test("pipeline: division by zero is caught", async () => {
 test("pipeline: output exceeding maxOutputChars is bounded", async () => {
   const executor = createPipelineExecutor(200);
   const result = await exec(executor, 'return "x" * 5000');
-  // AUDIT FINDING: truncation adds some overhead (~50-60 chars for metadata/framing)
-  // so the actual output may be slightly above maxOutputChars. The important thing
-  // is that it's bounded, not that it's exactly <= maxOutputChars.
-  assert.ok(result.output.length < 5000, `Output should be bounded below 5000, got: ${result.output.length}`);
-  assert.ok(result.output.length < 500, `Output should be reasonably truncated, got: ${result.output.length}`);
+  assert.ok(result.output.length <= 200, `Output should respect maxOutputChars exactly, got: ${result.output.length}`);
+  assert.match(result.output, /Output truncated/, "Bounded output should include truncation notice when room allows");
 });
 
 // ═══════════════════════════════════════════

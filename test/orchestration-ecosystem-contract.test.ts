@@ -6,12 +6,13 @@ test("README orchestration helper guidance stays aligned with the shipped runtim
   const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
   const runtimeSource = readFileSync(new URL("../src/python-runtime/runtime.py", import.meta.url), "utf8");
 
-  assert.match(runtimeSource, /async def batch_tool\(self, calls: Sequence\[dict\[str, Any\]\], max_concurrency: int \| None = None\) -> list\[Any\]:/);
+  assert.match(runtimeSource, /async def batch_tool\([\s\S]*on_error: str \| None = None,[\s\S]*\) -> Any:/);
   assert.match(runtimeSource, /async def first_success\(self, calls: Sequence\[dict\[str, Any\]\], max_concurrency: int \| None = None\) -> Any:/);
   assert.match(runtimeSource, /async def reduce_tool\(/);
   assert.match(runtimeSource, /def fit_output\(/);
 
-  assert.match(readme, /await ptc\.batch_tool\(calls, max_concurrency=None\) -> list\[Any\]/);
+  assert.match(readme, /await ptc\.batch_tool\(calls, max_concurrency=None, on_error=None\) -> list\[Any\] \| dict\[str, Any\]/);
+  assert.match(readme, /on_error='collect'.*kind="batch_partial"/);
   assert.match(readme, /await ptc\.first_success\(calls, max_concurrency=None\) -> Any/);
   assert.match(readme, /await ptc\.reduce_tool\(calls, reducer, initial, max_concurrency=None\) -> Any/);
   assert.match(readme, /ptc\.fit_output\(value, max_chars=None, max_items=None, max_depth=None\) -> dict\[str, Any\]/);
