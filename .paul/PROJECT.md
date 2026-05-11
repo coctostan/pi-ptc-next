@@ -11,7 +11,7 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 |-----------|-------|
 | Version | 0.15.0 |
 | Status | Prototype |
-| Last Updated | 2026-03-29 |
+| Last Updated | 2026-05-11 |
 
 ## Requirements
 ### Validated (Shipped)
@@ -47,7 +47,7 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 - [x] Added bounded Python reduction and output-budget helpers `ptc.reduce_tool(...)` / `ptc.fit_output(...)` aligned to the session output cap, with focused execution proof — Phase 31
 - [x] Added execution-level ecosystem proof plus README/tool-description guidance for `ptc.batch_tool(...)`, `ptc.first_success(...)`, `ptc.reduce_tool(...)`, and `ptc.fit_output(...)`, including compact hashline/codegraph/web composition examples — Phase 32
 ### Active (In Progress)
-- [ ] No active phase requirement currently open; define the next milestone before adding new active scope.
+- [ ] Phase 46 runtime alignment: act on Phase 45 R-1/R-2/R-3 findings starting with `peerDependencies` scope decision (`@mariozechner/*@0.55.1` vs `@earendil-works/*@0.74.0`)
 ### Validated (Shipped)
 - [x] Restored the P0 file-discovery helper path by removing `glob(limit=...)` dependency and proving bounded success for `ptc.read_tree()`, `ptc.find_files()`, and `ptc.find_files_abs()` in live audit coverage — Phase 39
 - [x] Improved syntax/compile-time error surfacing so pre-terminal Python failures now expose actionable `SyntaxError`/traceback context instead of generic RPC closure messaging — Phase 40
@@ -55,6 +55,7 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 - [x] Renamed the package publish surface to `pi-ptc-advanced` at `0.15.0`, aligned root lock metadata, and tightened release-package verification to assert the new package identity while intentionally deferring broader docs/history updates — Phase 42
 - [x] Aligned README, changelog, maintainer docs, and a new `0.15.0` release note with the `pi-ptc-advanced` publish target while preserving explicit `pi-ptc-next` / upstream lineage and manual publish boundaries — Phase 43
 - [x] Finalized the `0.15.0` publish-readiness gate by excluding packaged Python bytecode artifacts, proving clean installability from the packed tarball, and aligning maintainer/release guidance to the final bounded manual-publish model — Phase 44
+- [x] Produced a Pi 0.74.0 compatibility delta audit (`.paul/phases/45-pi-api-and-documentation-delta-audit/45-01-PI-COMPAT-AUDIT.md`) covering installed-vs-latest evidence baseline, an 18-row extension API compatibility matrix, 6 prompt-integration findings, and a bounded Phase 46/47/48 remediation handoff with 6 explicit deferrals — Phase 45
 - [x] Full live audit: 51 tests across 3 phases proving 94% of helpers work, with stress testing (concurrency, large files, output budgets) and 7 multi-tool composition workflows all passing. 1 P0 bug found (glob/limit), 2 P1, 2 P2 issues documented — Milestone 14
 - [x] Systematic live-tool audit of all 21 Python helpers and 8 pipeline capabilities — Phase 36
 - [x] Added user-facing recipe workflow documentation and ecosystem composition proof — Phase 35
@@ -136,6 +137,8 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 | Keep Phase 33 scoped to additive eval/benchmark recipe-target contracts and deterministic seeded cases | The first M4 slice needed stable machine-readable recipe targets and bounded output expectations without expanding runtime semantics or docs scope prematurely | 2026-03-26 | Active |
 | Convert the new recipe-contract test files to import-based syntax and `process.cwd()` path resolution instead of changing package module mode | The phase surfaced local diagnostics in touched test files, and the smallest fix was file-local syntax/path cleanup rather than a package-wide module-policy change | 2026-03-26 | Active |
 | Keep Phase 39 file-discovery remediation bounded to helper-side `max_files` slicing + payload normalization instead of broad runtime refactors | Fixes the audit P0 root cause while preserving runtime surface stability and avoiding hotspot churn in `runtime.py` | 2026-03-27 | Active |
+| Keep Milestone 17 Phase 45 strictly audit-only, treating the installed Pi `0.74.0` package as the executable latest baseline because it equals the latest npm dist-tag | Bounds the research scope, avoids speculative remediation, and produces evidence-linked Phase 46/47/48 handoffs before any runtime or prompt-guidance changes | 2026-05-11 | Active |
+| Defer the CI "Verify release baseline" `ERR_UNKNOWN_FILE_EXTENSION` failure to Phase 48 or a `/paul:fix` loop instead of bundling it into Phase 45 | The Actions runner Node 20.20.2 issue is pre-existing, unrelated to the audit-only artifact, and out of Phase 45's scope; the audit must not become a CI/runner fix | 2026-05-11 | Active |
 
 ## Success Metrics
 | Metric | Target | Current | Status |
@@ -173,4 +176,4 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 
 ---
 *PROJECT.md — Updated when requirements or context change*
-*Last updated: 2026-03-29 after Phase 44 completion and Milestone 16 closure*
+*Last updated: 2026-05-11 after Phase 45 completion (Milestone 17 audit slice)*

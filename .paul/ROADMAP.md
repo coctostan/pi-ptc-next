@@ -6,18 +6,18 @@ Brownfield PALS adoption for `pi-ptc-next`, focused on hashline-native runtime i
 ## Current Milestone
 **Milestone 17 — Pi Compatibility and Prompt Integration Audit** (`0.16.0`)
 Status: 🚧 In Progress
-Phases: 0 of 4 complete
+Phases: 1 of 4 complete (25%)
 
 | Phase | Name | Plans | Status | Completed |
 |-------|------|-------|--------|-----------|
-| 45 | Pi API and Documentation Delta Audit | 1/1 | Planning complete | - |
+| 45 | Pi API and Documentation Delta Audit | 1/1 | ✅ Complete | 2026-05-11 |
 | 46 | Extension Runtime Compatibility Alignment | TBD | Not started | - |
 | 47 | System Prompt and Tool Guidance Optimization | TBD | Not started | - |
 | 48 | Compatibility Proof and Release Readiness | TBD | Not started | - |
 
 ### Phase 45: Pi API and Documentation Delta Audit
 Focus: Compare `pi-ptc-advanced` against both the installed local Pi package and latest published Pi package/docs/source to identify API drift, deprecated assumptions, new extension capabilities, and prompt/tool-description convention changes.
-Plans: 45-01 planned — audit-only compatibility delta against local/latest Pi docs, extension APIs, and prompt/tool guidance.
+Plans: 45-01 complete — produced `45-01-PI-COMPAT-AUDIT.md` (271 lines): evidence baseline confirms local install equals latest Pi (`@earendil-works/pi-coding-agent@0.74.0`); 18-row compatibility matrix; 6 prompt-integration findings; bounded Phase 46/47/48 remediation handoff with 6 explicit deferrals. R-1: build-time peer scope drift; R-2: `code_execution` lacks `promptSnippet`/`promptGuidelines`; R-3: hashline executor bridge lacks observability signal.
 
 ### Phase 46: Extension Runtime Compatibility Alignment
 Focus: Apply compatibility improvements in extension registration, lifecycle, tool metadata, runtime execution, callable-tool exposure, and fallback behavior based on the Phase 45 audit.

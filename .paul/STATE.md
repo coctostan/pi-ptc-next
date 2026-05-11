@@ -7,13 +7,13 @@ See: `.paul/PROJECT.md`
 **Current focus:** Milestone 17 will audit `pi-ptc-advanced` against local and latest Pi compatibility surfaces, then optimize extension integration and system-prompt/tool guidance.
 ## Current Position
 Milestone: Milestone 17 — Pi Compatibility and Prompt Integration Audit (0.16.0)
-Phase: 45 of 48 (Pi API and Documentation Delta Audit)
-Plan: 45-01 planned
-Status: PLAN complete — awaiting APPLY approval
-Last activity: 2026-05-11 — Plan 45-01 created
+Phase: 46 of 48 (Pi Extension Runtime Alignment)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-05-11 — Phase 45 complete, transitioned to Phase 46
 Progress:
-- Milestone 17 — Pi Compatibility and Prompt Integration Audit: [░░░░░░░░░░] 0%
-- Phase 45 — Pi API and Documentation Delta Audit: [░░░░░░░░░░] 0% (PLAN ✓)
+- Milestone 17 — Pi Compatibility and Prompt Integration Audit: [███░░░░░░░] 25% (Phase 45 ✓)
+- Phase 45 — Pi API and Documentation Delta Audit: [██████████] 100% ✓
 - Milestone 15 — Bug Fixes and Helper Hardening: [██████████] 100% ✓
 - Milestone 16 — Publishable Fork Packaging: [██████████] 100% ✓
 - Phase 42 — Rename and Package Identity: [██████████] 100% ✓
@@ -53,7 +53,7 @@ Progress:
 Current loop state:
 ```text
 PLAN ──▶ APPLY ──▶ UNIFY
-  ✓        ○        ○     [PLAN complete — ready for APPLY]
+  ○        ○        ○     [Phase 46 ready to plan]
 ```
 
 ## Accumulated Context
@@ -109,6 +109,9 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Phase 44 UNIFY reconciled the final publish-readiness slice into `44-01-SUMMARY.md`, recorded stable quality history for the packaging/installability gate, and closed Milestone 16 with the manual-publish boundary still explicit
 - 2026-05-11: DEAN pre-plan enforcement for Phase 45 found current npm audit findings (1 critical / 4 high / 5 moderate); user approved override and `.paul/dean-baseline.json` now records the pre-existing dependency-risk baseline for 30 days.
 - Plan 45-01 is audit-only: produce `.paul/phases/45-pi-api-and-documentation-delta-audit/45-01-PI-COMPAT-AUDIT.md` before any runtime or prompt-guidance implementation.
+- Phase 45 APPLY produced `.paul/phases/45-pi-api-and-documentation-delta-audit/45-01-PI-COMPAT-AUDIT.md` (271 lines): evidence baseline confirms local install equals latest published Pi (`@earendil-works/pi-coding-agent@0.74.0`); 18-row compatibility matrix; 6 prompt-integration findings; Phase 46/47/48 handoff with 6 explicit deferrals.
+- Phase 45 APPLY top-level findings: R-1 build-time peer scope drift (`@mariozechner/*@0.55.1` vs runtime `@earendil-works/*@0.74.0`) is the gating risk; R-2 `code_execution` lacks `promptSnippet`/`promptGuidelines` so it is invisible in the default system prompt's `Available tools` section; R-3 hashline executor bridge has no observability signal when no executors are emitted.
+- Phase 45 APPLY GitHub Flow postflight pushed commit 6fef3f4 to `feat/hashline-native-interop` and opened PR #1 against `main`; CI "Verify release baseline" reports FAILURE due to a pre-existing GitHub Actions Node 20.20.2 runner `ERR_UNKNOWN_FILE_EXTENSION` on `node --test test/*.test.ts`, which is unrelated to the audit-only artifact and is surfaced for UNIFY/Phase 48 to address.
 
 ### Deferred Issues
 - Bridge teardown when pi adds getToolExecutor()
@@ -118,20 +121,19 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Phase 44 removed packaged Python bytecode/cache artifacts from the tarball surface and added packed-artifact installability proof; preserve this publish-surface invariant in future release work
 
 ### Git State
-- Last committed checkpoint: `2d539c6` (`test: align hashline contract fixtures`) on `feat/hashline-native-interop`
-- Branch: `feat/hashline-native-interop` (ahead of origin by 2 local commits)
+- Last committed checkpoint: `6fef3f4` (`docs(phase-45): pi compat audit (45-01)`) on `feat/hashline-native-interop`
+- Branch: `feat/hashline-native-interop` (pushed to origin)
+- Open PR: [#1](https://github.com/coctostan/pi-ptc-next/pull/1) `feat/hashline-native-interop -> main` (mergeable; CI `Verify release baseline` FAILURE due to pre-existing Actions Node 20.20.2 `.ts` runner issue)
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; validate tag/version alignment before any publish action
-- Pushed to origin: backup branches preserve the Milestone 15/16 working and validated snapshots; feature branch not pushed after local cleanup
 ## Session Continuity
 Last session: 2026-05-11
-Stopped at: Plan 45-01 created, awaiting APPLY decision
-Next action: /paul:apply for Phase 45 Plan 45-01
-Resume file: .paul/phases/45-pi-api-and-documentation-delta-audit/45-01-PLAN.md
+Stopped at: Phase 45 complete (PLAN/APPLY/UNIFY ✓); transitioned to Phase 46 planning readiness
+Next action: /paul:plan for Phase 46
+Resume file: .paul/ROADMAP.md
 Resume context:
-- Milestone 17 is exploratory with high collaboration.
-- Phase 45 plan is audit-only and modifies only `.paul/phases/45-pi-api-and-documentation-delta-audit/45-01-PI-COMPAT-AUDIT.md` during APPLY.
-- Audit source scope is both the installed local Pi package and the latest published Pi package/docs/source where available.
-- DEAN baseline was user-approved for current npm audit findings; do not remediate dependencies in Phase 45.
+- Phase 45 audit handoff lives in `.paul/phases/45-pi-api-and-documentation-delta-audit/45-01-PI-COMPAT-AUDIT.md` §4; Phase 46 should sequence runtime work as 46-A (peerDependencies scope decision, gating), 46-B (remove `context` event cast), 46-C (hashline bridge visibility warning), 46-D (`sourceInfo` adoption strategy).
+- Phase 45 PR #1 is open on `feat/hashline-native-interop -> main`; the Actions "Verify release baseline" CI failure is a pre-existing Node 20.20.2 `.ts` runner issue, not a Phase 45 regression, and is deferred to Phase 48 or a `/paul:fix` loop.
+- DEAN dependency-audit baseline at `.paul/dean-baseline.json` remains user-approved; do not remediate dependencies inside Phase 46 unless a finding directly requires it.
 
 ---
-*STATE.md — Updated after Plan 45-01 creation (last updated: 2026-05-11)*
+*STATE.md — Updated after Phase 45 UNIFY + transition to Phase 46 (last updated: 2026-05-11)*
