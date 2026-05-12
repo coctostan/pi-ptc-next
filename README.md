@@ -82,7 +82,7 @@ Common auto-routing signals:
 
 This behavior is enabled by default with `PTC_AUTO_ROUTE=true`.
 The `code_execution` tool is also surfaced through Pi prompt metadata: a one-line `promptSnippet` appears in the default `Available tools` section, and active-only `promptGuidelines` summarize when to prefer Python-backed batching versus direct tools. Auto-routing remains a conservative fallback for strong PTC-shaped prompts.
-Completed `code_execution` results keep the default tool row compact while preserving the executed Python source in the expanded tool details. Expand the tool result when you need to debug exactly what Python ran after a session.
+Completed `code_execution` results keep the default tool row compact while preserving executed Python source in expanded details; recognized `ptc.report(...)` returns also get compact structured report rendering plus `details.report` for tests and evals.
 
 Use `nu` instead of `code_execution` for pipeline-style structured-data or filesystem-metadata analysis (`where`, `sort-by`, `group-by`, `first`, `histogram`). Use `code_execution` when the task needs custom per-item Python logic, stateful aggregation, complex output shapes, or multiple callable-tool calls orchestrated inside one local run.
 
@@ -120,6 +120,7 @@ This implementation now focuses on provider-agnostic reliability:
 - Added ephemeral request telemetry for routing, first-path, recovery count, and terminal state in successful `code_execution` details
 - Added deterministic JSON eval cases and a local benchmark runner for routing/recovery checks
 - Added regression coverage for mutation-prompt exclusion, one-shot recovery limits, and per-request state reset
+- Added `ptc.report(...)` for structured summaries with richer completed-result rendering and preserved `details.report` metadata
 
 ## Available Python functions
 
@@ -349,6 +350,7 @@ The runtime also exposes a `ptc` helper object:
 - `await ptc.first_success(calls, max_concurrency=None) -> Any`
 - `await ptc.reduce_tool(calls, reducer, initial, max_concurrency=None) -> Any`
 - `ptc.fit_output(value, max_chars=None, max_items=None, max_depth=None) -> dict[str, Any]`
+- `ptc.report(title, metrics=None, tables=None, samples=None, warnings=None) -> dict[str, Any]`
 - `ptc.expect_kind(value, kind) -> Any`
 - `ptc.list_callable_tools() -> list[dict[str, Any]]`
 - `ptc.get_tool_schema(name) -> dict[str, Any]`
@@ -363,6 +365,22 @@ For one simple tool call, call the tool directly.
 Optional tools should be detected from `ptc.list_callable_tools()`, not assumed from env/config alone.
 Use these helpers for structured tool results that already carry `responseId` and/or `filePath`; they avoid custom recursive JSON walking while keeping the contract intentionally narrow.
 Response/file handles are supported now; graph handles are still out of scope.
+Report returns are a soft contract: recognized reports get richer completed tool-result rendering and `details.report`, while free-form strings/dicts/lists and `ptc.fit_output(...)` continue to work normally.
+Report helper example:
+
+```python
+return ptc.report(
+    title="Repo summary",
+    metrics={"files": 42, "tests_green": True},
+    tables=[{
+        "title": "Largest files",
+        "columns": ["path", "lines"],
+        "rows": [{"path": "src/index.ts", "lines": 523}],
+    }],
+    samples=[{"label": "entry point", "value": {"path": "src/index.ts"}}],
+    warnings=["README is size-sensitive"],
+)
+```
 Handle workflow example:
 
 ```python

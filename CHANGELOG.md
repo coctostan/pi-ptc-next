@@ -7,6 +7,9 @@ This changelog tracks notable release-facing changes for the fork repository `pi
 ### Added
 - Completed `code_execution` results now expose the executed Python source in expanded tool details while keeping the default completed result compact.
 - `code_execution` prompt guidance now clarifies when to prefer `nu` for pipeline-style structured-data/filesystem analysis versus Python-backed orchestration for custom logic and aggregation.
+- `ptc.report(...)` adds a JSON-safe structured report helper for title/metrics/tables/samples/warnings.
+- Completed `code_execution` reports now render compact structured summaries by default, expand to fuller rows/samples/warnings, and preserve the report object in `details.report` / `details.reportProduced`.
+- Free-form returns and `ptc.fit_output(...)` remain unchanged when they are not the recognized `ptc_report` shape.
 
 ## 0.16.0 — 2026-05-12
 
