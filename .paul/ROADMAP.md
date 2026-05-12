@@ -6,7 +6,7 @@ Brownfield PALS adoption for `pi-ptc-next`, focused on hashline-native runtime i
 ## Current Milestone
 **Milestone 18 — PTC Leverage and Output Shape** (`0.17.0`) — 🚧 In Progress
 Status: 🚧 In Progress
-Phases: 3 of 5 complete (60%)
+Phases: 4 of 5 complete (80%)
 
 Theme: Make `code_execution` convert "I need to know X about this repo/dataset" into a small, well-shaped, debuggable answer with minimum agent friction — by introducing a structured result shape, callable-tool introspection, ergonomic helpers, path/UI polish, and a first-class test-runner verb. Caching, cross-call session state, and persistence remain explicitly deferred.
 
@@ -17,7 +17,7 @@ Reference: `.paul/notes/2026-05-12-ptc-leverage-brief.md` (pre-planning thesis, 
 | 49 | Pi TUI Audit and Collapsible Code Body | 49-01 | ✅ Complete | 2026-05-12 |
 | 50 | Structured Report Type | 50-01 | ✅ Complete | 2026-05-12 |
 | 51 | Path Ergonomics and Bridge Helpers | 51-01 | ✅ Complete | 2026-05-12 |
-| 52 | Callable-Tool Introspection | 52-01 | APPLY complete | - |
+| 52 | Callable-Tool Introspection | 52-01 | ✅ Complete | 2026-05-12 |
 | 53 | Test Runner Verb | TBD | Not started | - |
 
 ### Phase 49: Pi TUI Audit and Collapsible Code Body
@@ -34,7 +34,7 @@ Plans: 51-01 complete — added workspace-root-aware `relative` / `relative_to` 
 
 ### Phase 52: Callable-Tool Introspection
 Focus: Extend the Phase 47 `promptSnippet` / `promptGuidelines` plumbing inward so callable tools can optionally expose the same metadata to the Python surface; add `ptc.help(tool_name)` returning that metadata at runtime (likely as a Phase 50 report shape) so agents can introspect tool choice without inflating the tool-description block. Document the convention; do not force every tool to provide metadata.
-Plans: 52-01 APPLY complete — propagated optional `promptSnippet` / `promptGuidelines` into Python callable-tool metadata, added `ptc.help(tool_name)` for bounded on-demand runtime metadata, preserved `ptc.get_tool_schema(...)` as schema-only, and updated README/generated guidance without inflating the tool-description block; UNIFY pending.
+Plans: 52-01 complete — propagated optional `promptSnippet` / `promptGuidelines` into Python callable-tool metadata, added `ptc.help(tool_name)` for bounded on-demand runtime metadata, preserved `ptc.get_tool_schema(...)` as schema-only, updated README/generated guidance without inflating the tool-description block, reconciled results in `52-01-SUMMARY.md`, and merged through the Phase 52 GitHub Flow gate.
 
 ### Phase 53: Test Runner Verb
 Focus: Add `ptc.run_tests(pattern)` as a first-class verb that runs `node --test` against a pattern and parses pass/fail/duration into a structured Phase 50 report with a failures list and summary metrics. Cross-runner support (vitest/jest/pytest) and sandbox/Docker policy interactions are scoped during planning. Provides the agent a single ergonomic verb in place of bespoke subprocess + string-parsing patterns.
