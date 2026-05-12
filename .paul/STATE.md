@@ -150,8 +150,8 @@ PLAN ──▶ APPLY ──▶ UNIFY
 
 ### Git State
 - Phase 50 UNIFY metadata merged to `main` via PR #6 squash merge at `5eee7cb`.
-- Branch: `feature/51-path-ergonomics-bridge-helpers` created from synced `main` for Phase 51 APPLY.
-- PR #7: OPEN — https://github.com/coctostan/pi-ptc-next/pull/7 for Phase 51 APPLY branch `feature/51-path-ergonomics-bridge-helpers`; CI pending at APPLY handoff.
+- Phase 51 feature branch `feature/51-path-ergonomics-bridge-helpers` merged to `main` via PR #7 squash merge at `b2dc14b`; remote branch deleted by merge automation.
+- PR #7: MERGED — https://github.com/coctostan/pi-ptc-next/pull/7; GitHub Actions `Verify release baseline` and Socket checks SUCCESS.
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; no `0.16.0` tag created (publish remains manual)
 ## Session Continuity
 Last session: 2026-05-12
