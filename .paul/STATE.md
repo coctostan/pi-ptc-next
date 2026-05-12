@@ -156,15 +156,15 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; no `0.16.0` tag created (publish remains manual)
 ## Session Continuity
 Last session: 2026-05-12
-Stopped at: Phase 52 APPLY complete; UNIFY pending
+Stopped at: Paused after Phase 52 APPLY; UNIFY pending
 Next action: `/paul:unify .paul/phases/52-callable-tool-introspection/52-01-PLAN.md`
-Resume file: `.paul/phases/52-callable-tool-introspection/52-01-PLAN.md`
-wip_result: implementation committed (`9601383`), pushed, and PR #8 opened; SUMMARY/UNIFY not yet written.
+Resume file: `.paul/HANDOFF-2026-05-12-phase-52-unify.md`
+wip_result: implementation committed and pushed (`9601383`, `578b3ef`, `ca55153`); PR #8 checks passing; SUMMARY/UNIFY not yet written.
 Resume context:
-- APPLY implemented all 3 plan tasks: RED metadata/help-helper tests, GREEN metadata propagation plus `ptc.help(...)`, and docs/prompt guidance updates.
+- Active handoff captures Phase 52 APPLY completion and PR #8 state; STATE remains source of truth.
 - Verification evidence: focused callable introspection/prompt/index tests passed; `npm test` passed with 230 passing / 0 failing; `npm run build` passed; `npm audit --json` remained 0 critical / 0 high / 3 moderate.
-- Module notes for UNIFY: TODD TDD sequencing followed; WALT quality gate passed; DEAN no critical/high regression; RUBY flags runtime/index/README hotspots but changes stayed compact.
-- Ready to create `.paul/phases/52-callable-tool-introspection/52-01-SUMMARY.md` during UNIFY.
+- GitHub Flow: branch `feature/52-callable-tool-introspection`, PR #8 OPEN/CLEAN with GitHub Actions and Socket checks passing at pause.
+- Ready to create `.paul/phases/52-callable-tool-introspection/52-01-SUMMARY.md` during UNIFY, then run merge gate.
 
 ---
 *STATE.md — Updated after Phase 52 APPLY completion (last updated: 2026-05-12)*
