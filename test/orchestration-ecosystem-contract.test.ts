@@ -16,6 +16,9 @@ test("README orchestration helper guidance stays aligned with the shipped runtim
   assert.match(readme, /await ptc\.first_success\(calls, max_concurrency=None\) -> Any/);
   assert.match(readme, /await ptc\.reduce_tool\(calls, reducer, initial, max_concurrency=None\) -> Any/);
   assert.match(readme, /ptc\.fit_output\(value, max_chars=None, max_items=None, max_depth=None\) -> dict\[str, Any\]/);
+  assert.match(runtimeSource, /def report\([\s\S]*title: str,[\s\S]*metrics: dict\[str, Any\] \| None = None,[\s\S]*\) -> dict\[str, Any\]:/);
+  assert.match(readme, /ptc\.report\(title, metrics=None, tables=None, samples=None, warnings=None\) -> dict\[str, Any\]/);
+  assert.match(readme, /recognized reports get richer completed tool-result rendering and `details\.report`/);
   assert.match(readme, /Use orchestration helpers when you have repeated multi-tool calls, ordered fallback logic, or large intermediate results that should stay local to Python\./);
   assert.match(readme, /For one simple tool call, call the tool directly\./);
   assert.match(readme, /Hashline-style reduction example:/);

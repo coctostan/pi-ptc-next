@@ -156,6 +156,45 @@ function completedResult(): ToolResult {
   };
 }
 
+function reportCompletedResult(): ToolResult {
+  return {
+    content: [{ type: "text", text: JSON.stringify({ kind: "ptc_report", version: 1, title: "Repo summary" }) }],
+    details: {
+      nestedToolCalls: 1,
+      nestedToolNames: ["find"],
+      nestedResultChars: 80,
+      nestedResultCount: 1,
+      nestedErrors: 0,
+      durationMs: 2000,
+      estimatedAvoidedTokens: 210,
+      userCode: ["return ptc.report(title='Repo summary', metrics={'files': 12})"],
+      reportProduced: true,
+      report: {
+        kind: "ptc_report",
+        version: 1,
+        title: "Repo summary",
+        metrics: { files: 12, healthy: true },
+        tables: [
+          {
+            title: "Largest files",
+            columns: ["path", "lines"],
+            rows: [
+              { path: "src/index.ts", lines: 523 },
+              { path: "README.md", lines: 854 },
+              { path: "test/index.test.ts", lines: 1220 },
+            ],
+          },
+        ],
+        samples: [
+          { label: "example", value: { path: "src/report.ts", why: "contract" } },
+          { label: "secondary", value: ["a", "b", "c"] },
+        ],
+        warnings: ["README is large", "runtime.py is size-sensitive"],
+      },
+    },
+  };
+}
+
 function renderToText(tool: RegisteredTool, result: ToolResult, options: RenderOptions): string {
   const component = tool.renderResult!(result, options, fakeTheme());
   return component.render(120).join("\n");
@@ -187,6 +226,44 @@ test("completed expanded code_execution results include line-numbered Python sou
     assert.match(text, /1\s+│\s+entries = await ptc\.read_tree/);
     assert.match(text, /2\s+│\s+return \{'files': len\(entries\)\}/);
     assert.ok(text.indexOf('{"files":2,"status":"ok"}') < text.indexOf("Python source"));
+  } finally {
+    harness.cleanup();
+  }
+});
+
+test("completed collapsed code_execution report results render compact report details without raw JSON noise", async () => {
+  const harness = await registerCodeExecutionTool();
+  try {
+    const text = renderToText(harness.tool, reportCompletedResult(), { expanded: false, isPartial: false });
+
+    assert.match(text, /nested calls=1/);
+    assert.match(text, /Repo summary/);
+    assert.match(text, /files: 12/);
+    assert.match(text, /healthy: true/);
+    assert.match(text, /Largest files/);
+    assert.match(text, /src\/index\.ts/);
+    assert.match(text, /README is large/);
+    assert.match(text, /Python source: 1 line/);
+    assert.doesNotMatch(text, /"kind"\s*:\s*"ptc_report"/);
+    assert.doesNotMatch(text, /test\/index\.test\.ts/);
+    assert.doesNotMatch(text, /runtime\.py is size-sensitive/);
+  } finally {
+    harness.cleanup();
+  }
+});
+
+test("completed expanded code_execution report results render full rows samples warnings before Python source", async () => {
+  const harness = await registerCodeExecutionTool();
+  try {
+    const text = renderToText(harness.tool, reportCompletedResult(), { expanded: true, isPartial: false });
+
+    assert.match(text, /Repo summary/);
+    assert.match(text, /test\/index\.test\.ts/);
+    assert.match(text, /runtime\.py is size-sensitive/);
+    assert.match(text, /example/);
+    assert.match(text, /secondary/);
+    assert.match(text, /Python source/);
+    assert.ok(text.indexOf("Repo summary") < text.indexOf("Python source"));
   } finally {
     harness.cleanup();
   }
