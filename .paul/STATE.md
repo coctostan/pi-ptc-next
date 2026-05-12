@@ -9,10 +9,10 @@ See: `.paul/PROJECT.md`
 Milestone: Milestone 18 — PTC Leverage and Output Shape (`0.17.0`)
 Phase: 49 of 53 (Pi TUI Audit and Collapsible Code Body)
 Plan: 49-01 — `.paul/phases/49-pi-tui-audit-and-collapsible-code-body/49-01-PLAN.md`
-Status: APPLY complete; awaiting UNIFY
-Last activity: 2026-05-12 — Phase 49 APPLY completed: recorded Pi TUI audit artifact, added focused RED/GREEN render and prompt-guidance tests, implemented collapsed/expanded completed `code_execution` Python-source rendering, clarified `nu` vs `code_execution` guidance, and updated README/CHANGELOG; verification passed with focused tests plus `npm test && npm run build`.
+Status: UNIFY complete; merge gate pending for PR #5
+Last activity: 2026-05-12 — Phase 49 UNIFY created `49-01-SUMMARY.md`, reconciled the keybinding-hint implementation deviation, appended CODI/quality history, and prepared GitHub Flow merge-gate follow-up for PR #5.
 Progress:
-- Milestone 18 — PTC Leverage and Output Shape: [░░░░░░░░░░] 0% (Phase 49 PLAN ✓ / APPLY ✓ / UNIFY ○; Phase 50 not started, Phase 51 not started, Phase 52 not started, Phase 53 not started)
+- Milestone 18 — PTC Leverage and Output Shape: [██░░░░░░░░] 20% (Phase 49 PLAN ✓ / APPLY ✓ / UNIFY ✓; Phase 50 not started, Phase 51 not started, Phase 52 not started, Phase 53 not started)
 - Milestone 17 — Pi Compatibility and Prompt Integration Audit: [██████████] 100% ✓ (Phase 45 ✓, Phase 46 ✓, Phase 47 ✓, Phase 48 ✓)
 - Phase 45 — Pi API and Documentation Delta Audit: [██████████] 100% ✓
 - Phase 46 — Extension Runtime Compatibility Alignment: [██████████] 100% ✓
@@ -57,7 +57,7 @@ Progress:
 Current loop state:
 ```text
 PLAN ──▶ APPLY ──▶ UNIFY
-  ✓        ✓        ○     [49-01 APPLY complete; UNIFY pending]
+  ✓        ✓        ✓     [49-01 UNIFY complete; merge gate pending]
 ```
 
 ## Accumulated Context
@@ -125,6 +125,7 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - 2026-05-12: DEAN pre-plan enforcement for Phase 48 found current npm audit findings (4 critical / 0 high / 3 moderate); user approved override and `.paul/dean-baseline.json` now records the acknowledged dependency-risk baseline through 2026-06-11.
 - Phase 48 PLAN created `.paul/phases/48-compatibility-proof-and-release-readiness/48-01-PLAN.md`: TDD release-readiness plan to add focused release metadata drift coverage, bump package/release verification to `0.16.0`, update README/CHANGELOG/runbook/release notes, run full verification, and require human approval of the audit caveat before UNIFY.
 - Phase 49 APPLY implemented completed `code_execution` source visibility via Pi's existing collapsed/expanded tool-result affordance, kept partial execution rendering unchanged, clarified `nu` versus `code_execution` prompt guidance, and verified 223 tests passing with `npm test && npm run build`; `ptc.report(...)` and other Milestone 18 helper/report features remain deferred.
+- Phase 49 UNIFY reconciled plan-vs-actual in `49-01-SUMMARY.md`, recorded CODI injected-degraded history for the plan's blast-radius evidence, appended WALT quality history (`223` passing / `0` failing), and documented the keybinding-hint implementation deviation as compatibility-preserving.
 ### Deferred Issues
 - Bridge teardown when pi adds getToolExecutor()
 - `src/python-runtime/runtime.py` is now a significant debt hotspot at 743 lines after Phase 41 behavior additions; future changes should avoid casual growth without extraction justification
@@ -144,10 +145,10 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; no `0.16.0` tag created (publish remains manual)
 ## Session Continuity
 Last session: 2026-05-12
-Stopped at: Phase 49 APPLY complete; paused before UNIFY for 49-01
-Next action: `/paul:unify` for `.paul/phases/49-pi-tui-audit-and-collapsible-code-body/49-01-PLAN.md`
+Stopped at: Phase 49 UNIFY complete; merge gate pending for PR #5
+Next action: complete GitHub Flow merge gate for PR #5, then transition to Phase 50 planning
 Resume file: none — prior Phase 49 PLAN handoff consumed and archived to `.paul/handoffs/archive/HANDOFF-2026-05-12-phase49-plan-complete.md`
-github_flow_postflight: commit `6e90062`, pushed branch `feature/49-pi-tui-audit-and-collapsible-code-body`, opened PR https://github.com/coctostan/pi-ptc-next/pull/5 targeting `main`; CI/review status to be reconciled during UNIFY.
+github_flow_merge_gate: PR https://github.com/coctostan/pi-ptc-next/pull/5 targeting `main`; UNIFY artifacts pending commit/push before final CI/merge check.
 Resume context:
 - APPLY changed `.paul/phases/49-pi-tui-audit-and-collapsible-code-body/49-01-PI-TUI-AUDIT.md`, `src/index.ts`, `test/code-execution-rendering.test.ts`, `test/prompt-guidance.test.ts`, `README.md`, and `CHANGELOG.md`.
 - Verification passed: `node --test test/code-execution-rendering.test.ts test/prompt-guidance.test.ts`; `npm test && npm run build` (223 tests, 0 failures).
@@ -156,4 +157,4 @@ Resume context:
 - UNIFY should reconcile one implementation deviation: runtime used Pi TUI `getKeybindings()` with the active render `theme` to produce the expansion hint instead of directly importing `keyHint` from `@mariozechner/pi-coding-agent`, because this CommonJS package cannot safely runtime-import that ESM-only exported entrypoint while preserving package installability.
 
 ---
-*STATE.md — Updated after Phase 49 APPLY completion (last updated: 2026-05-12)*
+*STATE.md — Updated after Phase 49 UNIFY reconciliation (last updated: 2026-05-12)*
