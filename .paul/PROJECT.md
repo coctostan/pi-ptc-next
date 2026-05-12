@@ -9,7 +9,7 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 ## Current State
 | Attribute | Value |
 |-----------|-------|
-| Version | 0.16.0 |
+| Version | 0.17.0 (Milestone 18 complete) |
 | Status | Prototype |
 | Last Updated | 2026-05-12 |
 
@@ -47,7 +47,7 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 - [x] Added bounded Python reduction and output-budget helpers `ptc.reduce_tool(...)` / `ptc.fit_output(...)` aligned to the session output cap, with focused execution proof — Phase 31
 - [x] Added execution-level ecosystem proof plus README/tool-description guidance for `ptc.batch_tool(...)`, `ptc.first_success(...)`, `ptc.reduce_tool(...)`, and `ptc.fit_output(...)`, including compact hashline/codegraph/web composition examples — Phase 32
 ### Active (In Progress)
-- [ ] Milestone 18 Phase 53 — Test Runner Verb (`ptc.run_tests(pattern)`)
+- *(no active phase — Milestone 18 closed; next milestone TBD)*
 ### Validated (Shipped)
 - [x] Restored the P0 file-discovery helper path by removing `glob(limit=...)` dependency and proving bounded success for `ptc.read_tree()`, `ptc.find_files()`, and `ptc.find_files_abs()` in live audit coverage — Phase 39
 - [x] Improved syntax/compile-time error surfacing so pre-terminal Python failures now expose actionable `SyntaxError`/traceback context instead of generic RPC closure messaging — Phase 40
@@ -62,12 +62,13 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 - [x] Added completed `code_execution` source visibility through Pi's collapsed/expanded tool-result affordance, recorded the TUI primitive audit, clarified `nu` versus `code_execution` prompt guidance, and documented/verified the behavior with focused render and prompt tests — Phase 49
 - [x] Added `ptc.report(...)` as an optional JSON-safe structured report shape with preserved `details.report` / `details.reportProduced`, compact/expanded completed-result rendering, and README/CHANGELOG guidance while keeping free-form and `ptc.fit_output(...)` returns unchanged — Phase 50
 - [x] Added optional callable-tool prompt metadata propagation into Python plus `ptc.help(tool_name)` for bounded on-demand helper guidance while preserving schema-only `ptc.get_tool_schema(...)` behavior — Phase 52
+- [x] Added `ptc.run_tests(pattern)` as a first-class Node `node --test` helper that returns a Phase 50 `ptc_report` with pass/fail/duration metrics, a bounded failures table, runner-availability data, a fixed 120s timeout, and reentry-safe subprocess execution, plus README/CHANGELOG/generated-guidance coverage — Phase 53
 - [x] Full live audit: 51 tests across 3 phases proving 94% of helpers work, with stress testing (concurrency, large files, output budgets) and 7 multi-tool composition workflows all passing. 1 P0 bug found (glob/limit), 2 P1, 2 P2 issues documented — Milestone 14
 - [x] Systematic live-tool audit of all 21 Python helpers and 8 pipeline capabilities — Phase 36
 - [x] Added user-facing recipe workflow documentation and ecosystem composition proof — Phase 35
 - [x] Added concrete cross-repo recipe artifacts plus deterministic benchmark baseline — Phase 34
 ### Planned (Next)
-- [ ] Phase 51 — Path Ergonomics (`relative=True`, `relative_to`, `tabulate`, `diff`)
+- *(none queued — next milestone scope TBD)*
 ### Out of Scope
 - [ ] Long-term IR refactors during the early interop milestones
 - [ ] Broad helper ergonomics changes beyond what is required for trustworthy structured interop
@@ -158,6 +159,9 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 | Make `ptc.tabulate(...)` return the exact Phase 50 report table payload | Direct `ptc.report(tables=[ptc.tabulate(...)])` composition avoids a near-compatible variant and keeps output-shape contracts simple | 2026-05-12 | Active |
 | Keep broad aggregators (`top_n`, `group_by`, `histogram`) out of PTC helper scope | `nu` is the intended native path for grouping, histograms, ranking, and pipeline-style data analysis; PTC should add only small bridge helpers here | 2026-05-12 | Active |
 | Keep `ptc.help(...)` as the richer callable metadata helper while preserving schema-only `ptc.get_tool_schema(...)` | Agents need one targeted lookup for optional-tool purpose, prompt metadata, and call parameters, but existing schema callers must remain compatible and prompt guidance must avoid static inventory bloat | 2026-05-12 | Active |
+| Scope `ptc.run_tests(pattern)` to Node `node --test` only for Phase 53 | A focused single-runner helper meets the Milestone 18 ergonomics goal without expanding the helper surface or adding dependencies; cross-runner support can grow as new helpers (e.g., `ptc.run_pytest`) later | 2026-05-12 | Active |
+| Treat missing `node` and timeouts as report data (`runner_available=false` / `timed_out=true`) instead of Python errors | Agents calling the helper inside Docker / minimal sandboxes should still get a structured answer; only invalid arguments raise `ValueError`, matching the Phase 50 reporting style | 2026-05-12 | Active |
+| Scrub `NODE_TEST_CONTEXT` / `NODE_RUN_SCRIPT_NAME` from the helper's child env | External-process helpers must drop the parent's reentry markers so calling `ptc.run_tests` from inside a Node test run does not trigger "node:test run() is being called recursively" and miscount totals as zero | 2026-05-12 | Active |
 
 ## Success Metrics
 | Metric | Target | Current | Status |
@@ -177,6 +181,7 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 | Structured report shape for code_execution outputs | Yes | `ptc.report(...)`, `details.report` / `details.reportProduced`, compact/expanded rendering, and docs landed in Phase 50 | Achieved |
 | Path ergonomics and bridge helpers for Python analysis flows | Yes | `relative` / `relative_to` path formatting, `ptc.tabulate(...)`, shallow `ptc.diff(...)`, focused tests, README/tool guidance, and CHANGELOG landed in Phase 51 | Achieved |
 | Callable-tool prompt metadata and on-demand help | Yes | Optional `promptSnippet` / `promptGuidelines` propagation plus `ptc.help(tool_name)` landed with runtime, docs, generated-guidance, and contract-test proof in Phase 52 | Achieved |
+| Bounded Node test runner verb for Python flows | Yes | `ptc.run_tests(pattern)` returns a Phase 50 `ptc_report` with pass/fail/duration metrics, a bounded failures table, runner-availability data, fixed 120s timeout, and reentry-safe subprocess execution; landed with runtime, docs, generated-guidance, and live tests in Phase 53 | Achieved |
 | Deterministic recipe-target contract and seeded M4 workflow corpus | Yes | Additive `recipe_target` metadata, benchmark-result passthrough, and four deterministic recipe cases landed in Phase 33 | Achieved |
 
 ## Tech Stack
@@ -198,4 +203,4 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 
 ---
 *PROJECT.md — Updated when requirements or context change*
-*Last updated: 2026-05-12 after Phase 52 completion (callable-tool introspection)*
+*Last updated: 2026-05-12 after Phase 53 completion (test runner verb); Milestone 18 (`0.17.0`) complete*

@@ -10,9 +10,9 @@ Milestone: Milestone 18 — PTC Leverage and Output Shape (`0.17.0`)
 Phase: 53 of 53 (Test Runner Verb)
 Plan: `.paul/phases/53-test-runner-verb/53-01-PLAN.md`
 Status: UNIFY complete — Phase 53 closed; Milestone 18 ready to complete
-Last activity: 2026-05-12 — Phase 53 UNIFY closed `ptc.run_tests(pattern)` with SUMMARY.md; all ACs PASS; full suite 236/236 ✓, build clean, audit 0 critical / 0 high; PR #9 awaiting CI/merge per github-flow.
+Last activity: 2026-05-12 — Phase 53 UNIFY closed `ptc.run_tests(pattern)` with SUMMARY.md; all ACs PASS; full suite 236/236 ✓, build clean, audit 0 critical / 0 high; PR #9 squash-merged to `main` (`1f9305a`); CI green; feature branch deleted; Milestone 18 ready to complete.
 Progress:
-- Milestone 18 — PTC Leverage and Output Shape: [██████████] 100% (Phase 49 ✓; Phase 50 ✓; Phase 51 ✓; Phase 52 ✓; Phase 53 ✓) — all plans unified; awaiting milestone-completion routing and PR #9 merge.
+- Milestone 18 — PTC Leverage and Output Shape: [██████████] 100% (Phase 49 ✓; Phase 50 ✓; Phase 51 ✓; Phase 52 ✓; Phase 53 ✓) — all plans unified and merged to `main`; awaiting milestone-completion routing.
 - Milestone 17 — Pi Compatibility and Prompt Integration Audit: [██████████] 100% ✓ (Phase 45 ✓, Phase 46 ✓, Phase 47 ✓, Phase 48 ✓)
 - Phase 45 — Pi API and Documentation Delta Audit: [██████████] 100% ✓
 - Phase 46 — Extension Runtime Compatibility Alignment: [██████████] 100% ✓
@@ -156,11 +156,12 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Phase 51 feature branch `feature/51-path-ergonomics-bridge-helpers` merged to `main` via PR #7 squash merge at `b2dc14b`; remote branch deleted by merge automation.
 - PR #7: MERGED — https://github.com/coctostan/pi-ptc-next/pull/7; GitHub Actions `Verify release baseline` and Socket checks SUCCESS.
 - PR #8: MERGED — https://github.com/coctostan/pi-ptc-next/pull/8; squash merge `b91d71d` to `main`; GitHub Actions `Verify release baseline` and Socket checks SUCCESS; remote feature branch deleted by merge automation.
+- PR #9: MERGED — https://github.com/coctostan/pi-ptc-next/pull/9; squash merge `1f9305a` to `main`; GitHub Actions `Verify release baseline` SUCCESS; feature branch `feature/53-test-runner-verb` deleted by merge automation; local `main` fast-forwarded.
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; no `0.16.0` tag created (publish remains manual)
 ## Session Continuity
 Last session: 2026-05-12
-Stopped at: Phase 53 UNIFY complete; Milestone 18 ready to complete after PR #9 merges to main.
-Next action: `/paul:milestone` to close Milestone 18 (or merge PR #9 first if reviewing the feature branch is preferred)
+Stopped at: Phase 53 UNIFY complete and PR #9 merged to main; Milestone 18 ready to complete.
+Next action: `/paul:milestone` to close Milestone 18
 Resume file: `.paul/phases/53-test-runner-verb/53-01-SUMMARY.md`
 wip_result: committed — Phase 53 APPLY + lifecycle changes committed and pushed; PR #9 open against `main`; UNIFY artifacts pending commit on this branch.
 Resume context:
