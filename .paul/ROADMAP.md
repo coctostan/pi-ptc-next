@@ -6,14 +6,14 @@ Brownfield PALS adoption for `pi-ptc-next`, focused on hashline-native runtime i
 ## Current Milestone
 **Milestone 17 — Pi Compatibility and Prompt Integration Audit** (`0.16.0`)
 Status: 🚧 In Progress
-Phases: 2 of 4 complete (50%)
+Phases: 3 of 4 complete (75%); Phase 48 ready to plan
 
 | Phase | Name | Plans | Status | Completed |
 |-------|------|-------|--------|-----------|
 | 45 | Pi API and Documentation Delta Audit | 1/1 | ✅ Complete | 2026-05-11 |
 | 46 | Extension Runtime Compatibility Alignment | 1/1 | ✅ Complete | 2026-05-11 |
-| 47 | System Prompt and Tool Guidance Optimization | TBD | Ready to plan | - |
-| 48 | Compatibility Proof and Release Readiness | TBD | Not started | - |
+| 47 | System Prompt and Tool Guidance Optimization | 1/1 | ✅ Complete | 2026-05-11 |
+| 48 | Compatibility Proof and Release Readiness | TBD | Ready to plan | - |
 
 ### Phase 45: Pi API and Documentation Delta Audit
 Focus: Compare `pi-ptc-advanced` against both the installed local Pi package and latest published Pi package/docs/source to identify API drift, deprecated assumptions, new extension capabilities, and prompt/tool-description convention changes.
@@ -25,11 +25,11 @@ Plans: 46-01 complete — produced `46-01-SUMMARY.md`: aligned package metadata/
 
 ### Phase 47: System Prompt and Tool Guidance Optimization
 Focus: Improve how `code_execution` informs the model through system-prompt/tool-description guidance, helper-selection instructions, optional tool branching, prompt budget discipline, and latest Pi prompt conventions.
-Plans: TBD (defined during /paul:plan)
+Plans: 47-01 complete — produced `47-01-SUMMARY.md`: added RED coverage, registered approved `promptSnippet` / `promptGuidelines` for `code_execution`, made auto-route prompt injection idempotent with `systemPromptOptions`, threaded custom-tool prompt metadata, updated focused README/CHANGELOG notes, recorded WALT/CODI/SKIP/RUBY post-unify evidence, and carried current dependency-audit advisory reconciliation forward to Phase 48.
 
 ### Phase 48: Compatibility Proof and Release Readiness
 Focus: Add or refresh tests, docs, compatibility notes, and release verification for the `0.16.0` compatibility milestone.
-Plans: TBD (defined during /paul:plan)
+Plans: TBD (defined during /paul:plan); carry forward Phase 47 dependency-audit reconciliation plus final compatibility/release-readiness proof.
 
 ## Completed Milestones
 <details>
@@ -234,4 +234,4 @@ Suggested implementation branch from project docs:
 - `feat/hashline-native-interop`
 
 ---
-*Last updated: 2026-05-11 after Plan 45-01 creation*
+*Last updated: 2026-05-11 after Phase 47 UNIFY completion*

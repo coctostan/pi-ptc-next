@@ -4,18 +4,19 @@
 See: `.paul/PROJECT.md`
 
 **Core value:** `pi-ptc-next` should execute the same active Pi tool implementations that the user sees in chat.
-**Current focus:** Phase 47 will optimize `code_execution` system-prompt/tool guidance now that Phase 46 aligned the Mario-scope runtime compatibility baseline.
+**Current focus:** Phase 48 will complete compatibility proof and release readiness for the 0.16.0 milestone, building on Phase 47 prompt metadata integration and carrying forward current dependency-audit advisory reconciliation.
 ## Current Position
 Milestone: Milestone 17 — Pi Compatibility and Prompt Integration Audit (0.16.0)
-Phase: 47 of 48 (System Prompt and Tool Guidance Optimization)
+Phase: 48 of 48 (Compatibility Proof and Release Readiness)
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-05-11 — Phase 46 complete, transitioned to Phase 47
+Last activity: 2026-05-11 — Phase 47 UNIFY complete; transitioned to Phase 48 planning readiness
 Progress:
-- Milestone 17 — Pi Compatibility and Prompt Integration Audit: [█████░░░░░] 50% (Phase 45 ✓, Phase 46 ✓)
+- Milestone 17 — Pi Compatibility and Prompt Integration Audit: [████████░░] 80% (Phase 45 ✓, Phase 46 ✓, Phase 47 ✓, Phase 48 ready)
 - Phase 45 — Pi API and Documentation Delta Audit: [██████████] 100% ✓
 - Phase 46 — Extension Runtime Compatibility Alignment: [██████████] 100% ✓
-- Phase 47 — System Prompt and Tool Guidance Optimization: [░░░░░░░░░░] 0% ready to plan
+- Phase 47 — System Prompt and Tool Guidance Optimization: [██████████] 100% ✓
+- Phase 48 — Compatibility Proof and Release Readiness: [░░░░░░░░░░] 0% ready to plan
 - Milestone 15 — Bug Fixes and Helper Hardening: [██████████] 100% ✓
 - Milestone 16 — Publishable Fork Packaging: [██████████] 100% ✓
 - Phase 42 — Rename and Package Identity: [██████████] 100% ✓
@@ -55,7 +56,7 @@ Progress:
 Current loop state:
 ```text
 PLAN ──▶ APPLY ──▶ UNIFY
-  ○        ○        ○     [Phase 47 ready to plan]
+  ○        ○        ○     [Phase 48 ready to plan]
 ```
 
 ## Accumulated Context
@@ -118,31 +119,36 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Phase 46 PLAN created `.paul/phases/46-extension-runtime-compatibility-alignment/46-01-PLAN.md`: after user clarification, selected latest Mario-scope package alignment (`@mariozechner/*@0.73.1`) instead of a hard `@earendil-works/*` switch; plan still covers context-event compatibility, explicit `sourceInfo` compatibility strategy, and one-time hashline bridge no-executor observability signal; README/CHANGELOG/prompt-guidance remain deferred to Phase 47/48.
 - Phase 46 APPLY completed in commit `c859c9b`: package metadata/lockfile now target `@mariozechner/*@0.73.1`, `sourceInfo` is preserved separately from PTC's internal `source` taxonomy, and the hashline bridge emits a no-executor observability warning while preserving builtin fallback. Deviation: Mario 0.73.1 does not type the `context` event overload, so APPLY retained an explicit compatibility shim instead of the originally planned direct typed call.
 - Phase 46 UNIFY created `46-01-SUMMARY.md`, recorded quality/CODI module evidence, merged PR #2 via squash at `c3f7d06`, and transitioned the milestone to Phase 47 planning readiness.
+- Phase 47 UNIFY created `47-01-SUMMARY.md`, recorded WALT/CODI/SKIP/RUBY post-unify evidence, confirmed `npm test && npm run build` at 213 passing / 0 failing, marked Phase 47 complete, and transitioned the milestone to Phase 48 planning readiness.
+- Phase 47 prompt metadata decision: keep high-level `code_execution` routing guidance in Pi `promptSnippet` / `promptGuidelines`, preserve deep helper details in the tool description, and make fallback auto-route injection idempotent with `systemPromptOptions`.
 ### Deferred Issues
 - Bridge teardown when pi adds getToolExecutor()
 - `src/python-runtime/runtime.py` is now a significant debt hotspot at 743 lines after Phase 41 behavior additions; future changes should avoid casual growth without extraction justification
 - Existing docs/test hotspots remain in `README.md` (853 lines), `src/index.ts` (424 lines), and `test/index.test.ts` (1220 lines); future proof/docs work should keep using focused companion files or extract sections before growing those anchors further
 - Full-suite verification now passes at `207` passing / `0` failing after Phase 41 APPLY; maintain this as the new baseline for subsequent milestones
 - Phase 44 removed packaged Python bytecode/cache artifacts from the tarball surface and added packed-artifact installability proof; preserve this publish-surface invariant in future release work
+- Phase 48 must reconcile current `npm audit --json` advisory counts (4 critical / 0 high / 3 moderate during Phase 47 UNIFY) against the existing DEAN baseline and Mario-scope compatibility target before declaring 0.16.0 release readiness.
 
 ### Fixes
 | Fix 45-02 (standard, PARTIAL): bump CI Actions `node-version` 20→22 to fix `.ts` test loader | Phase 45 side-loop | `.github/workflows/ci.yml`, `.paul/phases/45-pi-api-and-documentation-delta-audit/45-02-FIX.md`, `.paul/phases/45-pi-api-and-documentation-delta-audit/45-02-FIX-SUMMARY.md` (commit `e777394`) |
 | Fix 45-03 (standard, PASS): close all 26 newly-visible CI failures — force-add 5 ungitignored eval fixtures, install `@ast-grep/cli` + `difftastic 0.69.0` on CI, clone `pi-hashline-readmap` as sibling repo with its own `node_modules` and export `PI_HASHLINE_READMAP_ROOT` | Phase 45 side-loop | `.github/workflows/ci.yml`, 5 `.pi/evals/ptc/{baselines,recipes}/*` files, FIX + FIX-SUMMARY (commits `623ad2f`, `142e3f1`, `38876f4`, `d19b426`, `15d95b3`); CI now 207/207 PASS, PR #1 mergeable |
 
 ### Git State
-- Last committed checkpoint: `f339028` (`docs(phase-46): transition to phase 47`) on `main`
-- Branch: `main` (pushed to `origin/main` after Phase 46 transition)
-- PR #2: merged via squash at `c3f7d06`; feature branch deleted on origin
+- Last local checkpoint: `docs(47): complete prompt guidance phase` on `feature/47-system-prompt-guidance` (current hash resolved by git history after amend/push)
+- Branch: `feature/47-system-prompt-guidance` (ahead of `main` by 4 commits before push/merge gate)
+- PR #3: open against `main`; merge gate pending post-UNIFY push/CI/merge
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; validate tag/version alignment before any publish action
 ## Session Continuity
 Last session: 2026-05-11
-Stopped at: Phase 46 complete (PLAN/APPLY/UNIFY ✓); transitioned to Phase 47 planning readiness
-Next action: /paul:plan for Phase 47
+Stopped at: Phase 47 UNIFY complete; ready to plan Phase 48
+Next action: /paul:plan for Phase 48
 Resume file: .paul/ROADMAP.md
+wip_result: Phase 47 complete; summary created at `.paul/phases/47-system-prompt-and-tool-guidance-optimization/47-01-SUMMARY.md`
 Resume context:
-- Phase 46 summary: `.paul/phases/46-extension-runtime-compatibility-alignment/46-01-SUMMARY.md`.
-- Phase 46 shipped latest-Mario package alignment (`@mariozechner/*@0.73.1`), explicit `sourceInfo` compatibility handling, and a hashline no-executor startup warning.
-- Phase 47 should implement the prompt/tool-guidance handoff from Phase 45: `promptSnippet`, `promptGuidelines`, auto-route idempotence with `systemPromptOptions`, and custom-tool prompt metadata threading; preserve the Phase 46 decision not to claim an `@earendil-works/*` runtime migration.
+- Phase 47 shipped Pi prompt metadata for `code_execution`, idempotent `systemPromptOptions`-aware fallback auto-routing, custom-tool prompt metadata preservation, and bounded README/CHANGELOG notes.
+- Verification: `npm test && npm run build` passed with 213 tests / 0 failures and clean TypeScript build.
+- Post-unify reports: WALT quality history row appended; CODI history row appended; SKIP knowledge entry and RUBY debt warnings recorded in `47-01-SUMMARY.md`.
+- Carry forward to Phase 48: current `npm audit --json` advisory counts are 4 critical / 0 high / 3 moderate and require release-readiness reconciliation.
 
 ---
-*STATE.md — Updated after Phase 46 UNIFY + transition to Phase 47 (last updated: 2026-05-11)*
+*STATE.md — Updated after Phase 47 UNIFY completion (last updated: 2026-05-11)*
