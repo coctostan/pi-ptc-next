@@ -7,12 +7,12 @@ See: `.paul/PROJECT.md`
 **Current focus:** Milestone 18 — PTC Leverage and Output Shape (`0.17.0`). Make `code_execution` convert "I need to know X about this repo/dataset" into a small, well-shaped, debuggable answer with minimum agent friction — structured report shape, callable-tool introspection, ergonomic helpers, path/UI polish, and a first-class test-runner verb. Caching, cross-call session state, and persistence remain explicitly deferred (see `.paul/notes/2026-05-12-ptc-leverage-brief.md`).
 ## Current Position
 Milestone: Milestone 18 — PTC Leverage and Output Shape (`0.17.0`)
-Phase: 50 of 53 (Structured Report Type)
+Phase: 51 of 53 (Path Ergonomics and Bridge Helpers)
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-05-12 — Phase 49 completed and PR #5 merged; transitioned to Phase 50 planning readiness.
+Last activity: 2026-05-12 — Phase 50 complete: `ptc.report(...)` structured report type shipped, reconciled in `50-01-SUMMARY.md`, and project transitioned to Phase 51.
 Progress:
-- Milestone 18 — PTC Leverage and Output Shape: [██░░░░░░░░] 20% (Phase 49 ✓; Phase 50 ready to plan, Phase 51 not started, Phase 52 not started, Phase 53 not started)
+- Milestone 18 — PTC Leverage and Output Shape: [████░░░░░░] 40% (Phase 49 ✓; Phase 50 ✓; Phase 51 ready to plan; Phase 52 not started, Phase 53 not started)
 - Milestone 17 — Pi Compatibility and Prompt Integration Audit: [██████████] 100% ✓ (Phase 45 ✓, Phase 46 ✓, Phase 47 ✓, Phase 48 ✓)
 - Phase 45 — Pi API and Documentation Delta Audit: [██████████] 100% ✓
 - Phase 46 — Extension Runtime Compatibility Alignment: [██████████] 100% ✓
@@ -57,7 +57,7 @@ Progress:
 Current loop state:
 ```text
 PLAN ──▶ APPLY ──▶ UNIFY
-  ○        ○        ○     [Phase 50 ready to plan]
+  ○        ○        ○     [Phase 51 ready to plan]
 ```
 
 ## Accumulated Context
@@ -70,6 +70,8 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Allowlisted-but-unavailable tools now produce explicit registry warnings instead of silent callable-surface mismatches
 - Default conservative callable-tool behavior for non-personal sessions remains unchanged
 - Phase 20 keeps routine verification repo-local (`npm run verify:personal`, `npm run verify:personal:full`) while leaving git remote/branch/rebase/push actions manual and documented
+- Phase 50 established `ptc.report(...)` as an optional recognized output shape: preserve free-form returns, keep normal `output`, and attach structured report metadata through `details.report` / `details.reportProduced` for tests/evals.
+- Future completed-result output shapes should stay compact by default, expand for fuller details, and keep rendering helpers outside `src/index.ts` when practical.
 - Milestone 7 upstream PR-prep material now lives behind `.paul/milestones/0.6.0-UPSTREAM-PR-ARTIFACTS.md`, and current maintainer docs treat it as archived reference only
 - Phase 22 set the fork's package/release baseline to 0.8.0, added fork repository metadata, and introduced repo-local `verify:release-package` tarball verification
 - Phase 23 added a durable `CHANGELOG.md`, dedicated `0.8.0` release notes, and maintainer-doc links that describe the personal fork release baseline conservatively
@@ -127,11 +129,14 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Phase 49 APPLY implemented completed `code_execution` source visibility via Pi's existing collapsed/expanded tool-result affordance, kept partial execution rendering unchanged, clarified `nu` versus `code_execution` prompt guidance, and verified 223 tests passing with `npm test && npm run build`; `ptc.report(...)` and other Milestone 18 helper/report features remain deferred.
 - Phase 49 UNIFY reconciled plan-vs-actual in `49-01-SUMMARY.md`, recorded CODI injected-degraded history for the plan's blast-radius evidence, appended WALT quality history (`223` passing / `0` failing), and documented the keybinding-hint implementation deviation as compatibility-preserving.
 - Phase 49 GitHub Flow merge gate passed: PR #5 merged via squash to `main` at `44c8427` with all CI and Socket checks successful; feature branch deleted by GitHub.
+- Phase 50 PLAN created `.paul/phases/50-structured-report-type/50-01-PLAN.md`: TDD plan to add `ptc.report(...)` canonical report helper, preserve recognized reports in `details.report`/`details.reportProduced`, render compact/expanded report output, update README/CHANGELOG, and preserve free-form/`ptc.fit_output(...)` behavior.
+- Phase 50 APPLY added `ptc.report(...)` canonical JSON-safe report shape, preserved recognized reports in `details.report` / `details.reportProduced`, rendered compact/expanded completed report output, updated README/CHANGELOG, and preserved free-form / `ptc.fit_output(...)` behavior; verification passed with focused report/render/docs tests, `npm test` (228 passing / 0 failing), and `npm run build`.
+- Phase 50 UNIFY reconciled plan-vs-actual in `50-01-SUMMARY.md`, recorded WALT/CODI/SKIP/RUBY post-unify evidence, marked Phase 50 complete, and transitioned Milestone 18 to Phase 51 planning readiness.
 ### Deferred Issues
 - Bridge teardown when pi adds getToolExecutor()
-- `src/python-runtime/runtime.py` is now a significant debt hotspot at 743 lines after Phase 41 behavior additions; future changes should avoid casual growth without extraction justification
+- `src/python-runtime/runtime.py` is now a significant debt hotspot at 908 lines after Phase 50 report validation additions; future changes should avoid casual growth without extraction justification
 - Existing docs/test/runtime hotspots remain in `README.md` (854 lines), `src/index.ts` (523 lines after Phase 49), and `test/index.test.ts` (1220 lines); future proof/docs/render work should keep using focused companion files or extract sections before growing those anchors further
-- Full-suite verification now passes at `223` passing / `0` failing after Phase 49 APPLY; maintain this as the current baseline for subsequent milestones
+- Full-suite verification now passes at `228` passing / `0` failing after Phase 50 APPLY; maintain this as the current baseline for subsequent milestones
 - Phase 44 removed packaged Python bytecode/cache artifacts from the tarball surface and added packed-artifact installability proof; preserve this publish-surface invariant in future release work
 - Phase 48 shipped the 0.16.0 release candidate with explicit DEAN audit baseline acknowledgement (`4 critical / 0 high / 3 moderate / 0 low`, valid through 2026-06-11); advisory remediation is now a deferred follow-up tracked in `CHANGELOG.md` 0.16.0 Deferred section and `.paul/dean-baseline.json`.
 
@@ -140,20 +145,20 @@ PLAN ──▶ APPLY ──▶ UNIFY
 | Fix 45-03 (standard, PASS): close all 26 newly-visible CI failures — force-add 5 ungitignored eval fixtures, install `@ast-grep/cli` + `difftastic 0.69.0` on CI, clone `pi-hashline-readmap` as sibling repo with its own `node_modules` and export `PI_HASHLINE_READMAP_ROOT` | Phase 45 side-loop | `.github/workflows/ci.yml`, 5 `.pi/evals/ptc/{baselines,recipes}/*` files, FIX + FIX-SUMMARY (commits `623ad2f`, `142e3f1`, `38876f4`, `d19b426`, `15d95b3`); CI now 207/207 PASS, PR #1 mergeable |
 
 ### Git State
-- Transition evidence recorded on `main` after Phase 49 completion; last feature merge commit: `44c8427` (`feat(49-01): expose completed code execution source (#5)`)
-- Branch: `main` (pushed to `origin/main` with Phase 50 planning readiness); feature branch `feature/49-pi-tui-audit-and-collapsible-code-body` deleted remotely by PR merge
-- PR #5: MERGED 2026-05-12T16:20:32Z via squash; all CI checks (2x `Verify release baseline`, 2x Socket Security) SUCCESS
+- Transition evidence pending final UNIFY metadata commit and PR #6 merge for Phase 50
+- Branch: `feature/50-structured-report-type` pushed to `origin/feature/50-structured-report-type`; base `origin/main` was current at APPLY start
+- PR #6: OPEN — https://github.com/coctostan/pi-ptc-next/pull/6; GitHub Actions `Verify release baseline` and Socket checks SUCCESS; UNIFY owns merge readiness
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; no `0.16.0` tag created (publish remains manual)
 ## Session Continuity
 Last session: 2026-05-12
-Stopped at: Phase 49 complete; ready to plan Phase 50
-Next action: `/paul:plan` for Phase 50 — Structured Report Type
+Stopped at: Phase 50 complete; ready to plan Phase 51
+Next action: `/paul:plan` for Phase 51
 Resume file: `.paul/ROADMAP.md`
-github_flow_merge_gate: PR https://github.com/coctostan/pi-ptc-next/pull/5 merged to `main` at `44c8427`; CI and Socket checks passed.
 Resume context:
-- Phase 49 completed `49-01-PLAN.md` and `49-01-SUMMARY.md`.
-- Phase 50 focus from roadmap: introduce `ptc.report(...)` as a soft contract for recognized report-shaped `code_execution` returns, aligned where possible with existing Pi/nu render primitives while preserving free-form returns.
-- Deferred from Phase 49 and still in scope for later Milestone 18 phases: structured reports, helper/path ergonomics, callable-tool introspection prompt metadata, and `ptc.run_tests(...)`.
+- Phase 50 summary: `.paul/phases/50-structured-report-type/50-01-SUMMARY.md`.
+- Next phase: Phase 51 — Path Ergonomics and Bridge Helpers (`relative=True`, `relative_to=<root>`, slim `tabulate(...)` / `diff(...)` bridge helpers).
+- Carried concerns: `runtime.py` hotspot at 908 lines; dependency audit baseline still has 3 moderate advisories; Phase 51 should avoid reintroducing broad semantic data helpers that `nu` already covers.
+- Phase 50 verification: commits `154f2ab`, `498d9b9`, `66003ac`; focused report/render/docs tests PASS; `npm test && npm run build` PASS (228 passing / 0 failing); focused ESLint PASS; PR #6 CI SUCCESS before merge gate.
 
 ---
-*STATE.md — Updated after Phase 49 completion and transition to Phase 50 planning readiness (last updated: 2026-05-12)*
+*STATE.md — Updated after Phase 50 completion and transition to Phase 51 (last updated: 2026-05-12)*

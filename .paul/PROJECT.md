@@ -47,7 +47,7 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 - [x] Added bounded Python reduction and output-budget helpers `ptc.reduce_tool(...)` / `ptc.fit_output(...)` aligned to the session output cap, with focused execution proof — Phase 31
 - [x] Added execution-level ecosystem proof plus README/tool-description guidance for `ptc.batch_tool(...)`, `ptc.first_success(...)`, `ptc.reduce_tool(...)`, and `ptc.fit_output(...)`, including compact hashline/codegraph/web composition examples — Phase 32
 ### Active (In Progress)
-- [ ] Milestone 18 Phase 50 — Structured Report Type (`ptc.report(...)` soft contract and recognized report rendering)
+- [ ] Milestone 18 Phase 51 — Path Ergonomics (`relative=True`, `relative_to`, `tabulate`, `diff`)
 ### Validated (Shipped)
 - [x] Restored the P0 file-discovery helper path by removing `glob(limit=...)` dependency and proving bounded success for `ptc.read_tree()`, `ptc.find_files()`, and `ptc.find_files_abs()` in live audit coverage — Phase 39
 - [x] Improved syntax/compile-time error surfacing so pre-terminal Python failures now expose actionable `SyntaxError`/traceback context instead of generic RPC closure messaging — Phase 40
@@ -60,12 +60,13 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 - [x] Added Pi prompt metadata for `code_execution`, idempotent `systemPromptOptions`-aware fallback auto-routing, custom-tool prompt metadata preservation, and focused README/CHANGELOG guidance while preserving the Phase 46 Mario-scope compatibility decision — Phase 47
 - [x] Finalized the `0.16.0` compatibility-proof release candidate: package metadata + lockfile + verify-release-package script aligned, new `test/release-readiness.test.ts` (7-test drift suite), new `docs/releases/0.16.0.md`, README/CHANGELOG/runbook repointed, and DEAN audit baseline (`4 critical / 0 high / 3 moderate / 0 low`, valid through 2026-06-11) acknowledged at human-verify checkpoint — Phase 48
 - [x] Added completed `code_execution` source visibility through Pi's collapsed/expanded tool-result affordance, recorded the TUI primitive audit, clarified `nu` versus `code_execution` prompt guidance, and documented/verified the behavior with focused render and prompt tests — Phase 49
+- [x] Added `ptc.report(...)` as an optional JSON-safe structured report shape with preserved `details.report` / `details.reportProduced`, compact/expanded completed-result rendering, and README/CHANGELOG guidance while keeping free-form and `ptc.fit_output(...)` returns unchanged — Phase 50
 - [x] Full live audit: 51 tests across 3 phases proving 94% of helpers work, with stress testing (concurrency, large files, output budgets) and 7 multi-tool composition workflows all passing. 1 P0 bug found (glob/limit), 2 P1, 2 P2 issues documented — Milestone 14
 - [x] Systematic live-tool audit of all 21 Python helpers and 8 pipeline capabilities — Phase 36
 - [x] Added user-facing recipe workflow documentation and ecosystem composition proof — Phase 35
 - [x] Added concrete cross-repo recipe artifacts plus deterministic benchmark baseline — Phase 34
 ### Planned (Next)
-- [ ] Phase 50 — Structured Report Type (`ptc.report(...)`)
+- [ ] Phase 51 — Path Ergonomics (`relative=True`, `relative_to`, `tabulate`, `diff`)
 ### Out of Scope
 - [ ] Long-term IR refactors during the early interop milestones
 - [ ] Broad helper ergonomics changes beyond what is required for trustworthy structured interop
@@ -150,6 +151,8 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 | Use a focused 7-test release-readiness drift suite (`test/release-readiness.test.ts`) as the durable guard for version/doc/script alignment | A single file-local test pattern across package.json, lockfile, verify-script, release note, README, CHANGELOG, and runbook is cheap to maintain (only constants change per release) and prevents the recurring 0.x → 0.x doc-drift class of bug | 2026-05-12 | Active |
 | Preserve completed `code_execution` source with expanded tool details while keeping default output compact | Users need post-run debugging access to executed Python without forcing long code blocks into the default completed tool row | 2026-05-12 | Active |
 | Format the Phase 49 expansion hint via Pi TUI keybindings and active render theme instead of direct `keyHint` import | This preserves keybinding-aware behavior while avoiding a CommonJS/ESM runtime incompatibility in the current package shape | 2026-05-12 | Active |
+| Keep `ptc.report(...)` optional and attach structured metadata through `details.report` rather than making every code_execution return schema-bound | Stronger report/eval contracts are useful, but existing free-form returns and `ptc.fit_output(...)` must remain compatible | 2026-05-12 | Active |
+| Extract report rendering/shape helpers into `src/report.ts` instead of growing `src/index.ts` | The extension entrypoint is a known hotspot; report formatting should stay testable and reusable for future output-shape phases | 2026-05-12 | Active |
 
 ## Success Metrics
 | Metric | Target | Current | Status |
@@ -166,6 +169,7 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 | Execution-level proof and user-facing docs for Milestone 11 helper ergonomics | Yes | Dedicated runtime proof, tool-description assertions, README updates, and doc-contract coverage landed in Phase 29 | Achieved |
 | Bounded reduction and output-budget helpers for Python orchestration flows | Yes | `ptc.reduce_tool(...)` and `ptc.fit_output(...)` landed with focused execution proof and executor-aligned output-budget defaults | Achieved |
 | Ecosystem-style proof and user-facing docs for Milestone 12 orchestration/output-budget helpers | Yes | Dedicated runtime proof, README examples, tool-description guidance, and doc-contract coverage landed in Phase 32 | Achieved |
+| Structured report shape for code_execution outputs | Yes | `ptc.report(...)`, `details.report` / `details.reportProduced`, compact/expanded rendering, and docs landed in Phase 50 | Achieved |
 | Deterministic recipe-target contract and seeded M4 workflow corpus | Yes | Additive `recipe_target` metadata, benchmark-result passthrough, and four deterministic recipe cases landed in Phase 33 | Achieved |
 
 ## Tech Stack
@@ -187,4 +191,4 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 
 ---
 *PROJECT.md — Updated when requirements or context change*
-*Last updated: 2026-05-12 after Phase 49 completion (Pi TUI audit and collapsible completed-code rendering)*
+*Last updated: 2026-05-12 after Phase 50 completion (structured report type)*

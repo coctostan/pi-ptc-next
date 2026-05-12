@@ -6,7 +6,7 @@ Brownfield PALS adoption for `pi-ptc-next`, focused on hashline-native runtime i
 ## Current Milestone
 **Milestone 18 — PTC Leverage and Output Shape** (`0.17.0`) — 🚧 In Progress
 Status: 🚧 In Progress
-Phases: 1 of 5 complete (20%)
+Phases: 2 of 5 complete (40%)
 
 Theme: Make `code_execution` convert "I need to know X about this repo/dataset" into a small, well-shaped, debuggable answer with minimum agent friction — by introducing a structured result shape, callable-tool introspection, ergonomic helpers, path/UI polish, and a first-class test-runner verb. Caching, cross-call session state, and persistence remain explicitly deferred.
 
@@ -15,7 +15,7 @@ Reference: `.paul/notes/2026-05-12-ptc-leverage-brief.md` (pre-planning thesis, 
 | Phase | Name | Plans | Status | Completed |
 |-------|------|-------|--------|-----------|
 | 49 | Pi TUI Audit and Collapsible Code Body | 49-01 | ✅ Complete | 2026-05-12 |
-| 50 | Structured Report Type | TBD | Ready to plan | - |
+| 50 | Structured Report Type | 50-01 | ✅ Complete | 2026-05-12 |
 | 51 | Path Ergonomics and Bridge Helpers | TBD | Not started | - |
 | 52 | Callable-Tool Introspection | TBD | Not started | - |
 | 53 | Test Runner Verb | TBD | Not started | - |
@@ -26,7 +26,7 @@ Plans: 49-01 complete — TDD slice recorded Pi TUI audit artifact, added comple
 
 ### Phase 50: Structured Report Type
 Focus: Introduce `ptc.report(...)` as a soft contract for `code_execution` returns — a recognized shape with title, scalar metrics, ranked lists / tables, samples, and warnings — aligned where possible with the shape `nu` and Pi's own tools already render. Free-form returns continue to work; the TUI renders recognized reports through the primitives identified in Phase 49; telemetry counts produced reports separately; evals can assert against the shape.
-Plans: Not started — next action is `/paul:plan`.
+Plans: 50-01 complete — added `ptc.report(...)` canonical report helper, report details preservation, compact/expanded report rendering, docs/contract tests, full verification, and reconciled results in `50-01-SUMMARY.md`.
 
 ### Phase 51: Path Ergonomics and Bridge Helpers
 Focus: Add `relative=True` / `relative_to=<root>` options to `ptc.find_files(...)` / `ptc.find_files_abs(...)` (and consider `ptc.read_tree(...)`) using the sandbox workspace root the host already exposes; pair with a slimmed aggregator-helper set — `tabulate(rows, headers)` to bridge Python intermediates into the Phase 50 report shape, and `diff(a, b)` for "what changed since last run." `top_n` / `group_by` / `histogram` are intentionally dropped because `nu` covers them natively.
@@ -258,4 +258,4 @@ Suggested implementation branch from project docs:
 - `feat/hashline-native-interop`
 
 ---
-*Last updated: 2026-05-12 after Phase 49 completion and transition to Phase 50 planning readiness*
+*Last updated: 2026-05-12 after Phase 50 completion (50-01)*
