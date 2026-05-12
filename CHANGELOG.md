@@ -4,7 +4,9 @@ This changelog tracks notable release-facing changes for the fork repository `pi
 
 ## Unreleased
 
-_No changes yet._
+### Added
+- Completed `code_execution` results now expose the executed Python source in expanded tool details while keeping the default completed result compact.
+- `code_execution` prompt guidance now clarifies when to prefer `nu` for pipeline-style structured-data/filesystem analysis versus Python-backed orchestration for custom logic and aggregation.
 
 ## 0.16.0 — 2026-05-12
 

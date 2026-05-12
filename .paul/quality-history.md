@@ -28,3 +28,4 @@
 | 2026-03-29 | 44-release-verification-and-publish-readiness | 207 passing / 0 failing (`npm test`) | not run separately (package/shell/docs verification slice; no new TS implementation scope) | clean via `npm run build` | n/a | → stable |
 | 2026-05-11 | 46-extension-runtime-compatibility-alignment | 210 passing / 0 failing (`npm test`) | clean via `npx eslint --no-config-lookup --rule 'complexity: [warn, 10]' --format json ...` | clean via `npm run build` | n/a | ↑ improving |
 | 2026-05-11 | 47-system-prompt-and-tool-guidance-optimization | 213 passing / 0 failing (`npm test`) | not run separately (no project lint script; RUBY fallback line/debt screening recorded in summary) | clean via `npm run build` | n/a | ↑ improving |
+| 2026-05-12 | 49-pi-tui-audit-and-collapsible-code-body | 223 passing / 0 failing (`npm test`) | clean via focused `npx eslint --no-config-lookup ...` on changed TS files | clean via `npm run build` | n/a | ↑ improving |

@@ -4,34 +4,58 @@
 Brownfield PALS adoption for `pi-ptc-next`, focused on hashline-native runtime interop and structured Python integration.
 
 ## Current Milestone
-**Milestone 17 — Pi Compatibility and Prompt Integration Audit** (`0.16.0`) — ✅ Complete (2026-05-12)
-Status: ✅ Complete
-Phases: 4 of 4 complete (100%)
+**Milestone 18 — PTC Leverage and Output Shape** (`0.17.0`) — 🚧 In Progress
+Status: 🚧 In Progress
+Phases: 0 of 5 complete (0%)
+
+Theme: Make `code_execution` convert "I need to know X about this repo/dataset" into a small, well-shaped, debuggable answer with minimum agent friction — by introducing a structured result shape, callable-tool introspection, ergonomic helpers, path/UI polish, and a first-class test-runner verb. Caching, cross-call session state, and persistence remain explicitly deferred.
+
+Reference: `.paul/notes/2026-05-12-ptc-leverage-brief.md` (pre-planning thesis, feature breakdown, sequencing, and deferrals carried from the post-Milestone-17 discussion).
 
 | Phase | Name | Plans | Status | Completed |
 |-------|------|-------|--------|-----------|
-| 45 | Pi API and Documentation Delta Audit | 1/1 | ✅ Complete | 2026-05-11 |
-| 46 | Extension Runtime Compatibility Alignment | 1/1 | ✅ Complete | 2026-05-11 |
-| 47 | System Prompt and Tool Guidance Optimization | 1/1 | ✅ Complete | 2026-05-11 |
-| 48 | Compatibility Proof and Release Readiness | 1/1 | ✅ Complete | 2026-05-12 |
+| 49 | Pi TUI Audit and Collapsible Code Body | 49-01 | Done | PR #5 merge gate pending |
+| 50 | Structured Report Type | TBD | Not started | - |
+| 51 | Path Ergonomics and Bridge Helpers | TBD | Not started | - |
+| 52 | Callable-Tool Introspection | TBD | Not started | - |
+| 53 | Test Runner Verb | TBD | Not started | - |
 
-### Phase 45: Pi API and Documentation Delta Audit
-Focus: Compare `pi-ptc-advanced` against both the installed local Pi package and latest published Pi package/docs/source to identify API drift, deprecated assumptions, new extension capabilities, and prompt/tool-description convention changes.
-Plans: 45-01 complete — produced `45-01-PI-COMPAT-AUDIT.md` (271 lines): evidence baseline confirms local install equals latest Pi (`@earendil-works/pi-coding-agent@0.74.0`); 18-row compatibility matrix; 6 prompt-integration findings; bounded Phase 46/47/48 remediation handoff with 6 explicit deferrals. R-1: build-time peer scope drift; R-2: `code_execution` lacks `promptSnippet`/`promptGuidelines`; R-3: hashline executor bridge lacks observability signal.
+### Phase 49: Pi TUI Audit and Collapsible Code Body
+Focus: Audit Pi's TUI primitives (`@mariozechner/pi-tui`, any newer Pi 0.74.0 render hooks) for collapsible/disclosure components, native table/record renderers, tool-call tree rendering, header-with-summary affordances, and theming hooks; then replace `renderCompletedOutput`'s discard of `details.userCode` with a collapsible post-completion view that preserves the Python source after a `code_execution` call completes. Carries a small prompt-guidelines clarifier teaching the agent to choose `nu` vs `code_execution`. Outcome of the audit informs Phase 50's render hook so we prefer Pi primitives over local reimplementations.
+Plans: 49-01 UNIFY complete — TDD slice recorded Pi TUI audit artifact, added completed `code_execution` collapsed/expanded Python-source rendering, clarified `nu` vs `code_execution` prompt guidance, added focused render/prompt tests, updated README/CHANGELOG, and reconciled results in `49-01-SUMMARY.md`. PR #5 merge gate pending.
 
-### Phase 46: Extension Runtime Compatibility Alignment
-Focus: Apply compatibility improvements in extension registration, lifecycle, tool metadata, runtime execution, callable-tool exposure, and fallback behavior based on the Phase 45 audit.
-Plans: 46-01 complete — produced `46-01-SUMMARY.md`: aligned package metadata/lockfile to latest Mario-scope Pi (`@mariozechner/*@0.73.1`) while preserving Mario imports; retained an explicit Mario 0.73.1 `context` compatibility shim because the typed overload is not available; made Pi `sourceInfo` compatibility handling explicit; added a one-time hashline bridge no-executor visibility signal; recorded WALT/CODI/RUBY/SKIP post-unify evidence; merged PR #2 at `c3f7d06`. Docs/prompt/release work remains deferred to Phases 47/48.
+### Phase 50: Structured Report Type
+Focus: Introduce `ptc.report(...)` as a soft contract for `code_execution` returns — a recognized shape with title, scalar metrics, ranked lists / tables, samples, and warnings — aligned where possible with the shape `nu` and Pi's own tools already render. Free-form returns continue to work; the TUI renders recognized reports through the primitives identified in Phase 49; telemetry counts produced reports separately; evals can assert against the shape.
+Plans: TBD (defined during /paul:plan)
 
-### Phase 47: System Prompt and Tool Guidance Optimization
-Focus: Improve how `code_execution` informs the model through system-prompt/tool-description guidance, helper-selection instructions, optional tool branching, prompt budget discipline, and latest Pi prompt conventions.
-Plans: 47-01 complete — produced `47-01-SUMMARY.md`: added RED coverage, registered approved `promptSnippet` / `promptGuidelines` for `code_execution`, made auto-route prompt injection idempotent with `systemPromptOptions`, threaded custom-tool prompt metadata, updated focused README/CHANGELOG notes, recorded WALT/CODI/SKIP/RUBY post-unify evidence, and carried current dependency-audit advisory reconciliation forward to Phase 48.
+### Phase 51: Path Ergonomics and Bridge Helpers
+Focus: Add `relative=True` / `relative_to=<root>` options to `ptc.find_files(...)` / `ptc.find_files_abs(...)` (and consider `ptc.read_tree(...)`) using the sandbox workspace root the host already exposes; pair with a slimmed aggregator-helper set — `tabulate(rows, headers)` to bridge Python intermediates into the Phase 50 report shape, and `diff(a, b)` for "what changed since last run." `top_n` / `group_by` / `histogram` are intentionally dropped because `nu` covers them natively.
+Plans: TBD (defined during /paul:plan)
 
-### Phase 48: Compatibility Proof and Release Readiness
-Focus: Add or refresh tests, docs, compatibility notes, and release verification for the `0.16.0` compatibility milestone.
-Plans: 48-01 complete — produced `48-01-SUMMARY.md`: bumped package metadata / lockfile root / `scripts/verify-release-package.sh` to `pi-ptc-advanced@0.16.0`; added focused `test/release-readiness.test.ts` (7-test drift suite, RED → GREEN); added `docs/releases/0.16.0.md`; repointed README, CHANGELOG, and personal-fork runbook to 0.16.0 (with 0.15.0 preserved as "Previous baseline"); full local verification passed (npm test 220/0, build, verify:release-package, verify:ci); DEAN audit baseline acknowledged at human-verify checkpoint (`4 critical / 0 high / 3 moderate / 0 low`, valid through 2026-06-11). PR #4 opened; merge gate pending.
+### Phase 52: Callable-Tool Introspection
+Focus: Extend the Phase 47 `promptSnippet` / `promptGuidelines` plumbing inward so callable tools can optionally expose the same metadata to the Python surface; add `ptc.help(tool_name)` returning that metadata at runtime (likely as a Phase 50 report shape) so agents can introspect tool choice without inflating the tool-description block. Document the convention; do not force every tool to provide metadata.
+Plans: TBD (defined during /paul:plan)
+
+### Phase 53: Test Runner Verb
+Focus: Add `ptc.run_tests(pattern)` as a first-class verb that runs `node --test` against a pattern and parses pass/fail/duration into a structured Phase 50 report with a failures list and summary metrics. Cross-runner support (vitest/jest/pytest) and sandbox/Docker policy interactions are scoped during planning. Provides the agent a single ergonomic verb in place of bespoke subprocess + string-parsing patterns.
 
 ## Completed Milestones
+<details>
+<summary>Milestone 17 — Pi Compatibility and Prompt Integration Audit (0.16.0) - 2026-05-12 (4 phases)</summary>
+
+| Phase | Name | Plans | Completed |
+|-------|------|-------|-----------|
+| 45 | Pi API and Documentation Delta Audit | 1/1 | 2026-05-11 |
+| 46 | Extension Runtime Compatibility Alignment | 1/1 | 2026-05-11 |
+| 47 | System Prompt and Tool Guidance Optimization | 1/1 | 2026-05-11 |
+| 48 | Compatibility Proof and Release Readiness | 1/1 | 2026-05-12 |
+
+Notes:
+- Established a Pi compatibility baseline against `@earendil-works/pi-coding-agent@0.74.0` and aligned local peers to the latest Mario-scope (`@mariozechner/*@0.73.1`) while preserving Mario imports and a `context` compatibility shim.
+- Added `promptSnippet` / `promptGuidelines` registration for `code_execution`, made fallback auto-route prompt injection idempotent via `systemPromptOptions`, and threaded prompt metadata through custom tools.
+- Shipped the `0.16.0` compatibility-proof release candidate (package/lockfile/`verify-release-package.sh` bump, `test/release-readiness.test.ts`, `docs/releases/0.16.0.md`, README/CHANGELOG/runbook repointing) with DEAN audit baseline acknowledged (4 critical / 0 high / 3 moderate / 0 low, override valid through 2026-06-11); advisory remediation is a deferred follow-up.
+
+</details>
 <details>
 <summary>Milestone 16 — Publishable Fork Packaging (0.15.0) - 2026-03-29 (3 phases)</summary>
 
@@ -234,4 +258,4 @@ Suggested implementation branch from project docs:
 - `feat/hashline-native-interop`
 
 ---
-*Last updated: 2026-05-12 after Phase 48 UNIFY / Milestone 17 closure (0.16.0)*
+*Last updated: 2026-05-12 after Phase 49 UNIFY reconciliation (49-01)*

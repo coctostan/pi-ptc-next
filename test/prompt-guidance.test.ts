@@ -143,6 +143,8 @@ test("code_execution registers prompt metadata for Pi default system prompts", a
     assert.deepEqual(latestCodeExecutionTool.promptGuidelines, [
       "Use code_execution for repo-wide analysis, repeated lookups, grouping, ranking, counting, or other tasks with 3+ dependent tool calls.",
       "Use direct tools instead for one-file reads, one-off grep/find calls, or small inspections.",
+      "Prefer nu for pipeline-style structured-data or filesystem-metadata analysis with where, sort-by, group-by, first, or histogram.",
+      "Use code_execution when custom per-item logic, stateful aggregation, complex return shapes, or multiple callable-tool orchestration is needed.",
       "Keep large intermediate results inside Python and return only the compact final answer the user needs.",
       "Use the callable tool list in the code_execution description; call ptc.list_callable_tools() only when branching on optional tools or when the needed tool may be unavailable.",
     ]);

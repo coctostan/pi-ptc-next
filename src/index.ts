@@ -1,6 +1,6 @@
 import { Type } from "@sinclair/typebox";
 import type { ExtensionAPI, ExtensionContext, Theme } from "@mariozechner/pi-coding-agent";
-import { Text, type Component } from "@mariozechner/pi-tui";
+import { getKeybindings, Text, type Component, type Keybinding } from "@mariozechner/pi-tui";
 import { CodeExecutor } from "./code-executor";
 import { PtcPythonError } from "./execution/execution-errors";
 import { CustomToolManager } from "./custom-tool-manager";
@@ -28,6 +28,8 @@ const CODE_EXECUTION_PROMPT_SNIPPET =
 const CODE_EXECUTION_PROMPT_GUIDELINES = [
   "Use code_execution for repo-wide analysis, repeated lookups, grouping, ranking, counting, or other tasks with 3+ dependent tool calls.",
   "Use direct tools instead for one-file reads, one-off grep/find calls, or small inspections.",
+  "Prefer nu for pipeline-style structured-data or filesystem-metadata analysis with where, sort-by, group-by, first, or histogram.",
+  "Use code_execution when custom per-item logic, stateful aggregation, complex return shapes, or multiple callable-tool orchestration is needed.",
   "Keep large intermediate results inside Python and return only the compact final answer the user needs.",
   "Use the callable tool list in the code_execution description; call ptc.list_callable_tools() only when branching on optional tools or when the needed tool may be unavailable.",
 ];
@@ -78,7 +80,26 @@ function renderExecutingCode(
   return new Text(lines.join("\n"), 0, 0);
 }
 
-function renderCompletedOutput(resultText: string, details: ExecutionDetails | undefined, theme: Theme): Component {
+function formatKeys(keys: string[]): string {
+  if (keys.length === 0) return "";
+  if (keys.length === 1) return keys[0];
+  return keys.join("/");
+}
+
+function renderKeyHint(keybinding: Keybinding, description: string, theme: Theme): string {
+  return theme.fg("dim", formatKeys(getKeybindings().getKeys(keybinding))) + theme.fg("muted", ` ${description}`);
+}
+
+function formatPythonSourceLines(codeLines: string[]): string[] {
+  return codeLines.map((line, index) => `${String(index + 1).padStart(3, " ")} │ ${line}`);
+}
+
+function renderCompletedOutput(
+  resultText: string,
+  details: ExecutionDetails | undefined,
+  theme: Theme,
+  expanded: boolean
+): Component {
   if (!details) {
     return new Text(resultText || "(No output)", 0, 0);
   }
@@ -90,7 +111,25 @@ function renderCompletedOutput(resultText: string, details: ExecutionDetails | u
   );
 
   const body = resultText || "(No output)";
-  return new Text(`${summary}\n\n${body}`, 0, 0);
+  const lines = [summary, "", body];
+
+  if (details.userCode?.length) {
+    lines.push("");
+    if (expanded) {
+      lines.push(theme.fg("muted", "Python source"));
+      lines.push(...formatPythonSourceLines(details.userCode));
+    } else {
+      const lineLabel = details.userCode.length === 1 ? "line" : "lines";
+      lines.push(
+        theme.fg(
+          "muted",
+          `Python source: ${details.userCode.length} ${lineLabel} (${renderKeyHint("app.tools.expand", "to inspect Python source", theme)})`
+        )
+      );
+    }
+  }
+
+  return new Text(lines.join("\n"), 0, 0);
 }
 
 function buildToolDescription(currentSettings: PtcSettings, callableTools: ToolInfo[]): string {
@@ -234,7 +273,7 @@ function buildCodeExecutionTool(
         throw error;
       }
     },
-    renderResult(result, { isPartial }, theme) {
+    renderResult(result, { expanded, isPartial }, theme) {
       const details = result.details as ExecutionDetails | undefined;
       if (isPartial && details?.userCode && details.currentLine) {
         return renderExecutingCode(
@@ -250,7 +289,7 @@ function buildCodeExecutionTool(
         .map((content) => content.text)
         .join("");
 
-      return renderCompletedOutput(text, details, theme);
+      return renderCompletedOutput(text, details, theme, expanded ?? false);
     },
   };
 }

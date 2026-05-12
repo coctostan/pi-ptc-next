@@ -82,6 +82,9 @@ Common auto-routing signals:
 
 This behavior is enabled by default with `PTC_AUTO_ROUTE=true`.
 The `code_execution` tool is also surfaced through Pi prompt metadata: a one-line `promptSnippet` appears in the default `Available tools` section, and active-only `promptGuidelines` summarize when to prefer Python-backed batching versus direct tools. Auto-routing remains a conservative fallback for strong PTC-shaped prompts.
+Completed `code_execution` results keep the default tool row compact while preserving the executed Python source in the expanded tool details. Expand the tool result when you need to debug exactly what Python ran after a session.
+
+Use `nu` instead of `code_execution` for pipeline-style structured-data or filesystem-metadata analysis (`where`, `sort-by`, `group-by`, `first`, `histogram`). Use `code_execution` when the task needs custom per-item Python logic, stateful aggregation, complex output shapes, or multiple callable-tool calls orchestrated inside one local run.
 
 ## Why this exists
 
