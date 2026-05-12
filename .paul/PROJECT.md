@@ -153,6 +153,9 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 | Format the Phase 49 expansion hint via Pi TUI keybindings and active render theme instead of direct `keyHint` import | This preserves keybinding-aware behavior while avoiding a CommonJS/ESM runtime incompatibility in the current package shape | 2026-05-12 | Active |
 | Keep `ptc.report(...)` optional and attach structured metadata through `details.report` rather than making every code_execution return schema-bound | Stronger report/eval contracts are useful, but existing free-form returns and `ptc.fit_output(...)` must remain compatible | 2026-05-12 | Active |
 | Extract report rendering/shape helpers into `src/report.ts` instead of growing `src/index.ts` | The extension entrypoint is a known hotspot; report formatting should stay testable and reusable for future output-shape phases | 2026-05-12 | Active |
+| Keep `ptc.diff(...)` shallow-only for Phase 51 | The helper should remain a slim bridge for explicit before/after values, not a recursive diff engine; nested structures can be reported as whole-value changes unless future demand justifies `recursive=True` | 2026-05-12 | Active |
+| Make `ptc.tabulate(...)` return the exact Phase 50 report table payload | Direct `ptc.report(tables=[ptc.tabulate(...)])` composition avoids a near-compatible variant and keeps output-shape contracts simple | 2026-05-12 | Active |
+| Keep broad aggregators (`top_n`, `group_by`, `histogram`) out of PTC helper scope | `nu` is the intended native path for grouping, histograms, ranking, and pipeline-style data analysis; PTC should add only small bridge helpers here | 2026-05-12 | Active |
 
 ## Success Metrics
 | Metric | Target | Current | Status |
@@ -170,6 +173,7 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 | Bounded reduction and output-budget helpers for Python orchestration flows | Yes | `ptc.reduce_tool(...)` and `ptc.fit_output(...)` landed with focused execution proof and executor-aligned output-budget defaults | Achieved |
 | Ecosystem-style proof and user-facing docs for Milestone 12 orchestration/output-budget helpers | Yes | Dedicated runtime proof, README examples, tool-description guidance, and doc-contract coverage landed in Phase 32 | Achieved |
 | Structured report shape for code_execution outputs | Yes | `ptc.report(...)`, `details.report` / `details.reportProduced`, compact/expanded rendering, and docs landed in Phase 50 | Achieved |
+| Path ergonomics and bridge helpers for Python analysis flows | Yes | `relative` / `relative_to` path formatting, `ptc.tabulate(...)`, shallow `ptc.diff(...)`, focused tests, README/tool guidance, and CHANGELOG landed in Phase 51 | Achieved |
 | Deterministic recipe-target contract and seeded M4 workflow corpus | Yes | Additive `recipe_target` metadata, benchmark-result passthrough, and four deterministic recipe cases landed in Phase 33 | Achieved |
 
 ## Tech Stack
@@ -191,4 +195,4 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 
 ---
 *PROJECT.md — Updated when requirements or context change*
-*Last updated: 2026-05-12 after Phase 50 completion (structured report type)*
+*Last updated: 2026-05-12 after Phase 51 completion (path ergonomics and bridge helpers)*

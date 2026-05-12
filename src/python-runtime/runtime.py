@@ -91,6 +91,28 @@ def _relativize_path(abs_path: str) -> str:
     return abs_path
 
 
+def _path_format_root(relative_to: str | None = None) -> str:
+    if relative_to is None:
+        return _ptc_os.path.normpath(_PTC_HOST_WORKSPACE_ROOT)
+    return _host_abspath(relative_to)
+
+
+def _absolutize_discovered_path(path: str, base_path: str) -> str:
+    if _ptc_os.path.isabs(path):
+        return _host_abspath(path)
+    return _ptc_os.path.normpath(_ptc_os.path.join(base_path, path))
+
+
+def _format_discovered_path(path: str, *, relative: bool, relative_to: str | None = None) -> str:
+    absolute_path = _host_abspath(path)
+    if not relative:
+        return absolute_path
+    root = _path_format_root(relative_to)
+    if absolute_path == root or absolute_path.startswith(f"{root}{_ptc_os.sep}"):
+        return _ptc_os.path.relpath(absolute_path, root)
+    return absolute_path
+
+
 def _normalize_grep_result(result: Any) -> Any:
     """Normalize grep result paths to be relative to the workspace root."""
     if not isinstance(result, dict) or "records" not in result:
@@ -198,6 +220,93 @@ def _json_safe_clone_for_report(name: str, value: Any) -> Any:
         return _clone_json_value(value)
     except (TypeError, ValueError) as error:
         raise ValueError(f"{name} must be JSON-safe") from error
+
+
+def _json_safe_bridge_value(value: Any) -> Any:
+    if isinstance(value, set):
+        normalized_items = [_json_safe_bridge_value(item) for item in value]
+        return sorted(normalized_items, key=lambda item: _ptc_json.dumps(item, sort_keys=True))
+    if isinstance(value, tuple):
+        return [_json_safe_bridge_value(item) for item in value]
+    if isinstance(value, list):
+        return [_json_safe_bridge_value(item) for item in value]
+    if isinstance(value, dict):
+        normalized: dict[str, Any] = {}
+        for key, nested in value.items():
+            if not isinstance(key, str):
+                key = str(key)
+            normalized[key] = _json_safe_bridge_value(nested)
+        return normalized
+    return _json_safe_clone_for_report("value", value)
+
+
+def _bridge_identity(value: Any) -> str:
+    return _ptc_json.dumps(_json_safe_bridge_value(value), sort_keys=True, separators=(",", ":"))
+
+
+def _normalize_tabulate_columns(headers: Sequence[str] | None, rows: Sequence[Any]) -> list[str]:
+    if headers is not None:
+        if not isinstance(headers, Sequence) or isinstance(headers, (str, bytes, bytearray)):
+            raise ValueError("headers must be a list of strings")
+        columns = []
+        for index, header in enumerate(headers):
+            if not isinstance(header, str) or not header.strip():
+                raise ValueError(f"headers[{index}] must be a non-empty string")
+            columns.append(header)
+        return columns
+
+    inferred: list[str] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            raise ValueError("headers are required when tabulate rows are not objects")
+        for key in row.keys():
+            if not isinstance(key, str) or not key.strip():
+                raise ValueError("tabulate row keys must be non-empty strings")
+            if key not in inferred:
+                inferred.append(key)
+    return inferred
+
+
+def _normalize_tabulate_rows(rows: Sequence[Any], columns: list[str]) -> list[dict[str, Any]]:
+    normalized_rows: list[dict[str, Any]] = []
+    for row_index, row in enumerate(rows):
+        if isinstance(row, dict):
+            normalized_rows.append({column: _require_report_scalar(f"rows[{row_index}][{column!r}]", row.get(column)) for column in columns})
+            continue
+        if not isinstance(row, Sequence) or isinstance(row, (str, bytes, bytearray)):
+            raise ValueError(f"rows[{row_index}] must be an object or sequence")
+        if len(row) != len(columns):
+            raise ValueError(f"rows[{row_index}] has {len(row)} values but {len(columns)} headers were provided")
+        normalized_rows.append({column: _require_report_scalar(f"rows[{row_index}][{column!r}]", row[column_index]) for column_index, column in enumerate(columns)})
+    return normalized_rows
+
+
+def _shallow_dict_diff(before: dict[Any, Any], after: dict[Any, Any]) -> dict[str, Any]:
+    before_by_key = {str(key): _json_safe_bridge_value(value) for key, value in before.items()}
+    after_by_key = {str(key): _json_safe_bridge_value(value) for key, value in after.items()}
+    added = {key: after_by_key[key] for key in sorted(after_by_key.keys() - before_by_key.keys())}
+    removed = {key: before_by_key[key] for key in sorted(before_by_key.keys() - after_by_key.keys())}
+    changed = {
+        key: {"before": before_by_key[key], "after": after_by_key[key]}
+        for key in sorted(before_by_key.keys() & after_by_key.keys())
+        if before_by_key[key] != after_by_key[key]
+    }
+    return {"kind": "ptc_diff", "added": added, "removed": removed, "changed": changed}
+
+
+def _shallow_sequence_diff(before: Sequence[Any], after: Sequence[Any]) -> dict[str, Any]:
+    before_values = [_json_safe_bridge_value(item) for item in before]
+    after_values = [_json_safe_bridge_value(item) for item in after]
+    before_ids = {_bridge_identity(item): item for item in before_values}
+    after_ids = {_bridge_identity(item): item for item in after_values}
+    added = [after_ids[key] for key in sorted(after_ids.keys() - before_ids.keys())]
+    removed = [before_ids[key] for key in sorted(before_ids.keys() - after_ids.keys())]
+    changed = [
+        {"index": index, "before": before_values[index], "after": after_values[index]}
+        for index in range(min(len(before_values), len(after_values)))
+        if before_values[index] != after_values[index]
+    ]
+    return {"kind": "ptc_diff", "added": added, "removed": removed, "changed": changed}
 
 
 def _normalize_report_metrics(metrics: dict[str, Any] | None) -> dict[str, Any]:
@@ -593,7 +702,15 @@ class _PtcHelpers:
 
         return await _ptc_asyncio.gather(*[_runner(coro) for coro in coroutines])
 
-    async def find_files(self, pattern: str, path: str = ".", max_files: int = 1000) -> Sequence[str]:
+    async def find_files(
+        self,
+        pattern: str,
+        path: str = ".",
+        max_files: int = 1000,
+        *,
+        relative: bool = True,
+        relative_to: str | None = None,
+    ) -> Sequence[str]:
         normalized_max_files = _normalize_positive_int("max_files", max_files, 1000)
         files = await glob(pattern=pattern, path=path)
         json_candidate: str | None = None
@@ -615,12 +732,28 @@ class _PtcHelpers:
             except Exception:
                 if isinstance(files, str):
                     files = [line for line in files.splitlines() if line.strip()]
-        return [str(item) for item in list(files)[:normalized_max_files]]
+        normalized = [str(item) for item in list(files)[:normalized_max_files]]
+        if relative and relative_to is None:
+            return normalized
+        base_path = _host_abspath(path)
+        return [
+            _format_discovered_path(_absolutize_discovered_path(item, base_path), relative=relative, relative_to=relative_to)
+            for item in normalized
+        ]
 
-    async def find_files_abs(self, pattern: str, path: str = ".", max_files: int = 1000) -> Sequence[str]:
+    async def find_files_abs(
+        self,
+        pattern: str,
+        path: str = ".",
+        max_files: int = 1000,
+        *,
+        relative: bool = False,
+        relative_to: str | None = None,
+    ) -> Sequence[str]:
         files = await self.find_files(pattern=pattern, path=path, max_files=max_files)
         base_path = _host_abspath(path)
-        return [item if _ptc_os.path.isabs(item) else _ptc_os.path.join(base_path, item) for item in files]
+        absolute_files = [_absolutize_discovered_path(item, base_path) for item in files]
+        return [_format_discovered_path(item, relative=relative, relative_to=relative_to) for item in absolute_files]
 
     async def read_text(self, path: str, offset: int | None = None, limit: int | None = None) -> str:
         result = await read(path=path, offset=offset, limit=limit)
@@ -707,12 +840,15 @@ class _PtcHelpers:
         concurrency: int | None = None,
         offset: int | None = None,
         line_limit: int | None = None,
+        *,
+        relative: bool = False,
+        relative_to: str | None = None,
     ) -> Sequence[dict[str, Any]]:
         files = await self.find_files_abs(pattern=pattern, path=path, max_files=max_files)
         contents = await self.read_many(files, max_concurrency=concurrency, offset=offset, line_limit=line_limit)
         return [
             {
-                "path": file_path,
+                "path": _format_discovered_path(file_path, relative=relative, relative_to=relative_to),
                 "content": content,
             }
             for file_path, content in zip(files, contents)
@@ -846,6 +982,43 @@ class _PtcHelpers:
             "samples": _normalize_report_samples(samples),
             "warnings": _normalize_report_warnings(warnings),
         }
+
+    def tabulate(
+        self,
+        rows: Sequence[Any],
+        headers: Sequence[str] | None = None,
+        title: str | None = None,
+    ) -> dict[str, Any]:
+        if not isinstance(rows, Sequence) or isinstance(rows, (str, bytes, bytearray)):
+            raise ValueError("rows must be a list of objects or sequences")
+        rows_list = list(rows)
+        columns = _normalize_tabulate_columns(headers, rows_list)
+        normalized: dict[str, Any] = {"columns": columns, "rows": _normalize_tabulate_rows(rows_list, columns)}
+        if title is not None:
+            if not isinstance(title, str) or not title.strip():
+                raise ValueError("title must be a non-empty string")
+            normalized["title"] = title
+        return normalized
+
+    def diff(self, before: Any, after: Any) -> dict[str, Any]:
+        if isinstance(before, dict) and isinstance(after, dict):
+            return _shallow_dict_diff(before, after)
+        if isinstance(before, set) and isinstance(after, set):
+            return _shallow_sequence_diff(
+                sorted(before, key=lambda item: _bridge_identity(item)),
+                sorted(after, key=lambda item: _bridge_identity(item)),
+            )
+        if (
+            isinstance(before, Sequence)
+            and isinstance(after, Sequence)
+            and not isinstance(before, (str, bytes, bytearray))
+            and not isinstance(after, (str, bytes, bytearray))
+        ):
+            return _shallow_sequence_diff(before, after)
+        before_value = _json_safe_bridge_value(before)
+        after_value = _json_safe_bridge_value(after)
+        changed = {} if before_value == after_value else {"value": {"before": before_value, "after": after_value}}
+        return {"kind": "ptc_diff", "added": {}, "removed": {}, "changed": changed}
 
     def json_dump(self, value: Any) -> str:
         return _ptc_json.dumps(value, indent=2, ensure_ascii=False, sort_keys=True)

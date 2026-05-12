@@ -7,3 +7,4 @@ See modules/codi/references/codi-instrumentation.md for schema, outcome taxonomy
 | 47-01 | 2026-05-11 | injected | 4 | 0 | 10 | buildToolDescription, buildCodeExecutionTool, applyAutoRouting, handleBeforeAgentStart, buildRegisteredTool | y |
 | 49-01 | 2026-05-12 | injected-degraded | — | — | — | renderCompletedOutput, buildToolDescription | y |
 | 50-01 | 2026-05-12 | injected | 1 | 0 | 1 | renderCompletedOutput | y |
+| 51-01 | 2026-05-12 | no-dispatch-found | — | — | — | — | n |

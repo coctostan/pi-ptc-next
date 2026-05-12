@@ -6,7 +6,7 @@ Brownfield PALS adoption for `pi-ptc-next`, focused on hashline-native runtime i
 ## Current Milestone
 **Milestone 18 — PTC Leverage and Output Shape** (`0.17.0`) — 🚧 In Progress
 Status: 🚧 In Progress
-Phases: 2 of 5 complete (40%)
+Phases: 3 of 5 complete (60%)
 
 Theme: Make `code_execution` convert "I need to know X about this repo/dataset" into a small, well-shaped, debuggable answer with minimum agent friction — by introducing a structured result shape, callable-tool introspection, ergonomic helpers, path/UI polish, and a first-class test-runner verb. Caching, cross-call session state, and persistence remain explicitly deferred.
 
@@ -16,7 +16,7 @@ Reference: `.paul/notes/2026-05-12-ptc-leverage-brief.md` (pre-planning thesis, 
 |-------|------|-------|--------|-----------|
 | 49 | Pi TUI Audit and Collapsible Code Body | 49-01 | ✅ Complete | 2026-05-12 |
 | 50 | Structured Report Type | 50-01 | ✅ Complete | 2026-05-12 |
-| 51 | Path Ergonomics and Bridge Helpers | TBD | Not started | - |
+| 51 | Path Ergonomics and Bridge Helpers | 51-01 | ✅ Complete | 2026-05-12 |
 | 52 | Callable-Tool Introspection | TBD | Not started | - |
 | 53 | Test Runner Verb | TBD | Not started | - |
 
@@ -30,7 +30,7 @@ Plans: 50-01 complete — added `ptc.report(...)` canonical report helper, repor
 
 ### Phase 51: Path Ergonomics and Bridge Helpers
 Focus: Add `relative=True` / `relative_to=<root>` options to `ptc.find_files(...)` / `ptc.find_files_abs(...)` (and consider `ptc.read_tree(...)`) using the sandbox workspace root the host already exposes; pair with a slimmed aggregator-helper set — `tabulate(rows, headers)` to bridge Python intermediates into the Phase 50 report shape, and `diff(a, b)` for "what changed since last run." `top_n` / `group_by` / `histogram` are intentionally dropped because `nu` covers them natively.
-Plans: TBD (defined during /paul:plan)
+Plans: 51-01 complete — added workspace-root-aware `relative` / `relative_to` path options on `ptc.find_files(...)`, `ptc.find_files_abs(...)`, and `ptc.read_tree(...)`; added report-compatible `ptc.tabulate(...)` and shallow JSON-safe `ptc.diff(...)`; docs/prompt guidance updated; reconciled results in `51-01-SUMMARY.md`; PR #7 merge gate pending during UNIFY.
 
 ### Phase 52: Callable-Tool Introspection
 Focus: Extend the Phase 47 `promptSnippet` / `promptGuidelines` plumbing inward so callable tools can optionally expose the same metadata to the Python surface; add `ptc.help(tool_name)` returning that metadata at runtime (likely as a Phase 50 report shape) so agents can introspect tool choice without inflating the tool-description block. Document the convention; do not force every tool to provide metadata.

@@ -341,9 +341,9 @@ The runtime also exposes a `ptc` helper object:
 
 - `await ptc.gather_limit(coros, limit=8)`
 - `await ptc.read_many(paths, max_concurrency=None, offset=None, line_limit=None)`
-- `await ptc.read_tree(pattern, path='.', max_files=1000, concurrency=None, offset=None, line_limit=None)`
-- `await ptc.find_files(pattern, path='.', max_files=1000)`
-- `await ptc.find_files_abs(pattern, path='.', max_files=1000)`
+- `await ptc.read_tree(pattern, path='.', max_files=1000, concurrency=None, offset=None, line_limit=None, relative=False, relative_to=None)`
+- `await ptc.find_files(pattern, path='.', max_files=1000, relative=True, relative_to=None)`
+- `await ptc.find_files_abs(pattern, path='.', max_files=1000, relative=False, relative_to=None)`
 - `await ptc.read_text(path, offset=None, limit=None)`
 - `await ptc.batch_tool(calls, max_concurrency=None, on_error=None) -> list[Any] | dict[str, Any]`
   - Use `on_error='collect'` for bounded partial mode (`kind="batch_partial"`) with per-call success/error entries instead of raising on first failure
@@ -351,6 +351,8 @@ The runtime also exposes a `ptc` helper object:
 - `await ptc.reduce_tool(calls, reducer, initial, max_concurrency=None) -> Any`
 - `ptc.fit_output(value, max_chars=None, max_items=None, max_depth=None) -> dict[str, Any]`
 - `ptc.report(title, metrics=None, tables=None, samples=None, warnings=None) -> dict[str, Any]`
+- `ptc.tabulate(rows, headers=None, title=None) -> dict[str, Any]`
+- `ptc.diff(before, after) -> dict[str, Any]`
 - `ptc.expect_kind(value, kind) -> Any`
 - `ptc.list_callable_tools() -> list[dict[str, Any]]`
 - `ptc.get_tool_schema(name) -> dict[str, Any]`
@@ -366,6 +368,8 @@ Optional tools should be detected from `ptc.list_callable_tools()`, not assumed 
 Use these helpers for structured tool results that already carry `responseId` and/or `filePath`; they avoid custom recursive JSON walking while keeping the contract intentionally narrow.
 Response/file handles are supported now; graph handles are still out of scope.
 Report returns are a soft contract: recognized reports get richer completed tool-result rendering and `details.report`, while free-form strings/dicts/lists and `ptc.fit_output(...)` continue to work normally.
+Path helpers default to their historical shape (`find_files` relative, `find_files_abs` absolute, `read_tree` absolute entry paths) and accept `relative` / `relative_to` when callers need root-aware formatting.
+Bridge helpers are intentionally slim: `ptc.tabulate(...)` prepares report table payloads, and shallow `ptc.diff(...)` compares explicit before/after values. Prefer `nu` for grouping, histograms, ranking, and pipeline-style data analysis.
 Report helper example:
 
 ```python
@@ -379,6 +383,17 @@ return ptc.report(
     }],
     samples=[{"label": "entry point", "value": {"path": "src/index.ts"}}],
     warnings=["README is size-sensitive"],
+)
+```
+
+Bridge helper example:
+
+```python
+rows = [{"path": "src/index.ts", "lines": 523}]
+return ptc.report(
+    title="Bridge helper summary",
+    tables=[ptc.tabulate(rows, title="Largest files")],
+    samples=[{"label": "delta", "value": ptc.diff({"files": 41}, {"files": 42})}],
 )
 ```
 Handle workflow example:

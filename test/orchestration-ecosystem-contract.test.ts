@@ -18,6 +18,14 @@ test("README orchestration helper guidance stays aligned with the shipped runtim
   assert.match(readme, /ptc\.fit_output\(value, max_chars=None, max_items=None, max_depth=None\) -> dict\[str, Any\]/);
   assert.match(runtimeSource, /def report\([\s\S]*title: str,[\s\S]*metrics: dict\[str, Any\] \| None = None,[\s\S]*\) -> dict\[str, Any\]:/);
   assert.match(readme, /ptc\.report\(title, metrics=None, tables=None, samples=None, warnings=None\) -> dict\[str, Any\]/);
+  assert.match(runtimeSource, /async def find_files\([\s\S]*relative: bool = True,[\s\S]*relative_to: str \| None = None,[\s\S]*\) -> Sequence\[str\]:/);
+  assert.match(runtimeSource, /async def find_files_abs\([\s\S]*relative: bool = False,[\s\S]*relative_to: str \| None = None,[\s\S]*\) -> Sequence\[str\]:/);
+  assert.match(runtimeSource, /async def read_tree\([\s\S]*relative: bool = False,[\s\S]*relative_to: str \| None = None,[\s\S]*\) -> Sequence\[dict\[str, Any\]\]:/);
+  assert.match(runtimeSource, /def tabulate\([\s\S]*rows: Sequence\[Any\],[\s\S]*headers: Sequence\[str\] \| None = None,[\s\S]*\) -> dict\[str, Any\]:/);
+  assert.match(runtimeSource, /def diff\(self, before: Any, after: Any\) -> dict\[str, Any\]:/);
+  assert.match(readme, /await ptc\.find_files\(pattern, path='\.', max_files=1000, relative=True, relative_to=None\)/);
+  assert.match(readme, /ptc\.tabulate\(rows, headers=None, title=None\) -> dict\[str, Any\]/);
+  assert.match(readme, /ptc\.diff\(before, after\) -> dict\[str, Any\]/);
   assert.match(readme, /recognized reports get richer completed tool-result rendering and `details\.report`/);
   assert.match(readme, /Use orchestration helpers when you have repeated multi-tool calls, ordered fallback logic, or large intermediate results that should stay local to Python\./);
   assert.match(readme, /For one simple tool call, call the tool directly\./);
