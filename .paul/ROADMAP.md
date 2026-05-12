@@ -6,7 +6,7 @@ Brownfield PALS adoption for `pi-ptc-next`, focused on hashline-native runtime i
 ## Current Milestone
 **Milestone 18 — PTC Leverage and Output Shape** (`0.17.0`) — 🚧 In Progress
 Status: 🚧 In Progress
-Phases: 0 of 5 complete (0%)
+Phases: 1 of 5 complete (20%)
 
 Theme: Make `code_execution` convert "I need to know X about this repo/dataset" into a small, well-shaped, debuggable answer with minimum agent friction — by introducing a structured result shape, callable-tool introspection, ergonomic helpers, path/UI polish, and a first-class test-runner verb. Caching, cross-call session state, and persistence remain explicitly deferred.
 
@@ -14,19 +14,19 @@ Reference: `.paul/notes/2026-05-12-ptc-leverage-brief.md` (pre-planning thesis, 
 
 | Phase | Name | Plans | Status | Completed |
 |-------|------|-------|--------|-----------|
-| 49 | Pi TUI Audit and Collapsible Code Body | 49-01 | Done | PR #5 merge gate pending |
-| 50 | Structured Report Type | TBD | Not started | - |
+| 49 | Pi TUI Audit and Collapsible Code Body | 49-01 | ✅ Complete | 2026-05-12 |
+| 50 | Structured Report Type | TBD | Ready to plan | - |
 | 51 | Path Ergonomics and Bridge Helpers | TBD | Not started | - |
 | 52 | Callable-Tool Introspection | TBD | Not started | - |
 | 53 | Test Runner Verb | TBD | Not started | - |
 
 ### Phase 49: Pi TUI Audit and Collapsible Code Body
 Focus: Audit Pi's TUI primitives (`@mariozechner/pi-tui`, any newer Pi 0.74.0 render hooks) for collapsible/disclosure components, native table/record renderers, tool-call tree rendering, header-with-summary affordances, and theming hooks; then replace `renderCompletedOutput`'s discard of `details.userCode` with a collapsible post-completion view that preserves the Python source after a `code_execution` call completes. Carries a small prompt-guidelines clarifier teaching the agent to choose `nu` vs `code_execution`. Outcome of the audit informs Phase 50's render hook so we prefer Pi primitives over local reimplementations.
-Plans: 49-01 UNIFY complete — TDD slice recorded Pi TUI audit artifact, added completed `code_execution` collapsed/expanded Python-source rendering, clarified `nu` vs `code_execution` prompt guidance, added focused render/prompt tests, updated README/CHANGELOG, and reconciled results in `49-01-SUMMARY.md`. PR #5 merge gate pending.
+Plans: 49-01 complete — TDD slice recorded Pi TUI audit artifact, added completed `code_execution` collapsed/expanded Python-source rendering, clarified `nu` vs `code_execution` prompt guidance, added focused render/prompt tests, updated README/CHANGELOG, reconciled results in `49-01-SUMMARY.md`, and merged PR #5.
 
 ### Phase 50: Structured Report Type
 Focus: Introduce `ptc.report(...)` as a soft contract for `code_execution` returns — a recognized shape with title, scalar metrics, ranked lists / tables, samples, and warnings — aligned where possible with the shape `nu` and Pi's own tools already render. Free-form returns continue to work; the TUI renders recognized reports through the primitives identified in Phase 49; telemetry counts produced reports separately; evals can assert against the shape.
-Plans: TBD (defined during /paul:plan)
+Plans: Not started — next action is `/paul:plan`.
 
 ### Phase 51: Path Ergonomics and Bridge Helpers
 Focus: Add `relative=True` / `relative_to=<root>` options to `ptc.find_files(...)` / `ptc.find_files_abs(...)` (and consider `ptc.read_tree(...)`) using the sandbox workspace root the host already exposes; pair with a slimmed aggregator-helper set — `tabulate(rows, headers)` to bridge Python intermediates into the Phase 50 report shape, and `diff(a, b)` for "what changed since last run." `top_n` / `group_by` / `histogram` are intentionally dropped because `nu` covers them natively.
@@ -258,4 +258,4 @@ Suggested implementation branch from project docs:
 - `feat/hashline-native-interop`
 
 ---
-*Last updated: 2026-05-12 after Phase 49 UNIFY reconciliation (49-01)*
+*Last updated: 2026-05-12 after Phase 49 completion and transition to Phase 50 planning readiness*

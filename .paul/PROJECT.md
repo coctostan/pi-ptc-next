@@ -47,7 +47,7 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 - [x] Added bounded Python reduction and output-budget helpers `ptc.reduce_tool(...)` / `ptc.fit_output(...)` aligned to the session output cap, with focused execution proof — Phase 31
 - [x] Added execution-level ecosystem proof plus README/tool-description guidance for `ptc.batch_tool(...)`, `ptc.first_success(...)`, `ptc.reduce_tool(...)`, and `ptc.fit_output(...)`, including compact hashline/codegraph/web composition examples — Phase 32
 ### Active (In Progress)
-- [ ] Next milestone not yet defined.
+- [ ] Milestone 18 Phase 50 — Structured Report Type (`ptc.report(...)` soft contract and recognized report rendering)
 ### Validated (Shipped)
 - [x] Restored the P0 file-discovery helper path by removing `glob(limit=...)` dependency and proving bounded success for `ptc.read_tree()`, `ptc.find_files()`, and `ptc.find_files_abs()` in live audit coverage — Phase 39
 - [x] Improved syntax/compile-time error surfacing so pre-terminal Python failures now expose actionable `SyntaxError`/traceback context instead of generic RPC closure messaging — Phase 40
@@ -59,12 +59,13 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 - [x] Aligned runtime compatibility to latest Mario-scope Pi packages (`@mariozechner/*@0.73.1`), preserved Pi `sourceInfo` separately from PTC's internal `source` taxonomy, and added hashline bridge no-executor observability while preserving builtin fallback — Phase 46
 - [x] Added Pi prompt metadata for `code_execution`, idempotent `systemPromptOptions`-aware fallback auto-routing, custom-tool prompt metadata preservation, and focused README/CHANGELOG guidance while preserving the Phase 46 Mario-scope compatibility decision — Phase 47
 - [x] Finalized the `0.16.0` compatibility-proof release candidate: package metadata + lockfile + verify-release-package script aligned, new `test/release-readiness.test.ts` (7-test drift suite), new `docs/releases/0.16.0.md`, README/CHANGELOG/runbook repointed, and DEAN audit baseline (`4 critical / 0 high / 3 moderate / 0 low`, valid through 2026-06-11) acknowledged at human-verify checkpoint — Phase 48
+- [x] Added completed `code_execution` source visibility through Pi's collapsed/expanded tool-result affordance, recorded the TUI primitive audit, clarified `nu` versus `code_execution` prompt guidance, and documented/verified the behavior with focused render and prompt tests — Phase 49
 - [x] Full live audit: 51 tests across 3 phases proving 94% of helpers work, with stress testing (concurrency, large files, output budgets) and 7 multi-tool composition workflows all passing. 1 P0 bug found (glob/limit), 2 P1, 2 P2 issues documented — Milestone 14
 - [x] Systematic live-tool audit of all 21 Python helpers and 8 pipeline capabilities — Phase 36
 - [x] Added user-facing recipe workflow documentation and ecosystem composition proof — Phase 35
 - [x] Added concrete cross-repo recipe artifacts plus deterministic benchmark baseline — Phase 34
 ### Planned (Next)
-- [ ] Next milestone not yet defined.
+- [ ] Phase 50 — Structured Report Type (`ptc.report(...)`)
 ### Out of Scope
 - [ ] Long-term IR refactors during the early interop milestones
 - [ ] Broad helper ergonomics changes beyond what is required for trustworthy structured interop
@@ -88,7 +89,7 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 - Package name: `pi-ptc-advanced`
 - Key source areas: `src/index.ts`, `src/code-executor.ts`, `src/custom-tool-manager.ts`, `src/tool-registry.ts`, `src/tool-adapters.ts`, `src/rpc-protocol.ts`
 - Maintainer-facing integration docs now live in `README.md`; deeper local planning/history artifacts live under `.paul/`
-- Latest GitHub Flow evidence: Phase 47 PR #3 was squash-merged to `main` at `e62d472`; Phase 48 starts from synced `main`
+- Latest GitHub Flow evidence: Phase 49 PR #5 was squash-merged to `main` at `44c8427`; Phase 50 starts from synced `main`
 
 ## Constraints
 ### Technical Constraints
@@ -147,6 +148,8 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 | Surface `code_execution` through Pi prompt metadata while keeping auto-route fallback idempotent | Native `promptSnippet` / `promptGuidelines` make the tool visible in Pi's default prompt, while fallback injection remains conservative and skips duplicate guidance when `systemPromptOptions` already selected equivalent code_execution routing | 2026-05-11 | Active |
 | Ship `0.16.0` as a release candidate with an explicitly acknowledged dependency-audit baseline rather than blocking on advisory remediation | The Milestone 17 scope was compatibility proof and release readiness, not advisory remediation; documenting the DEAN baseline with a tracked expiry inside `.paul/dean-baseline.json`, the changelog, and the release note preserves honesty about audit posture while letting the milestone close on its actual scope | 2026-05-12 | Active |
 | Use a focused 7-test release-readiness drift suite (`test/release-readiness.test.ts`) as the durable guard for version/doc/script alignment | A single file-local test pattern across package.json, lockfile, verify-script, release note, README, CHANGELOG, and runbook is cheap to maintain (only constants change per release) and prevents the recurring 0.x → 0.x doc-drift class of bug | 2026-05-12 | Active |
+| Preserve completed `code_execution` source with expanded tool details while keeping default output compact | Users need post-run debugging access to executed Python without forcing long code blocks into the default completed tool row | 2026-05-12 | Active |
+| Format the Phase 49 expansion hint via Pi TUI keybindings and active render theme instead of direct `keyHint` import | This preserves keybinding-aware behavior while avoiding a CommonJS/ESM runtime incompatibility in the current package shape | 2026-05-12 | Active |
 
 ## Success Metrics
 | Metric | Target | Current | Status |
@@ -159,7 +162,7 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 | Python helper ergonomics for structured anchored builtin results | Yes | Builtin contracts, wrappers, and `code_execution` guidance now expose richer anchored result models | Achieved |
 | Explicit metadata/policy contract for extension tools | Yes | `ptc.callable` / `ptc.policy` normalization, legacy compatibility, policy tests, and combined-stack guidance landed | Achieved |
 | Full real two-extension loading smoke harness with `pi-hashline-readmap` | Optional | Explicitly evaluated and deferred; lightweight smoke coverage remains the first-pass upstream verification point | Deferred |
-| Repo-owned CI verification path for the 0.15.0 publish baseline | Yes | `npm run verify:ci` remains available while package metadata and release-package verification now target `pi-ptc-advanced@0.15.0` | Achieved |
+| Repo-owned CI verification path for the current publish baseline | Yes | `npm run verify:ci` remains available while package metadata and release-package verification now target `pi-ptc-advanced@0.16.0` | Achieved |
 | Execution-level proof and user-facing docs for Milestone 11 helper ergonomics | Yes | Dedicated runtime proof, tool-description assertions, README updates, and doc-contract coverage landed in Phase 29 | Achieved |
 | Bounded reduction and output-budget helpers for Python orchestration flows | Yes | `ptc.reduce_tool(...)` and `ptc.fit_output(...)` landed with focused execution proof and executor-aligned output-budget defaults | Achieved |
 | Ecosystem-style proof and user-facing docs for Milestone 12 orchestration/output-budget helpers | Yes | Dedicated runtime proof, README examples, tool-description guidance, and doc-contract coverage landed in Phase 32 | Achieved |
@@ -184,4 +187,4 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 
 ---
 *PROJECT.md — Updated when requirements or context change*
-*Last updated: 2026-05-12 after Phase 48 completion (compatibility proof and release readiness, Milestone 17 closed at 0.16.0)*
+*Last updated: 2026-05-12 after Phase 49 completion (Pi TUI audit and collapsible completed-code rendering)*
