@@ -9,10 +9,10 @@ See: `.paul/PROJECT.md`
 Milestone: Milestone 18 — PTC Leverage and Output Shape (`0.17.0`)
 Phase: 53 of 53 (Test Runner Verb)
 Plan: `.paul/phases/53-test-runner-verb/53-01-PLAN.md`
-Status: PLAN complete — ready for APPLY
-Last activity: 2026-05-12 — Phase 53 PLAN created a TDD plan for `ptc.run_tests(pattern)` as a Node `node --test` helper returning structured Phase 50 reports; ready for APPLY.
+Status: APPLY complete — ready for UNIFY
+Last activity: 2026-05-12 — Phase 53 APPLY shipped `ptc.run_tests(pattern)` Node test runner helper (runtime, generated guidance, README/CHANGELOG); full suite 236/236 ✓, build clean, audit 0 critical / 0 high; PR #9 opened.
 Progress:
-- Milestone 18 — PTC Leverage and Output Shape: [████████░░] 80% (Phase 49 ✓; Phase 50 ✓; Phase 51 ✓; Phase 52 ✓; Phase 53 PLAN ✓ / APPLY pending)
+- Milestone 18 — PTC Leverage and Output Shape: [█████████░] 90% (Phase 49 ✓; Phase 50 ✓; Phase 51 ✓; Phase 52 ✓; Phase 53 PLAN ✓ / APPLY ✓ / UNIFY pending)
 - Milestone 17 — Pi Compatibility and Prompt Integration Audit: [██████████] 100% ✓ (Phase 45 ✓, Phase 46 ✓, Phase 47 ✓, Phase 48 ✓)
 - Phase 45 — Pi API and Documentation Delta Audit: [██████████] 100% ✓
 - Phase 46 — Extension Runtime Compatibility Alignment: [██████████] 100% ✓
@@ -58,7 +58,7 @@ Progress:
 Current loop state:
 ```text
 PLAN ──▶ APPLY ──▶ UNIFY
-  ✓        ○        ○     [Phase 53 plan complete, ready for APPLY]
+  ✓        ✓        ○     [Phase 53 APPLY complete, ready for UNIFY]
 ```
 
 ## Accumulated Context
@@ -159,15 +159,15 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; no `0.16.0` tag created (publish remains manual)
 ## Session Continuity
 Last session: 2026-05-12
-Stopped at: Paused after Phase 53 PLAN refinement; ready for APPLY
-Next action: `/paul:apply .paul/phases/53-test-runner-verb/53-01-PLAN.md`
-Resume file: `.paul/HANDOFF-2026-05-12-phase-53-apply-ready.md`
-wip_result: skipped — no WIP commit requested during PAUSE; uncommitted PLAN/lifecycle changes remain in the working tree.
+Stopped at: Phase 53 APPLY complete — awaiting UNIFY
+Next action: `/paul:unify .paul/phases/53-test-runner-verb/53-01-PLAN.md`
+Resume file: `.paul/phases/53-test-runner-verb/53-01-PLAN.md`
+wip_result: committed — Phase 53 APPLY changes committed and pushed; PR #9 opened against `main`.
 Resume context:
-- Handoff: `.paul/HANDOFF-2026-05-12-phase-53-apply-ready.md`.
-- Phase 53 plan path: `.paul/phases/53-test-runner-verb/53-01-PLAN.md`.
-- Approved assumptions captured in plan: Docker/no-node unavailable report, direct `node --test <pattern>` pass-through, fixed timeout, minimal TAP parser, narrow API, cwd redaction, parsed audit handling.
-- Apply focus: RED tests first, then runtime helper, then README/generated guidance/CHANGELOG and full verification.
+- Plan path: `.paul/phases/53-test-runner-verb/53-01-PLAN.md`.
+- APPLY shipped: `ptc.run_tests(pattern)` Node test runner helper in `src/python-runtime/runtime.py`, generated guidance in `src/index.ts`, README + CHANGELOG, and live focused tests in `test/run-tests-helper.test.ts` + `test/index.test.ts`.
+- Verification: `npm test` 236/236 ✓; `npm run build` clean; `npm audit --json` 0 critical / 0 high / 3 moderate (baseline unchanged).
+- GitHub Flow: branch `feature/53-test-runner-verb` pushed; PR #9 open against `main`; CI informational for APPLY (UNIFY owns merge readiness).
 
 ---
-*STATE.md — Updated after Phase 53 PAUSE handoff (last updated: 2026-05-12)*
+*STATE.md — Updated after Phase 53 APPLY completion (last updated: 2026-05-12)*

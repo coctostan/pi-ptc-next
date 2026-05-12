@@ -18,7 +18,7 @@ Reference: `.paul/notes/2026-05-12-ptc-leverage-brief.md` (pre-planning thesis, 
 | 50 | Structured Report Type | 50-01 | ✅ Complete | 2026-05-12 |
 | 51 | Path Ergonomics and Bridge Helpers | 51-01 | ✅ Complete | 2026-05-12 |
 | 52 | Callable-Tool Introspection | 52-01 | ✅ Complete | 2026-05-12 |
-| 53 | Test Runner Verb | 53-01 | PLAN complete | - |
+| 53 | Test Runner Verb | 53-01 | APPLY complete | - |
 
 ### Phase 49: Pi TUI Audit and Collapsible Code Body
 Focus: Audit Pi's TUI primitives (`@mariozechner/pi-tui`, any newer Pi 0.74.0 render hooks) for collapsible/disclosure components, native table/record renderers, tool-call tree rendering, header-with-summary affordances, and theming hooks; then replace `renderCompletedOutput`'s discard of `details.userCode` with a collapsible post-completion view that preserves the Python source after a `code_execution` call completes. Carries a small prompt-guidelines clarifier teaching the agent to choose `nu` vs `code_execution`. Outcome of the audit informs Phase 50's render hook so we prefer Pi primitives over local reimplementations.
@@ -259,4 +259,4 @@ Suggested implementation branch from project docs:
 - `feat/hashline-native-interop`
 
 ---
-*Last updated: 2026-05-12 after Phase 53 PLAN creation (53-01)*
+*Last updated: 2026-05-12 after Phase 53 APPLY completion (53-01)*
