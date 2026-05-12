@@ -87,7 +87,7 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 - Package name: `pi-ptc-advanced`
 - Key source areas: `src/index.ts`, `src/code-executor.ts`, `src/custom-tool-manager.ts`, `src/tool-registry.ts`, `src/tool-adapters.ts`, `src/rpc-protocol.ts`
 - Maintainer-facing integration docs now live in `README.md`; deeper local planning/history artifacts live under `.paul/`
-- Latest GitHub Flow evidence: Phase 47 PR #3 carries the prompt metadata integration; Phase 48 should start from synced `main` after the merge gate completes
+- Latest GitHub Flow evidence: Phase 47 PR #3 was squash-merged to `main` at `e62d472`; Phase 48 starts from synced `main`
 
 ## Constraints
 ### Technical Constraints

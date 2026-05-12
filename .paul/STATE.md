@@ -134,9 +134,9 @@ PLAN ──▶ APPLY ──▶ UNIFY
 | Fix 45-03 (standard, PASS): close all 26 newly-visible CI failures — force-add 5 ungitignored eval fixtures, install `@ast-grep/cli` + `difftastic 0.69.0` on CI, clone `pi-hashline-readmap` as sibling repo with its own `node_modules` and export `PI_HASHLINE_READMAP_ROOT` | Phase 45 side-loop | `.github/workflows/ci.yml`, 5 `.pi/evals/ptc/{baselines,recipes}/*` files, FIX + FIX-SUMMARY (commits `623ad2f`, `142e3f1`, `38876f4`, `d19b426`, `15d95b3`); CI now 207/207 PASS, PR #1 mergeable |
 
 ### Git State
-- Last local checkpoint: `docs(47): complete prompt guidance phase` on `feature/47-system-prompt-guidance` (current hash resolved by git history after amend/push)
-- Branch: `feature/47-system-prompt-guidance` (ahead of `main` by 4 commits before push/merge gate)
-- PR #3: open against `main`; merge gate pending post-UNIFY push/CI/merge
+- Last merge checkpoint: `e62d472` (`feat(47): system prompt guidance optimization`) on `main`
+- Branch: `main` synced with `origin/main` after PR #3 squash merge
+- PR #3: merged; CI passed before merge; feature branch deleted remotely by merge gate
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; validate tag/version alignment before any publish action
 ## Session Continuity
 Last session: 2026-05-11
