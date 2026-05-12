@@ -161,15 +161,15 @@ Prefer these patterns:
 - Many file reads from explicit paths: ptc.read_many(paths, max_concurrency=...)
 - Inspect ptc.list_callable_tools() before branching on optional tools; otherwise use the callable tool list below directly.
 - Bounded concurrency for arbitrary coroutines: ptc.gather_limit(coros, limit=...)
-- Relative file discovery: glob(...) or ptc.find_files(...)
-- Absolute file discovery for later read()/write(): ptc.find_files_abs(...)
+- Relative file discovery: glob(...) or ptc.find_files(..., relative=True, relative_to=None)
+- Absolute file discovery for later read()/write(): ptc.find_files_abs(..., relative=False)
 Python helpers currently available in this session:
 - ${callableHelperLines.join("\n- ")}
 - ptc.gather_limit(coros, limit=...) -> list
 - ptc.read_many(paths, max_concurrency=..., offset=None, line_limit=None) -> list[str]
-- ptc.read_tree(pattern=..., path='.', max_files=1000, concurrency=..., offset=None, line_limit=None) -> list[dict[str, Any]]
-- ptc.find_files(pattern='**/*', path='.', max_files=1000) -> list[str]
-- ptc.find_files_abs(pattern='**/*', path='.', max_files=1000) -> list[str]
+- ptc.read_tree(pattern=..., path='.', max_files=1000, concurrency=..., offset=None, line_limit=None, relative=False, relative_to=None) -> list[dict[str, Any]]
+- ptc.find_files(pattern='**/*', path='.', max_files=1000, relative=True, relative_to=None) -> list[str]
+- ptc.find_files_abs(pattern='**/*', path='.', max_files=1000, relative=False, relative_to=None) -> list[str]
 - ptc.read_text(path, offset=None, limit=None) -> str
 - await ptc.batch_tool(calls, max_concurrency=None, on_error=None) -> list[Any] | dict[str, Any]
 -   - on_error='collect' returns a kind="batch_partial" envelope with per-call success/error entries instead of raising on first failure
@@ -178,6 +178,10 @@ Python helpers currently available in this session:
 - ptc.fit_output(value, max_chars=None, max_items=None, max_depth=None) -> dict[str, Any]
 - ptc.report(title, metrics=None, tables=None, samples=None, warnings=None) -> dict[str, Any]
 -   - Returns kind="ptc_report" for structured repo/dataset summaries; recognized reports get compact completed-result rendering and structured details.report while free-form returns still work.
+- ptc.tabulate(rows, headers=None, title=None) -> dict[str, Any]
+-   - Produces a report-compatible table payload; use inside ptc.report(tables=[...]).
+- ptc.diff(before, after) -> dict[str, Any]
+-   - Produces a shallow JSON-safe before/after diff for explicit values.
 - ptc.expect_kind(value, kind) -> Any
 - ptc.list_callable_tools() -> list[dict[str, Any]]
 - ptc.get_tool_schema(name) -> dict[str, Any]
@@ -190,6 +194,7 @@ Prefer these for string content:
 - ptc.read_text(path) always returns str (extracts raw text from structured results)
 - ptc.read_many(paths) always returns list[str]
 - ptc.read_tree(pattern) returns list[dict] where each entry["content"] is str
+- ptc.tabulate(...) and ptc.diff(...) are bridge helpers for report payloads and explicit before/after comparisons; prefer nu for grouping, histograms, ranking, or pipeline-style data analysis.
 Use read(path) directly when you need structured anchored data (ReadResult with .lines[].anchor).
 Callable tool set for this session: ${callable || "(none)"}. Use this list directly unless your Python code needs to branch on optional tools.
 Example:

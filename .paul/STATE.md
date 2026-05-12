@@ -8,11 +8,11 @@ See: `.paul/PROJECT.md`
 ## Current Position
 Milestone: Milestone 18 — PTC Leverage and Output Shape (`0.17.0`)
 Phase: 51 of 53 (Path Ergonomics and Bridge Helpers)
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-05-12 — Phase 50 complete: `ptc.report(...)` structured report type shipped, reconciled in `50-01-SUMMARY.md`, and project transitioned to Phase 51.
+Plan: `.paul/phases/51-path-ergonomics-and-bridge-helpers/51-01-PLAN.md`
+Status: APPLY complete — ready for UNIFY
+Last activity: 2026-05-12 — Phase 51 APPLY implemented path ergonomics and slim bridge helpers; focused tests, full `npm test` (230 passing / 0 failing), and `npm run build` passed.
 Progress:
-- Milestone 18 — PTC Leverage and Output Shape: [████░░░░░░] 40% (Phase 49 ✓; Phase 50 ✓; Phase 51 ready to plan; Phase 52 not started, Phase 53 not started)
+- Milestone 18 — PTC Leverage and Output Shape: [██████░░░░] 60% (Phase 49 ✓; Phase 50 ✓; Phase 51 APPLY ✓ / UNIFY pending; Phase 52 not started, Phase 53 not started)
 - Milestone 17 — Pi Compatibility and Prompt Integration Audit: [██████████] 100% ✓ (Phase 45 ✓, Phase 46 ✓, Phase 47 ✓, Phase 48 ✓)
 - Phase 45 — Pi API and Documentation Delta Audit: [██████████] 100% ✓
 - Phase 46 — Extension Runtime Compatibility Alignment: [██████████] 100% ✓
@@ -54,10 +54,11 @@ Progress:
 - Milestone 3 — Python Ergonomics and Metadata: [██████████] 100% ✓
 - Milestone 2 — Structured Results Contract: [██████████] 100% ✓
 - Milestone 1 — Active Tool Runtime Seam: [██████████] 100% ✓
+## Loop Position
 Current loop state:
 ```text
 PLAN ──▶ APPLY ──▶ UNIFY
-  ○        ○        ○     [Phase 51 ready to plan]
+  ✓        ✓        ○     [Phase 51 apply complete, ready for UNIFY]
 ```
 
 ## Accumulated Context
@@ -132,6 +133,8 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Phase 50 PLAN created `.paul/phases/50-structured-report-type/50-01-PLAN.md`: TDD plan to add `ptc.report(...)` canonical report helper, preserve recognized reports in `details.report`/`details.reportProduced`, render compact/expanded report output, update README/CHANGELOG, and preserve free-form/`ptc.fit_output(...)` behavior.
 - Phase 50 APPLY added `ptc.report(...)` canonical JSON-safe report shape, preserved recognized reports in `details.report` / `details.reportProduced`, rendered compact/expanded completed report output, updated README/CHANGELOG, and preserved free-form / `ptc.fit_output(...)` behavior; verification passed with focused report/render/docs tests, `npm test` (228 passing / 0 failing), and `npm run build`.
 - Phase 50 UNIFY reconciled plan-vs-actual in `50-01-SUMMARY.md`, recorded WALT/CODI/SKIP/RUBY post-unify evidence, marked Phase 50 complete, and transitioned Milestone 18 to Phase 51 planning readiness.
+- Phase 51 PLAN created `.paul/phases/51-path-ergonomics-and-bridge-helpers/51-01-PLAN.md`: TDD plan for workspace-root-aware path formatting options on `find_files` / `find_files_abs` / `read_tree`, plus slim JSON-safe `ptc.tabulate(...)` and `ptc.diff(...)` bridge helpers; broad aggregators remain out of scope in favor of `nu`.
+- Phase 51 APPLY added root-aware `relative` / `relative_to` formatting on `ptc.find_files(...)`, `ptc.find_files_abs(...)`, and `ptc.read_tree(...)`; added report-compatible `ptc.tabulate(...)` and shallow JSON-safe `ptc.diff(...)`; updated README, generated tool guidance, CHANGELOG, and contract tests. Verification passed: RED tests failed before implementation, focused tests passed, `npm test` passed with 230 passing / 0 failing, `npm run build` passed, and `npm audit --json` remained 0 critical / 0 high / 3 moderate.
 ### Deferred Issues
 - Bridge teardown when pi adds getToolExecutor()
 - `src/python-runtime/runtime.py` is now a significant debt hotspot at 908 lines after Phase 50 report validation additions; future changes should avoid casual growth without extraction justification
@@ -146,19 +149,20 @@ PLAN ──▶ APPLY ──▶ UNIFY
 
 ### Git State
 - Phase 50 UNIFY metadata merged to `main` via PR #6 squash merge at `5eee7cb`.
-- Branch: `main` synced to `origin/main`; feature branch `feature/50-structured-report-type` deleted by PR merge.
-- PR #6: MERGED — https://github.com/coctostan/pi-ptc-next/pull/6; GitHub Actions `Verify release baseline` and Socket checks SUCCESS.
+- Branch: `feature/51-path-ergonomics-bridge-helpers` created from synced `main` for Phase 51 APPLY.
+- PR #6: MERGED — https://github.com/coctostan/pi-ptc-next/pull/6; Phase 51 PR not yet created at APPLY completion.
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; no `0.16.0` tag created (publish remains manual)
 ## Session Continuity
 Last session: 2026-05-12
-Stopped at: Phase 50 complete; ready to plan Phase 51
-Next action: `/paul:plan` for Phase 51
-Resume file: `.paul/ROADMAP.md`
+Stopped at: Phase 51 APPLY complete; UNIFY pending
+Next action: `/paul:unify .paul/phases/51-path-ergonomics-and-bridge-helpers/51-01-PLAN.md`
+Resume file: `.paul/phases/51-path-ergonomics-and-bridge-helpers/51-01-PLAN.md`
+wip_result: implementation complete; verification passed; SUMMARY/UNIFY not yet written.
 Resume context:
-- Phase 50 summary: `.paul/phases/50-structured-report-type/50-01-SUMMARY.md`.
-- Next phase: Phase 51 — Path Ergonomics and Bridge Helpers (`relative=True`, `relative_to=<root>`, slim `tabulate(...)` / `diff(...)` bridge helpers).
-- Carried concerns: `runtime.py` hotspot at 908 lines; dependency audit baseline still has 3 moderate advisories; Phase 51 should avoid reintroducing broad semantic data helpers that `nu` already covers.
-- Phase 50 verification: commits `154f2ab`, `498d9b9`, `66003ac`, and metadata commit `7adfbc8` merged via PR #6 squash `5eee7cb`; focused report/render/docs tests PASS; `npm test && npm run build` PASS (228 passing / 0 failing); focused ESLint PASS; PR #6 CI SUCCESS.
+- APPLY implemented all 3 plan tasks: RED helper tests, runtime helper implementation, and docs/prompt/CHANGELOG updates.
+- Verification evidence: focused helper/report/docs tests passed; `npm test` passed with 230 passing / 0 failing; `npm run build` passed; `npm audit --json` remained 0 critical / 0 high / 3 moderate.
+- Module notes for UNIFY: TODD TDD sequencing followed; WALT quality gate passed; DEAN no critical/high regression; ARCH/RUBY note `runtime.py` remains a hotspot but no broad refactor was attempted; broad aggregators intentionally deferred in favor of `nu`.
+- Ready to create `.paul/phases/51-path-ergonomics-and-bridge-helpers/51-01-SUMMARY.md` during UNIFY.
 
 ---
-*STATE.md — Updated after Phase 50 completion and transition to Phase 51 (last updated: 2026-05-12)*
+*STATE.md — Updated after Phase 51 APPLY completion (last updated: 2026-05-12)*

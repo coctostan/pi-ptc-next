@@ -272,6 +272,58 @@ test("audit: ptc.find_files_abs() returns bounded absolute paths", async () => {
   assert.ok(result.output.includes("1|True"), `find_files_abs should return one bounded absolute path, got: ${result.output}`);
 });
 
+
+test("audit: path helpers support explicit relative and absolute formatting", async () => {
+  const executor = createAuditExecutor();
+  const result = await exec(executor, [
+    "import os",
+    'default_rel = await ptc.find_files(pattern="*.txt", max_files=1)',
+    'abs_paths = await ptc.find_files(pattern="*.txt", max_files=1, relative=False)',
+    'abs_default = await ptc.find_files_abs(pattern="*.txt", max_files=1)',
+    'rel_from_abs = await ptc.find_files_abs(pattern="*.txt", max_files=1, relative=True)',
+    'tree_rel = await ptc.read_tree(pattern="*.txt", max_files=1, relative=True)',
+    "checks = [",
+    "  len(default_rel) == 1 and not os.path.isabs(default_rel[0]),",
+    "  len(abs_paths) == 1 and os.path.isabs(abs_paths[0]),",
+    "  len(abs_default) == 1 and os.path.isabs(abs_default[0]),",
+    "  len(rel_from_abs) == 1 and not os.path.isabs(rel_from_abs[0]),",
+    "  len(tree_rel) == 1 and not os.path.isabs(tree_rel[0]['path']) and isinstance(tree_rel[0]['content'], str),",
+    "]",
+    'return ptc.json_dump({"checks": checks, "tree_path": tree_rel[0]["path"]})',
+  ].join("\n"));
+  const parsed = JSON.parse(result.output);
+  assert.deepEqual(parsed.checks, [true, true, true, true, true], `path helper formatting should pass, got: ${result.output}`);
+  assert.equal(parsed.tree_path, "file-a.txt");
+});
+
+
+test("audit: bridge helpers compose with ptc.report", async () => {
+  const executor = createAuditExecutor();
+  const result = await exec(executor, [
+    'rows = [{"path": "a.txt", "lines": 2}, {"path": "b.txt", "lines": 3}]',
+    'table = ptc.tabulate(rows, title="Files")',
+    'delta = ptc.diff({"count": 1, "status": "old", "same": True}, {"count": 2, "extra": "new", "same": True})',
+    'report = ptc.report(title="Bridge helpers", tables=[table], samples=[{"label": "delta", "value": delta}])',
+    'return ptc.json_dump(report)',
+  ].join("\n"));
+  const parsed = JSON.parse(result.output);
+  assert.equal(parsed.kind, "ptc_report");
+  assert.deepEqual(parsed.tables[0], {
+    title: "Files",
+    columns: ["path", "lines"],
+    rows: [
+      { path: "a.txt", lines: 2 },
+      { path: "b.txt", lines: 3 },
+    ],
+  });
+  assert.deepEqual(parsed.samples[0].value, {
+    kind: "ptc_diff",
+    added: { extra: "new" },
+    removed: { status: "old" },
+    changed: { count: { before: 1, after: 2 } },
+  });
+});
+
 test("audit: ptc.read_text() returns a string", async () => {
   const executor = createAuditExecutor();
   const result = await exec(executor,
