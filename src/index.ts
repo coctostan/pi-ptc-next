@@ -16,6 +16,7 @@ import {
   noteCodeExecutionSuccess,
   type PtcRecoveryState,
 } from "./recovery-state";
+import { renderPtcReportLines } from "./report";
 import { createSandbox } from "./sandbox-manager";
 import { describePythonHelpers } from "./tools/python-tool-contract";
 import { ToolRegistry } from "./tool-registry";
@@ -110,8 +111,8 @@ function renderCompletedOutput(
       `estimated avoided tokens≈${details.estimatedAvoidedTokens}, duration=${Math.round(details.durationMs / 1000)}s`
   );
 
-  const body = resultText || "(No output)";
-  const lines = [summary, "", body];
+  const body = details.report ? renderPtcReportLines(details.report, expanded) : [resultText || "(No output)"];
+  const lines = [summary, "", ...body];
 
   if (details.userCode?.length) {
     lines.push("");
@@ -175,6 +176,8 @@ Python helpers currently available in this session:
 - await ptc.first_success(calls, max_concurrency=None) -> Any
 - await ptc.reduce_tool(calls, reducer, initial, max_concurrency=None) -> Any
 - ptc.fit_output(value, max_chars=None, max_items=None, max_depth=None) -> dict[str, Any]
+- ptc.report(title, metrics=None, tables=None, samples=None, warnings=None) -> dict[str, Any]
+-   - Returns kind="ptc_report" for structured repo/dataset summaries; recognized reports get compact completed-result rendering and structured details.report while free-form returns still work.
 - ptc.expect_kind(value, kind) -> Any
 - ptc.list_callable_tools() -> list[dict[str, Any]]
 - ptc.get_tool_schema(name) -> dict[str, Any]

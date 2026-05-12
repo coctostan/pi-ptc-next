@@ -2,6 +2,7 @@ import type { ChildProcess } from "child_process";
 import type { ExtensionContext } from "@mariozechner/pi-coding-agent";
 import type { PtcExecutionTelemetry, PtcRecoveryDetails, PtcRecoveryState } from "../recovery-state";
 import type { ToolUpdateCallback } from "./tool-types";
+import type { PtcReport } from "../report";
 
 export interface SandboxManager {
   spawn(code: string, cwd: string): ChildProcess;
@@ -25,7 +26,7 @@ export type RpcMessage =
   | { type: "tool_result"; id: string; value?: unknown; error?: RpcErrorPayload }
   | { type: "execution_progress"; line: number; total_lines: number }
   | { type: "stdout"; text: string }
-  | { type: "complete"; output: string }
+  | { type: "complete"; output: string; report?: PtcReport }
   | { type: "error"; message: string; traceback?: string }
   | { type: "update"; message: string };
 
@@ -54,6 +55,8 @@ export interface ExecutionDetails extends ExecutionMetrics {
   userCode?: string[];
   telemetry?: PtcExecutionTelemetry;
   recovery?: PtcRecoveryDetails;
+  reportProduced?: boolean;
+  report?: PtcReport;
 }
 
 export interface CodeExecutionResult {

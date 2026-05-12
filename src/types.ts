@@ -22,6 +22,7 @@ import type {
   ResponseHandle as InternalResponseHandle,
   SupportedHandle as InternalSupportedHandle,
 } from "./contracts/handle-types";
+import type { PtcReport as InternalPtcReport, PtcReportJsonValue as InternalPtcReportJsonValue, PtcReportScalar as InternalPtcReportScalar, PtcReportSample as InternalPtcReportSample, PtcReportTable as InternalPtcReportTable } from "./report";
 import type { PtcSettings as InternalPtcSettings } from "./contracts/settings";
 
 export type CallerMetadata = InternalCallerMetadata;
@@ -43,5 +44,10 @@ export type SandboxManager = InternalSandboxManager;
 export type FileHandle = InternalFileHandle;
 export type ResponseHandle = InternalResponseHandle;
 export type SupportedHandle = InternalSupportedHandle;
+export type PtcReport = InternalPtcReport;
+export type PtcReportJsonValue = InternalPtcReportJsonValue;
+export type PtcReportScalar = InternalPtcReportScalar;
+export type PtcReportSample = InternalPtcReportSample;
+export type PtcReportTable = InternalPtcReportTable;
 
 export type PtcSettings = InternalPtcSettings;

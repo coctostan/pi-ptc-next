@@ -11,6 +11,7 @@ import {
 import { normalizeToolResult } from "./tool-adapters";
 import { estimateTokensFromChars } from "./utils";
 import type { CodeExecutionResult, ExecutionDetails, RpcErrorPayload, RpcMessage } from "./contracts/execution-types";
+import { isPtcReport } from "./report";
 
 type RunTool = (toolName: string, params: unknown, nestedCallId: string) => Promise<unknown>;
 
@@ -83,11 +84,18 @@ function validateStdoutMessage(value: Record<string, unknown>): Extract<RpcMessa
 }
 
 function validateCompleteMessage(value: Record<string, unknown>): Extract<RpcMessage, { type: "complete" }> {
-  if (isString(value.output)) {
-    return { type: "complete", output: value.output };
+  if (!isString(value.output)) {
+    throw new PtcProtocolError("Invalid complete frame: expected string output.");
   }
 
-  throw new PtcProtocolError("Invalid complete frame: expected string output.");
+  if (value.report !== undefined) {
+    if (!isPtcReport(value.report)) {
+      throw new PtcProtocolError("Invalid complete frame: report must match the PTC report contract.");
+    }
+    return { type: "complete", output: value.output, report: value.report };
+  }
+
+  return { type: "complete", output: value.output };
 }
 
 function validateErrorMessage(value: Record<string, unknown>): Extract<RpcMessage, { type: "error" }> {
@@ -398,9 +406,10 @@ export class RpcProtocol {
 
       case "complete": {
         const finalOutput = this.stdout ? `${this.stdout}${msg.output}`.trim() : msg.output;
+        const reportDetails = msg.report ? { reportProduced: true, report: msg.report } : undefined;
         this.resolveOnce({
           output: finalOutput,
-          details: this.buildExecutionDetails(),
+          details: this.buildExecutionDetails(reportDetails),
         });
         break;
       }

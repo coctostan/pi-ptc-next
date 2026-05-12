@@ -104,6 +104,8 @@ _SUPPORTED_HANDLE_KINDS = {"response", "file"}
 _DEFAULT_FIT_OUTPUT_MAX_ITEMS = 10
 _DEFAULT_FIT_OUTPUT_MAX_DEPTH = 3
 _FIT_OUTPUT_KIND = "fit_output"
+_REPORT_KIND = "ptc_report"
+_REPORT_VERSION = 1
 
 
 def _push_response_handle(handles: list[SupportedHandle], seen: set[str], response_id: str) -> None:
@@ -181,6 +183,145 @@ def _expect_kind(value: Any, kind: str) -> Any:
 def _clone_json_value(value: Any) -> Any:
     return _ptc_json.loads(_ptc_json.dumps(value))
 
+def _is_report_scalar(value: Any) -> bool:
+    return value is None or isinstance(value, (str, bool, int, float)) and not isinstance(value, complex) and value == value and value not in (float("inf"), float("-inf"))
+
+
+def _require_report_scalar(name: str, value: Any) -> Any:
+    if not _is_report_scalar(value):
+        raise ValueError(f"{name} must be a string, number, boolean, or None")
+    return value
+
+
+def _json_safe_clone_for_report(name: str, value: Any) -> Any:
+    try:
+        return _clone_json_value(value)
+    except (TypeError, ValueError) as error:
+        raise ValueError(f"{name} must be JSON-safe") from error
+
+
+def _normalize_report_metrics(metrics: dict[str, Any] | None) -> dict[str, Any]:
+    if metrics is None:
+        return {}
+    if not isinstance(metrics, dict):
+        raise ValueError("metrics must be an object")
+    normalized: dict[str, Any] = {}
+    for key, value in metrics.items():
+        if not isinstance(key, str) or not key.strip():
+            raise ValueError("metrics keys must be non-empty strings")
+        normalized[key] = _require_report_scalar(f"metrics[{key!r}]", value)
+    return normalized
+
+
+def _normalize_report_columns(table: dict[str, Any], rows: list[dict[str, Any]], table_index: int) -> list[str]:
+    columns = table.get("columns")
+    if columns is None:
+        inferred: list[str] = []
+        for row in rows:
+            for key in row.keys():
+                if key not in inferred:
+                    inferred.append(key)
+        return inferred
+    if not isinstance(columns, Sequence) or isinstance(columns, (str, bytes, bytearray)):
+        raise ValueError(f"tables[{table_index}].columns must be a list of strings")
+    normalized: list[str] = []
+    for column_index, column in enumerate(columns):
+        if not isinstance(column, str) or not column.strip():
+            raise ValueError(f"tables[{table_index}].columns[{column_index}] must be a non-empty string")
+        normalized.append(column)
+    return normalized
+
+
+def _normalize_report_rows(rows: Any, table_index: int) -> list[dict[str, Any]]:
+    if rows is None:
+        return []
+    if not isinstance(rows, Sequence) or isinstance(rows, (str, bytes, bytearray)):
+        raise ValueError(f"tables[{table_index}].rows must be a list of objects")
+    normalized_rows: list[dict[str, Any]] = []
+    for row_index, row in enumerate(rows):
+        if not isinstance(row, dict):
+            raise ValueError(f"tables[{table_index}].rows[{row_index}] must be an object")
+        normalized_row: dict[str, Any] = {}
+        for key, value in row.items():
+            if not isinstance(key, str) or not key.strip():
+                raise ValueError(f"tables[{table_index}].rows[{row_index}] keys must be non-empty strings")
+            normalized_row[key] = _require_report_scalar(f"tables[{table_index}].rows[{row_index}][{key!r}]", value)
+        normalized_rows.append(normalized_row)
+    return normalized_rows
+
+
+def _normalize_report_tables(tables: Any) -> list[dict[str, Any]]:
+    if tables is None:
+        return []
+    if not isinstance(tables, Sequence) or isinstance(tables, (str, bytes, bytearray)):
+        raise ValueError("tables must be a list of table objects")
+    normalized_tables: list[dict[str, Any]] = []
+    for table_index, table in enumerate(tables):
+        if not isinstance(table, dict):
+            raise ValueError(f"tables[{table_index}] must be an object")
+        title = table.get("title")
+        if title is not None and not isinstance(title, str):
+            raise ValueError(f"tables[{table_index}].title must be a string")
+        rows = _normalize_report_rows(table.get("rows", []), table_index)
+        columns = _normalize_report_columns(table, rows, table_index)
+        normalized: dict[str, Any] = {"columns": columns, "rows": rows}
+        if title is not None and title.strip():
+            normalized["title"] = title
+        normalized_tables.append(normalized)
+    return normalized_tables
+
+
+def _normalize_report_samples(samples: Any) -> list[dict[str, Any]]:
+    if samples is None:
+        return []
+    if not isinstance(samples, Sequence) or isinstance(samples, (str, bytes, bytearray)):
+        raise ValueError("samples must be a list of sample objects")
+    normalized_samples: list[dict[str, Any]] = []
+    for sample_index, sample in enumerate(samples):
+        if not isinstance(sample, dict):
+            raise ValueError(f"samples[{sample_index}] must be an object")
+        if "value" not in sample:
+            raise ValueError(f"samples[{sample_index}].value is required")
+        label = sample.get("label")
+        if label is not None and not isinstance(label, str):
+            raise ValueError(f"samples[{sample_index}].label must be a string")
+        normalized: dict[str, Any] = {"value": _json_safe_clone_for_report(f"samples[{sample_index}].value", sample.get("value"))}
+        if label is not None and label.strip():
+            normalized["label"] = label
+        normalized_samples.append(normalized)
+    return normalized_samples
+
+
+def _normalize_report_warnings(warnings: Any) -> list[str]:
+    if warnings is None:
+        return []
+    if not isinstance(warnings, Sequence) or isinstance(warnings, (str, bytes, bytearray)):
+        raise ValueError("warnings must be a list of strings")
+    normalized: list[str] = []
+    for warning_index, warning in enumerate(warnings):
+        if not isinstance(warning, str):
+            raise ValueError(f"warnings[{warning_index}] must be a string")
+        normalized.append(warning)
+    return normalized
+
+
+def _is_ptc_report(value: Any) -> bool:
+    return (
+        isinstance(value, dict)
+        and value.get("kind") == _REPORT_KIND
+        and value.get("version") == _REPORT_VERSION
+        and isinstance(value.get("title"), str)
+        and isinstance(value.get("metrics"), dict)
+        and isinstance(value.get("tables"), list)
+        and isinstance(value.get("samples"), list)
+        and isinstance(value.get("warnings"), list)
+    )
+
+
+def _extract_ptc_report(value: Any) -> Any | None:
+    if not _is_ptc_report(value):
+        return None
+    return _json_safe_clone_for_report("report", value)
 
 def _normalize_callable_tool_name(name: str) -> str:
     if not isinstance(name, str):
@@ -686,6 +827,26 @@ class _PtcHelpers:
         )
         return _fit_result_to_char_budget(result, limits["max_chars"])
 
+    def report(
+        self,
+        title: str,
+        metrics: dict[str, Any] | None = None,
+        tables: Sequence[dict[str, Any]] | None = None,
+        samples: Sequence[dict[str, Any]] | None = None,
+        warnings: Sequence[str] | None = None,
+    ) -> dict[str, Any]:
+        if not isinstance(title, str) or not title.strip():
+            raise ValueError("title must be a non-empty string")
+        return {
+            "kind": _REPORT_KIND,
+            "version": _REPORT_VERSION,
+            "title": title,
+            "metrics": _normalize_report_metrics(metrics),
+            "tables": _normalize_report_tables(tables),
+            "samples": _normalize_report_samples(samples),
+            "warnings": _normalize_report_warnings(warnings),
+        }
+
     def json_dump(self, value: Any) -> str:
         return _ptc_json.dumps(value, indent=2, ensure_ascii=False, sort_keys=True)
 
@@ -727,7 +888,11 @@ async def _runtime_main(user_main: Callable[[], Coroutine[Any, Any, Any]]):
         _stdout_proxy.flush()
         _ptc_sys.stdout = _ORIGINAL_STDOUT
         _ptc_sys.settrace(None)
-        _emit_protocol({"type": "complete", "output": _stringify_output(output)})
+        complete_message = {"type": "complete", "output": _stringify_output(output)}
+        report = _extract_ptc_report(output)
+        if report is not None:
+            complete_message["report"] = report
+        _emit_protocol(complete_message)
     except Exception as error:
         _ptc_sys.stdout = _ORIGINAL_STDOUT
         _ptc_sys.settrace(None)
