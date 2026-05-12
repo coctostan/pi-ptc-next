@@ -140,8 +140,8 @@ PLAN ──▶ APPLY ──▶ UNIFY
 | Fix 45-03 (standard, PASS): close all 26 newly-visible CI failures — force-add 5 ungitignored eval fixtures, install `@ast-grep/cli` + `difftastic 0.69.0` on CI, clone `pi-hashline-readmap` as sibling repo with its own `node_modules` and export `PI_HASHLINE_READMAP_ROOT` | Phase 45 side-loop | `.github/workflows/ci.yml`, 5 `.pi/evals/ptc/{baselines,recipes}/*` files, FIX + FIX-SUMMARY (commits `623ad2f`, `142e3f1`, `38876f4`, `d19b426`, `15d95b3`); CI now 207/207 PASS, PR #1 mergeable |
 
 ### Git State
-- Last transition commit: `3d0d8ec` (`docs(49): transition to phase 50 planning`) on `main`; last feature merge commit: `44c8427` (`feat(49-01): expose completed code execution source (#5)`)
-- Branch: `main` (pushed to `origin/main`); feature branch `feature/49-pi-tui-audit-and-collapsible-code-body` deleted remotely by PR merge
+- Transition evidence recorded on `main` after Phase 49 completion; last feature merge commit: `44c8427` (`feat(49-01): expose completed code execution source (#5)`)
+- Branch: `main` (pushed to `origin/main` with Phase 50 planning readiness); feature branch `feature/49-pi-tui-audit-and-collapsible-code-body` deleted remotely by PR merge
 - PR #5: MERGED 2026-05-12T16:20:32Z via squash; all CI checks (2x `Verify release baseline`, 2x Socket Security) SUCCESS
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; no `0.16.0` tag created (publish remains manual)
 ## Session Continuity
