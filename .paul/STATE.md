@@ -4,13 +4,13 @@
 See: `.paul/PROJECT.md`
 
 **Core value:** `pi-ptc-next` should execute the same active Pi tool implementations that the user sees in chat.
-**Current focus:** Milestone 17 is complete (0.16.0 compatibility-proof release candidate shipped behind PR #4 with acknowledged DEAN audit baseline). Awaiting next-milestone selection (likely candidates: 0.17.0 dependency-advisory remediation, automated publish workflow, or another scope).
+**Current focus:** Milestone 17 is complete and merged (`0.16.0` compatibility-proof release candidate; PR #4 squashed at `484a6d9` with `main` synced and feature branch cleaned). Awaiting next-milestone selection (likely candidates: 0.17.0 dependency-advisory remediation, automated publish workflow, or another scope).
 ## Current Position
 Milestone: Milestone 17 — Pi Compatibility and Prompt Integration Audit (0.16.0) — ✓ COMPLETE
 Phase: 48 of 48 (Compatibility Proof and Release Readiness) — ✓ Complete
 Plan: Not started (Milestone 17 closed)
 Status: Milestone 17 complete; ready to plan next milestone
-Last activity: 2026-05-12 — Phase 48 UNIFY complete; SUMMARY at `.paul/phases/48-compatibility-proof-and-release-readiness/48-01-SUMMARY.md`; Milestone 17 closed at `0.16.0`; PR #4 awaiting merge-gate processing
+Last activity: 2026-05-12 — Phase 48 UNIFY complete; SUMMARY at `.paul/phases/48-compatibility-proof-and-release-readiness/48-01-SUMMARY.md`; Milestone 17 closed at `0.16.0`; PR #4 squash-merged to `main` at `484a6d9`; feature branch deleted; merge gate ✓
 Progress:
 - Milestone 17 — Pi Compatibility and Prompt Integration Audit: [██████████] 100% ✓ (Phase 45 ✓, Phase 46 ✓, Phase 47 ✓, Phase 48 ✓)
 - Phase 45 — Pi API and Documentation Delta Audit: [██████████] 100% ✓
@@ -136,20 +136,20 @@ PLAN ──▶ APPLY ──▶ UNIFY
 | Fix 45-03 (standard, PASS): close all 26 newly-visible CI failures — force-add 5 ungitignored eval fixtures, install `@ast-grep/cli` + `difftastic 0.69.0` on CI, clone `pi-hashline-readmap` as sibling repo with its own `node_modules` and export `PI_HASHLINE_READMAP_ROOT` | Phase 45 side-loop | `.github/workflows/ci.yml`, 5 `.pi/evals/ptc/{baselines,recipes}/*` files, FIX + FIX-SUMMARY (commits `623ad2f`, `142e3f1`, `38876f4`, `d19b426`, `15d95b3`); CI now 207/207 PASS, PR #1 mergeable |
 
 ### Git State
-- Last pushed checkpoint: `906379c` (`feat(48): release 0.16.0 compatibility-proof candidate`) on `feature/48-compatibility-proof-release-readiness`
-- Branch: `feature/48-compatibility-proof-release-readiness` pushed to `origin`; `main` last synced at `07a6d14`
-- PR #4: OPEN / MERGEABLE against `main`; CI in progress at APPLY time; merge-gate is the UNIFY responsibility per github-flow
+- Last merge commit: `484a6d9` (`feat(48): release 0.16.0 compatibility-proof candidate and close Milestone 17 (#4)`) on `main`
+- Branch: `main` (synced with `origin/main`); feature branch `feature/48-compatibility-proof-release-readiness` deleted locally and remotely
+- PR #4: MERGED 2026-05-12T02:31:10Z via squash; all CI checks (2x `Verify release baseline`, 2x Socket Security) SUCCESS; mergeStateStatus CLEAN at gate time
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; no `0.16.0` tag created (publish remains manual)
 ## Session Continuity
 Last session: 2026-05-12
 Stopped at: Milestone 17 complete; awaiting next-milestone decision
-Next action: process PR #4 merge gate (CI → review → merge → base sync → branch cleanup) then `/paul:plan` for the next milestone, or pause
+Next action: `/paul:plan` to start the next milestone (e.g., 0.17.0 dependency-advisory remediation or automated publish), or pause and treat 0.16.0 as a manual release gate
 Resume file: .paul/ROADMAP.md
 wip_result: n/a
 Resume context:
 - Milestone 17 closed at `0.16.0` with the compatibility-proof release candidate.
 - DEAN audit baseline acknowledged at the Phase 48 human-verify checkpoint; advisory remediation is deferred and tracked in `CHANGELOG.md` 0.16.0 Deferred section and `.paul/dean-baseline.json` (override valid through 2026-06-11).
-- PR #4 still needs to clear the github-flow merge gate (CI, optional review, merge, base sync, branch cleanup) before the next milestone's APPLY can run from a refreshed `main`.
+- PR #4 squash-merged at `484a6d9`; `main` is the clean base for the next milestone's APPLY.
 - Next planning decision is whether to open a 0.17.0 milestone (e.g., advisory remediation or automated publish workflow), or pause and treat 0.16.0 as a manual release gate.
 
 ---
