@@ -4,6 +4,10 @@ This changelog tracks notable release-facing changes for the fork repository `pi
 
 ## Unreleased
 
+_No unreleased changes yet._
+
+## 0.17.0 — 2026-05-12
+
 ### Added
 - Completed `code_execution` results now expose the executed Python source in expanded tool details while keeping the default completed result compact.
 - `code_execution` prompt guidance now clarifies when to prefer `nu` for pipeline-style structured-data/filesystem analysis versus Python-backed orchestration for custom logic and aggregation.
@@ -13,8 +17,16 @@ This changelog tracks notable release-facing changes for the fork repository `pi
 - `code_execution` Python helpers now support root-aware path formatting options on `ptc.find_files(...)`, `ptc.find_files_abs(...)`, and `ptc.read_tree(...)`.
 - `ptc.tabulate(...)` and shallow `ptc.diff(...)` add slim bridge helpers for composing Python intermediates into `ptc.report(...)` without adding broad data-analysis helpers.
 - Callable-tool introspection now carries optional prompt metadata into Python and adds `ptc.help(tool_name)` for bounded on-demand runtime guidance.
-- `ptc.run_tests(pattern)` adds a first-class Node `node --test` helper that returns a structured `ptc_report` with pass/fail/duration metrics, a bounded failures table, runner-availability data, and a fixed 120s timeout. Failing tests, missing `node`, and timeouts are reported as data; invalid patterns still raise `ValueError`. Cross-runner support, package-script dispatch, and Docker image changes remain explicitly out of scope for this phase.
+- `ptc.run_tests(pattern)` adds a first-class Node `node --test` helper that returns a structured `ptc_report` with pass/fail/duration metrics, a bounded failures table, runner-availability data, and a fixed 120s timeout. Failing tests, missing `node`, and timeouts are reported as data; invalid patterns still raise `ValueError`. Cross-runner support, package-script dispatch, and Docker image changes remain explicitly out of scope for this release.
 
+### Changed
+- Package metadata and release-package verification now target `pi-ptc-advanced@0.17.0`.
+- The active documented release baseline now points to `0.17.0`; `0.16.0`, `0.15.0`, and `0.8.0` remain available as historical release context.
+
+### Deferred / not included
+- Automated npm publish and release GitHub Actions automation remain intentionally out of scope.
+- Caching, cross-call session state, helper persistence, broad PTC aggregator helpers, and cross-runner test dispatch remain deferred.
+- The dependency audit baseline remains unchanged at `0 critical / 0 high / 3 moderate`.
 ## 0.16.0 — 2026-05-12
 
 ### Added

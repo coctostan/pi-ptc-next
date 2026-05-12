@@ -6,9 +6,9 @@ It covers the repo-local workflow that should remain stable across sessions:
 - run the routine verification bundle for day-to-day checks
 - run the full verification bundle when confidence needs to be higher
 - run the CI-parity verification bundle used by GitHub Actions
-- run a release-package verification pass for the current `pi-ptc-advanced@0.16.0` baseline
+- run a release-package verification pass for the current `pi-ptc-advanced@0.17.0` baseline
 - handle sync and upgrade work as explicit manual git operations instead of hidden automation
-The current documented release target for this fork is **`pi-ptc-advanced@0.16.0`**. This runbook covers verification-only CI automation and the package-surface verification needed for that baseline while still leaving tagging, publishing, and broader git workflow operations as explicit manual concerns. The Milestone 17 baseline does not claim a hard `@earendil-works/*` migration and does not claim a clean dependency audit; see [`docs/releases/0.16.0.md`](./releases/0.16.0.md) for the acknowledged DEAN baseline.
+The current documented release target for this fork is **`pi-ptc-advanced@0.17.0`**. This runbook covers verification-only CI automation and the package-surface verification needed for that baseline while still leaving publishing and broader git workflow operations as explicit manual concerns. The Milestone 18 baseline adds the `code_execution` report/helper surface while preserving the acknowledged dependency-audit baseline; see [`docs/releases/0.17.0.md`](./releases/0.17.0.md) for details.
 ## Day-to-day workflow
 ### 1. Start Pi with the personal analysis profile
 
@@ -63,14 +63,15 @@ When you want to confirm what would actually ship for the current release baseli
 npm run verify:release-package
 ```
 
-This command builds the repo, validates the expected package metadata, checks the `npm pack --dry-run` tarball surface for the current **`pi-ptc-advanced@0.16.0`** target, and proves a clean install from the packed tarball in a temporary directory.
+This command builds the repo, validates the expected package metadata, checks the `npm pack --dry-run` tarball surface for the current **`pi-ptc-advanced@0.17.0`** target, and proves a clean install from the packed tarball in a temporary directory.
 
 Use it before treating the fork as release-ready, after metadata changes, or after documentation/dependency updates that may affect the published package surface or installability proof.
 
 Release reference docs for the active baseline:
 - [`CHANGELOG.md`](../CHANGELOG.md)
-- [`docs/releases/0.16.0.md`](./releases/0.16.0.md)
-- Previous baseline: [`docs/releases/0.15.0.md`](./releases/0.15.0.md)
+- [`docs/releases/0.17.0.md`](./releases/0.17.0.md)
+- Previous baseline: [`docs/releases/0.16.0.md`](./releases/0.16.0.md)
+- Historical baseline: [`docs/releases/0.15.0.md`](./releases/0.15.0.md)
 - Historical baseline: [`docs/releases/0.8.0.md`](./releases/0.8.0.md)
 ## Manual sync and upgrade boundary
 

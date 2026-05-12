@@ -61,6 +61,7 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 - [x] Finalized the `0.16.0` compatibility-proof release candidate: package metadata + lockfile + verify-release-package script aligned, new `test/release-readiness.test.ts` (7-test drift suite), new `docs/releases/0.16.0.md`, README/CHANGELOG/runbook repointed, and DEAN audit baseline (`4 critical / 0 high / 3 moderate / 0 low`, valid through 2026-06-11) acknowledged at human-verify checkpoint — Phase 48
 - [x] Added completed `code_execution` source visibility through Pi's collapsed/expanded tool-result affordance, recorded the TUI primitive audit, clarified `nu` versus `code_execution` prompt guidance, and documented/verified the behavior with focused render and prompt tests — Phase 49
 - [x] Added `ptc.report(...)` as an optional JSON-safe structured report shape with preserved `details.report` / `details.reportProduced`, compact/expanded completed-result rendering, and README/CHANGELOG guidance while keeping free-form and `ptc.fit_output(...)` returns unchanged — Phase 50
+- [x] Added root-aware path formatting for Python file helpers plus `ptc.tabulate(...)` and shallow `ptc.diff(...)` bridge helpers while preserving historical defaults and keeping broad aggregation in `nu` — Phase 51
 - [x] Added optional callable-tool prompt metadata propagation into Python plus `ptc.help(tool_name)` for bounded on-demand helper guidance while preserving schema-only `ptc.get_tool_schema(...)` behavior — Phase 52
 - [x] Added `ptc.run_tests(pattern)` as a first-class Node `node --test` helper that returns a Phase 50 `ptc_report` with pass/fail/duration metrics, a bounded failures table, runner-availability data, a fixed 120s timeout, and reentry-safe subprocess execution, plus README/CHANGELOG/generated-guidance coverage — Phase 53
 - [x] Full live audit: 51 tests across 3 phases proving 94% of helpers work, with stress testing (concurrency, large files, output budgets) and 7 multi-tool composition workflows all passing. 1 P0 bug found (glob/limit), 2 P1, 2 P2 issues documented — Milestone 14
@@ -92,7 +93,7 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 - Package name: `pi-ptc-advanced`
 - Key source areas: `src/index.ts`, `src/code-executor.ts`, `src/custom-tool-manager.ts`, `src/tool-registry.ts`, `src/tool-adapters.ts`, `src/rpc-protocol.ts`
 - Maintainer-facing integration docs now live in `README.md`; deeper local planning/history artifacts live under `.paul/`
-- Latest GitHub Flow evidence: Phase 49 PR #5 was squash-merged to `main` at `44c8427`, followed by transition evidence on `main`; Phase 50 starts from synced `main`
+- Latest GitHub Flow evidence: Milestone 18 phases merged through PR #9 (`1f9305a`) with transition bookkeeping on `main`; milestone completion aligned the release baseline to `pi-ptc-advanced@0.17.0`
 
 ## Constraints
 ### Technical Constraints
@@ -203,4 +204,4 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 
 ---
 *PROJECT.md — Updated when requirements or context change*
-*Last updated: 2026-05-12 after Phase 53 completion (test runner verb); Milestone 18 (`0.17.0`) complete*
+*Last updated: 2026-05-12 after Milestone 18 completion (`0.17.0`); awaiting next milestone definition*

@@ -1,6 +1,6 @@
 {
   "name": "pi-ptc-advanced",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "description": "Programmatic Tool Calling (PTC) extension for pi-coding-agent - enables Python code execution with async tool calls",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

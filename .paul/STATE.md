@@ -4,15 +4,15 @@
 See: `.paul/PROJECT.md`
 
 **Core value:** `pi-ptc-next` should execute the same active Pi tool implementations that the user sees in chat.
-**Current focus:** Milestone 18 — PTC Leverage and Output Shape (`0.17.0`). Make `code_execution` convert "I need to know X about this repo/dataset" into a small, well-shaped, debuggable answer with minimum agent friction — structured report shape, callable-tool introspection, ergonomic helpers, path/UI polish, and a first-class test-runner verb. Caching, cross-call session state, and persistence remain explicitly deferred (see `.paul/notes/2026-05-12-ptc-leverage-brief.md`).
+**Current focus:** Awaiting next milestone definition after completing Milestone 18 — PTC Leverage and Output Shape (`0.17.0`).
 ## Current Position
-Milestone: Milestone 18 — PTC Leverage and Output Shape (`0.17.0`)
-Phase: 53 of 53 (Test Runner Verb)
-Plan: `.paul/phases/53-test-runner-verb/53-01-PLAN.md`
-Status: UNIFY complete — Phase 53 closed; Milestone 18 ready to complete
-Last activity: 2026-05-12 — Phase 53 UNIFY closed `ptc.run_tests(pattern)` with SUMMARY.md; all ACs PASS; full suite 236/236 ✓, build clean, audit 0 critical / 0 high; PR #9 squash-merged to `main` (`1f9305a`); CI green; feature branch deleted; Milestone 18 ready to complete.
+Milestone: Awaiting next milestone
+Phase: None active
+Plan: None
+Status: Milestone 18 — PTC Leverage and Output Shape (`0.17.0`) complete — ready for next
+Last activity: 2026-05-12 — Milestone 18 completed; lifecycle artifacts updated, roadmap archive created, release metadata aligned to `pi-ptc-advanced@0.17.0`, and tag `0.17.0` prepared/created for the completed baseline.
 Progress:
-- Milestone 18 — PTC Leverage and Output Shape: [██████████] 100% (Phase 49 ✓; Phase 50 ✓; Phase 51 ✓; Phase 52 ✓; Phase 53 ✓) — all plans unified and merged to `main`; awaiting milestone-completion routing.
+- Milestone 18 — PTC Leverage and Output Shape: [██████████] 100% ✓ (Phase 49 ✓; Phase 50 ✓; Phase 51 ✓; Phase 52 ✓; Phase 53 ✓) — completed 2026-05-12.
 - Milestone 17 — Pi Compatibility and Prompt Integration Audit: [██████████] 100% ✓ (Phase 45 ✓, Phase 46 ✓, Phase 47 ✓, Phase 48 ✓)
 - Phase 45 — Pi API and Documentation Delta Audit: [██████████] 100% ✓
 - Phase 46 — Extension Runtime Compatibility Alignment: [██████████] 100% ✓
@@ -58,7 +58,7 @@ Progress:
 Current loop state:
 ```text
 PLAN ──▶ APPLY ──▶ UNIFY
-  ✓        ✓        ✓     [Phase 53 loop complete; Milestone 18 ready to complete]
+  ○        ○        ○     [Milestone complete — ready for next milestone]
 ```
 
 ## Accumulated Context
@@ -160,15 +160,15 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; no `0.16.0` tag created (publish remains manual)
 ## Session Continuity
 Last session: 2026-05-12
-Stopped at: Phase 53 UNIFY complete and PR #9 merged to main; Milestone 18 ready to complete.
-Next action: `/paul:milestone` to close Milestone 18
-Resume file: `.paul/phases/53-test-runner-verb/53-01-SUMMARY.md`
-wip_result: committed — Phase 53 APPLY + lifecycle changes committed and pushed; PR #9 open against `main`; UNIFY artifacts pending commit on this branch.
+Stopped at: Milestone 18 complete; no active phase or plan.
+Next action: `/paul:discuss-milestone` to define the next milestone
+Resume file: `.paul/MILESTONES.md`
+wip_result: milestone completion lifecycle artifacts updated on `main`; release metadata aligned to `0.17.0`; tag `0.17.0` created/pushed if Git postflight succeeded.
 Resume context:
-- SUMMARY path: `.paul/phases/53-test-runner-verb/53-01-SUMMARY.md`.
-- Final verification: `npm test` 236/236 ✓; `npm run build` clean; `npm audit --json` 0 critical / 0 high / 3 moderate (baseline unchanged through 2026-06-11).
-- GitHub Flow: branch `feature/53-test-runner-verb` pushed; PR #9 open against `main`; merge gate awaiting CI/review per pals.json (`require_pr_before_next_phase: true`, `require_reviews: false`, `ci_checks: true`).
-- Milestone 18 (`0.17.0`) is at 5 of 5 phases with PLAN/APPLY/UNIFY complete; milestone-completion routing is the next lifecycle step.
+- Milestone archive: `.paul/milestones/0.17.0-ROADMAP.md`.
+- Completed milestone log: `.paul/MILESTONES.md`.
+- Release note: `docs/releases/0.17.0.md`.
+- Next lifecycle step is milestone discussion/planning for the next scope.
 
 ---
-*STATE.md — Updated after Phase 53 UNIFY completion (last updated: 2026-05-12)*
+*STATE.md — Updated after Milestone 18 completion (last updated: 2026-05-12)*

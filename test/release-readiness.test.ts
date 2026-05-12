@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 const EXPECTED_PACKAGE_NAME = "pi-ptc-advanced";
-const EXPECTED_VERSION = "0.16.0";
+const EXPECTED_VERSION = "0.17.0";
 const EXPECTED_RELEASE_DOC = `docs/releases/${EXPECTED_VERSION}.md`;
 
 function resolveFromRoot(rel: string): string {
@@ -19,13 +19,13 @@ function exists(rel: string): boolean {
   return existsSync(resolveFromRoot(rel));
 }
 
-test("package.json targets pi-ptc-advanced@0.16.0", () => {
+test("package.json targets pi-ptc-advanced@0.17.0", () => {
   const pkg = JSON.parse(read("package.json")) as { name?: string; version?: string };
   assert.equal(pkg.name, EXPECTED_PACKAGE_NAME);
   assert.equal(pkg.version, EXPECTED_VERSION);
 });
 
-test("package-lock.json root metadata is aligned to 0.16.0", () => {
+test("package-lock.json root metadata is aligned to 0.17.0", () => {
   const lock = JSON.parse(read("package-lock.json")) as {
     name?: string;
     version?: string;
@@ -39,15 +39,15 @@ test("package-lock.json root metadata is aligned to 0.16.0", () => {
   assert.equal(rootEntry?.version, EXPECTED_VERSION);
 });
 
-test("scripts/verify-release-package.sh asserts the 0.16.0 baseline", () => {
+test("scripts/verify-release-package.sh asserts the 0.17.0 baseline", () => {
   const script = read("scripts/verify-release-package.sh");
   assert.ok(
     script.includes(`pkg.version !== '${EXPECTED_VERSION}'`),
-    "verify-release-package.sh must check version 0.16.0",
+    "verify-release-package.sh must check version 0.17.0",
   );
   assert.ok(
     script.includes(`expected version ${EXPECTED_VERSION}`),
-    "verify-release-package.sh must reference version 0.16.0 in its error text",
+    "verify-release-package.sh must reference version 0.17.0 in its error text",
   );
   assert.ok(
     !script.includes("0.15.0"),
@@ -58,17 +58,17 @@ test("scripts/verify-release-package.sh asserts the 0.16.0 baseline", () => {
   assert.ok(script.includes("pkg.name !== 'pi-ptc-advanced'"), "must keep package name check");
 });
 
-test("docs/releases/0.16.0.md exists and describes Milestone 17 outcomes", () => {
+test("docs/releases/0.17.0.md exists and describes Milestone 18 outcomes", () => {
   assert.ok(exists(EXPECTED_RELEASE_DOC), `${EXPECTED_RELEASE_DOC} must exist`);
   const note = read(EXPECTED_RELEASE_DOC);
-  assert.ok(/0\.16\.0/.test(note), "release note must mention 0.16.0");
+  assert.ok(/0\.17\.0/.test(note), "release note must mention 0.17.0");
   assert.ok(
-    /Mario/i.test(note) || /mariozechner/i.test(note),
-    "release note must mention Mario-scope Pi alignment",
+    /report|helper|run_tests|code_execution/i.test(note),
+    "release note must mention structured report / helper ergonomics work",
   );
   assert.ok(
     /prompt|code_execution/i.test(note),
-    "release note must mention prompt metadata / code_execution work",
+    "release note must mention code_execution helper/report work",
   );
   assert.ok(/audit/i.test(note), "release note must mention the dependency-audit caveat");
   assert.ok(
@@ -77,15 +77,15 @@ test("docs/releases/0.16.0.md exists and describes Milestone 17 outcomes", () =>
   );
 });
 
-test("README references the 0.16.0 release baseline and release note", () => {
+test("README references the 0.17.0 release baseline and release note", () => {
   const readme = read("README.md");
   assert.ok(
     readme.includes(`${EXPECTED_PACKAGE_NAME}@${EXPECTED_VERSION}`),
-    "README must reference pi-ptc-advanced@0.16.0",
+    "README must reference pi-ptc-advanced@0.17.0",
   );
   assert.ok(
     readme.includes(`docs/releases/${EXPECTED_VERSION}.md`),
-    "README must link to the 0.16.0 release note",
+    "README must link to the 0.17.0 release note",
   );
   assert.ok(
     !readme.includes(`${EXPECTED_PACKAGE_NAME}@0.15.0`),
@@ -93,29 +93,29 @@ test("README references the 0.16.0 release baseline and release note", () => {
   );
 });
 
-test("CHANGELOG promotes the 0.16.0 release and records the audit caveat", () => {
+test("CHANGELOG promotes the 0.17.0 release and records the audit caveat", () => {
   const changelog = read("CHANGELOG.md");
   assert.ok(
-    /^## 0\.16\.0/m.test(changelog),
-    "CHANGELOG must contain a 0.16.0 release section",
+    /^## 0\.17\.0/m.test(changelog),
+    "CHANGELOG must contain a 0.17.0 release section",
   );
-  const section = changelog.split(/^## 0\.16\.0/m)[1] ?? "";
-  assert.ok(/audit/i.test(section), "0.16.0 section must mention the audit caveat");
+  const section = changelog.split(/^## 0\.17\.0/m)[1] ?? "";
+  assert.ok(/audit/i.test(section), "0.17.0 section must mention the audit caveat");
   assert.ok(
-    /(Mario|mariozechner|compatibility|prompt)/i.test(section),
-    "0.16.0 section must reference compatibility/prompt work",
+    /(report|helper|run_tests|code_execution|ptc\.report)/i.test(section),
+    "0.17.0 section must reference report/helper work",
   );
 });
 
-test("docs/personal-fork-maintenance.md targets the 0.16.0 baseline", () => {
+test("docs/personal-fork-maintenance.md targets the 0.17.0 baseline", () => {
   const runbook = read("docs/personal-fork-maintenance.md");
   assert.ok(
     runbook.includes(`${EXPECTED_PACKAGE_NAME}@${EXPECTED_VERSION}`),
-    "runbook must reference pi-ptc-advanced@0.16.0",
+    "runbook must reference pi-ptc-advanced@0.17.0",
   );
   assert.ok(
     runbook.includes(`releases/${EXPECTED_VERSION}.md`),
-    "runbook must link to the 0.16.0 release note",
+    "runbook must link to the 0.17.0 release note",
   );
   assert.ok(
     !runbook.includes(`${EXPECTED_PACKAGE_NAME}@0.15.0`),

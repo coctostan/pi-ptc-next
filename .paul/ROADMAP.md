@@ -4,43 +4,38 @@
 Brownfield PALS adoption for `pi-ptc-next`, focused on hashline-native runtime interop and structured Python integration.
 
 ## Current Milestone
-**Milestone 18 — PTC Leverage and Output Shape** (`0.17.0`) — 🚧 In Progress
-Status: 🚧 In Progress
-Phases: 4 of 5 complete (80%)
+**No active milestone**
+Status: Awaiting next milestone definition
 
-Theme: Make `code_execution` convert "I need to know X about this repo/dataset" into a small, well-shaped, debuggable answer with minimum agent friction — by introducing a structured result shape, callable-tool introspection, ergonomic helpers, path/UI polish, and a first-class test-runner verb. Caching, cross-call session state, and persistence remain explicitly deferred.
+Last completed: **Milestone 18 — PTC Leverage and Output Shape** (`0.17.0`) — ✅ Complete
+Completed: 2026-05-12
+Archive: [milestones/0.17.0-ROADMAP.md](milestones/0.17.0-ROADMAP.md)
 
-Reference: `.paul/notes/2026-05-12-ptc-leverage-brief.md` (pre-planning thesis, feature breakdown, sequencing, and deferrals carried from the post-Milestone-17 discussion).
-
-| Phase | Name | Plans | Status | Completed |
-|-------|------|-------|--------|-----------|
-| 49 | Pi TUI Audit and Collapsible Code Body | 49-01 | ✅ Complete | 2026-05-12 |
-| 50 | Structured Report Type | 50-01 | ✅ Complete | 2026-05-12 |
-| 51 | Path Ergonomics and Bridge Helpers | 51-01 | ✅ Complete | 2026-05-12 |
-| 52 | Callable-Tool Introspection | 52-01 | ✅ Complete | 2026-05-12 |
-| 53 | Test Runner Verb | 53-01 | ✅ Complete | 2026-05-12 |
-
-### Phase 49: Pi TUI Audit and Collapsible Code Body
-Focus: Audit Pi's TUI primitives (`@mariozechner/pi-tui`, any newer Pi 0.74.0 render hooks) for collapsible/disclosure components, native table/record renderers, tool-call tree rendering, header-with-summary affordances, and theming hooks; then replace `renderCompletedOutput`'s discard of `details.userCode` with a collapsible post-completion view that preserves the Python source after a `code_execution` call completes. Carries a small prompt-guidelines clarifier teaching the agent to choose `nu` vs `code_execution`. Outcome of the audit informs Phase 50's render hook so we prefer Pi primitives over local reimplementations.
-Plans: 49-01 complete — TDD slice recorded Pi TUI audit artifact, added completed `code_execution` collapsed/expanded Python-source rendering, clarified `nu` vs `code_execution` prompt guidance, added focused render/prompt tests, updated README/CHANGELOG, reconciled results in `49-01-SUMMARY.md`, and merged PR #5.
-
-### Phase 50: Structured Report Type
-Focus: Introduce `ptc.report(...)` as a soft contract for `code_execution` returns — a recognized shape with title, scalar metrics, ranked lists / tables, samples, and warnings — aligned where possible with the shape `nu` and Pi's own tools already render. Free-form returns continue to work; the TUI renders recognized reports through the primitives identified in Phase 49; telemetry counts produced reports separately; evals can assert against the shape.
-Plans: 50-01 complete — added `ptc.report(...)` canonical report helper, report details preservation, compact/expanded report rendering, docs/contract tests, full verification, and reconciled results in `50-01-SUMMARY.md`.
-
-### Phase 51: Path Ergonomics and Bridge Helpers
-Focus: Add `relative=True` / `relative_to=<root>` options to `ptc.find_files(...)` / `ptc.find_files_abs(...)` (and consider `ptc.read_tree(...)`) using the sandbox workspace root the host already exposes; pair with a slimmed aggregator-helper set — `tabulate(rows, headers)` to bridge Python intermediates into the Phase 50 report shape, and `diff(a, b)` for "what changed since last run." `top_n` / `group_by` / `histogram` are intentionally dropped because `nu` covers them natively.
-Plans: 51-01 complete — added workspace-root-aware `relative` / `relative_to` path options on `ptc.find_files(...)`, `ptc.find_files_abs(...)`, and `ptc.read_tree(...)`; added report-compatible `ptc.tabulate(...)` and shallow JSON-safe `ptc.diff(...)`; docs/prompt guidance updated; reconciled results in `51-01-SUMMARY.md`; merged PR #7.
-
-### Phase 52: Callable-Tool Introspection
-Focus: Extend the Phase 47 `promptSnippet` / `promptGuidelines` plumbing inward so callable tools can optionally expose the same metadata to the Python surface; add `ptc.help(tool_name)` returning that metadata at runtime (likely as a Phase 50 report shape) so agents can introspect tool choice without inflating the tool-description block. Document the convention; do not force every tool to provide metadata.
-Plans: 52-01 complete — propagated optional `promptSnippet` / `promptGuidelines` into Python callable-tool metadata, added `ptc.help(tool_name)` for bounded on-demand runtime metadata, preserved `ptc.get_tool_schema(...)` as schema-only, updated README/generated guidance without inflating the tool-description block, reconciled results in `52-01-SUMMARY.md`, and merged PR #8 via the Phase 52 GitHub Flow gate.
-
-### Phase 53: Test Runner Verb
-Focus: Add `ptc.run_tests(pattern)` as a first-class verb that runs `node --test` against a pattern and parses pass/fail/duration into a structured Phase 50 report with a failures list and summary metrics. Cross-runner support (vitest/jest/pytest) and sandbox/Docker policy interactions are scoped during planning. Provides the agent a single ergonomic verb in place of bespoke subprocess + string-parsing patterns.
-Plans: 53-01 planned — TDD plan will add RED helper/guidance tests, implement sandbox-respecting `ptc.run_tests(pattern)` in the Python runtime using Node's built-in `node --test`, return Phase 50 `ptc_report` summaries for passing/failing/unavailable runs, document Node-only scope, and keep cross-runner/package-script/Docker-image changes deferred.
+## Next Milestone
+Run `/paul:discuss-milestone` or `/paul:milestone` to define.
 
 ## Completed Milestones
+<details>
+<summary>Milestone 18 — PTC Leverage and Output Shape (0.17.0) - 2026-05-12 (5 phases)</summary>
+
+| Phase | Name | Plans | Completed |
+|-------|------|-------|-----------|
+| 49 | Pi TUI Audit and Collapsible Code Body | 1/1 | 2026-05-12 |
+| 50 | Structured Report Type | 1/1 | 2026-05-12 |
+| 51 | Path Ergonomics and Bridge Helpers | 1/1 | 2026-05-12 |
+| 52 | Callable-Tool Introspection | 1/1 | 2026-05-12 |
+| 53 | Test Runner Verb | 1/1 | 2026-05-12 |
+
+Archive: [milestones/0.17.0-ROADMAP.md](milestones/0.17.0-ROADMAP.md)
+
+Notes:
+- Added completed `code_execution` source expansion and clarified `nu` vs `code_execution` routing.
+- Added `ptc.report(...)`, compact/expanded report rendering, and structured `details.report` preservation.
+- Added root-aware path formatting plus `ptc.tabulate(...)` and shallow `ptc.diff(...)` bridge helpers.
+- Added optional callable prompt metadata plus `ptc.help(tool_name)` for targeted runtime guidance.
+- Added `ptc.run_tests(pattern)` for Node `node --test` structured reports; final verification closed at 236/236 passing and clean build.
+
+</details>
 <details>
 <summary>Milestone 17 — Pi Compatibility and Prompt Integration Audit (0.16.0) - 2026-05-12 (4 phases)</summary>
 
@@ -259,4 +254,4 @@ Suggested implementation branch from project docs:
 - `feat/hashline-native-interop`
 
 ---
-*Last updated: 2026-05-12 after Phase 53 UNIFY completion (53-01); Milestone 18 at 5 of 5 phases complete*
+*Last updated: 2026-05-12 after Milestone 18 completion; awaiting next milestone definition*

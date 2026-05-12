@@ -18,6 +18,41 @@ Completed milestone log for this project.
 | Milestone 13 — Ecosystem Examples and Recipes | 2026-03-26 | ~2 hours | 3 phases, 3 plans |
 | Milestone 14 — Live Tool Audit and Stress Testing | 2026-03-26 | ~1.5 hours | 3 phases, 3 plans |
 | Milestone 15 — Bug Fixes and Helper Hardening | 2026-03-27 | ~2 hours | 3 phases, 3 plans |
+| Milestone 18 — PTC Leverage and Output Shape | 2026-05-12 | same-day (~5 hours) | 5 phases, 5 plans |
+
+---
+
+## ✅ Milestone 18 — PTC Leverage and Output Shape (0.17.0)
+
+**Completed:** 2026-05-12
+**Duration:** same-day (~5 hours)
+
+### Stats
+
+| Metric | Value |
+|--------|-------|
+| Phases | 5 |
+| Plans | 5 |
+| Product/docs/test files changed | 21 |
+
+### Key Accomplishments
+
+- Made completed `code_execution` results more debuggable by preserving executed Python source behind Pi's expanded tool-result affordance while keeping default output compact.
+- Added `ptc.report(...)` as an optional structured report contract with compact/expanded rendering and `details.report` preservation for tests/evals.
+- Added root-aware path formatting plus `ptc.tabulate(...)` and shallow `ptc.diff(...)` bridge helpers that compose with reports without replacing `nu` for broad aggregation.
+- Added optional callable-tool prompt metadata and `ptc.help(tool_name)` for targeted on-demand runtime guidance without static prompt bloat.
+- Added `ptc.run_tests(pattern)` for Node `node --test` structured reporting, with safe subprocess execution, runner-unavailable/timeout-as-data behavior, and final verification at `236` passing / `0` failing plus clean build.
+- Aligned the release baseline to `pi-ptc-advanced@0.17.0` with README, CHANGELOG, release note, runbook, release-package script, and drift tests updated.
+
+### Key Decisions
+
+- Keep `ptc.report(...)` optional and preserve free-form `code_execution` returns by attaching structured metadata through `details.*` only for recognized reports.
+- Keep bridge helpers slim: `ptc.diff(...)` is shallow-only, `ptc.tabulate(...)` returns the exact Phase 50 table payload, and broad aggregators remain `nu` territory.
+- Keep `ptc.help(...)` as the richer metadata helper while preserving schema-only `ptc.get_tool_schema(...)` compatibility.
+- Scope `ptc.run_tests(pattern)` to Node `node --test` only; cross-runner support, package-script dispatch, and timeout options remain future work.
+- Treat missing test runners, failing tests, and timeouts as structured report data rather than Python execution failures; invalid arguments still raise `ValueError`.
+
+Archive: `.paul/milestones/0.17.0-ROADMAP.md`
 
 ---
 

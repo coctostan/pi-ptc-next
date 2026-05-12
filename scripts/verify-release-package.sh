@@ -17,8 +17,8 @@ if (pkg.name !== 'pi-ptc-advanced') {
   console.error(`[verify:release-package] expected package name pi-ptc-advanced, found ${pkg.name}`);
   process.exit(1);
 }
-if (pkg.version !== '0.16.0') {
-  console.error(`[verify:release-package] expected version 0.16.0, found ${pkg.version}`);
+if (pkg.version !== '0.17.0') {
+  console.error(`[verify:release-package] expected version 0.17.0, found ${pkg.version}`);
   process.exit(1);
 }
 NODE
@@ -69,7 +69,7 @@ if (pkg.name !== 'pi-ptc-advanced') {
   console.error(`[verify:release-package] installed package name mismatch: ${pkg.name}`);
   process.exit(1);
 }
-if (pkg.version !== '0.16.0') {
+if (pkg.version !== '0.17.0') {
   console.error(`[verify:release-package] installed package version mismatch: ${pkg.version}`);
   process.exit(1);
 }
