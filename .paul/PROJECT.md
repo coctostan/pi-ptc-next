@@ -9,9 +9,9 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 ## Current State
 | Attribute | Value |
 |-----------|-------|
-| Version | 0.17.0 (Milestone 18 complete) |
-| Status | Prototype |
-| Last Updated | 2026-05-12 |
+| Version | 0.18.0 in progress (Milestone 19 active) |
+| Status | Active Milestone 19 hardening |
+| Last Updated | 2026-05-13 |
 
 ## Requirements
 ### Validated (Shipped)
@@ -47,7 +47,7 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 - [x] Added bounded Python reduction and output-budget helpers `ptc.reduce_tool(...)` / `ptc.fit_output(...)` aligned to the session output cap, with focused execution proof — Phase 31
 - [x] Added execution-level ecosystem proof plus README/tool-description guidance for `ptc.batch_tool(...)`, `ptc.first_success(...)`, `ptc.reduce_tool(...)`, and `ptc.fit_output(...)`, including compact hashline/codegraph/web composition examples — Phase 32
 ### Active (In Progress)
-- *(no active phase — Milestone 18 closed; next milestone TBD)*
+- [ ] Phase 55 — Callable Wrapper Contract Consistency (ready to plan)
 ### Validated (Shipped)
 - [x] Restored the P0 file-discovery helper path by removing `glob(limit=...)` dependency and proving bounded success for `ptc.read_tree()`, `ptc.find_files()`, and `ptc.find_files_abs()` in live audit coverage — Phase 39
 - [x] Improved syntax/compile-time error surfacing so pre-terminal Python failures now expose actionable `SyntaxError`/traceback context instead of generic RPC closure messaging — Phase 40
@@ -64,12 +64,14 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 - [x] Added root-aware path formatting for Python file helpers plus `ptc.tabulate(...)` and shallow `ptc.diff(...)` bridge helpers while preserving historical defaults and keeping broad aggregation in `nu` — Phase 51
 - [x] Added optional callable-tool prompt metadata propagation into Python plus `ptc.help(tool_name)` for bounded on-demand helper guidance while preserving schema-only `ptc.get_tool_schema(...)` behavior — Phase 52
 - [x] Added `ptc.run_tests(pattern)` as a first-class Node `node --test` helper that returns a Phase 50 `ptc_report` with pass/fail/duration metrics, a bounded failures table, runner-availability data, a fixed 120s timeout, and reentry-safe subprocess execution, plus README/CHANGELOG/generated-guidance coverage — Phase 53
+- [x] Hardened `ptc.run_tests(pattern)` runner availability reporting with scalar `runner_path` / `runner_resolution` metadata, shell-quoted command display for patterns containing spaces, active-runtime Node/PATH guidance, and README edit-payload contract alignment — Phase 54
 - [x] Full live audit: 51 tests across 3 phases proving 94% of helpers work, with stress testing (concurrency, large files, output budgets) and 7 multi-tool composition workflows all passing. 1 P0 bug found (glob/limit), 2 P1, 2 P2 issues documented — Milestone 14
 - [x] Systematic live-tool audit of all 21 Python helpers and 8 pipeline capabilities — Phase 36
 - [x] Added user-facing recipe workflow documentation and ecosystem composition proof — Phase 35
 - [x] Added concrete cross-repo recipe artifacts plus deterministic benchmark baseline — Phase 34
 ### Planned (Next)
-- *(none queued — next milestone scope TBD)*
+- Phase 56 — Result Normalization and Partial Error Semantics
+- Phase 57 — Live Proof and Release Readiness
 ### Out of Scope
 - [ ] Long-term IR refactors during the early interop milestones
 - [ ] Broad helper ergonomics changes beyond what is required for trustworthy structured interop
@@ -93,7 +95,7 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 - Package name: `pi-ptc-advanced`
 - Key source areas: `src/index.ts`, `src/code-executor.ts`, `src/custom-tool-manager.ts`, `src/tool-registry.ts`, `src/tool-adapters.ts`, `src/rpc-protocol.ts`
 - Maintainer-facing integration docs now live in `README.md`; deeper local planning/history artifacts live under `.paul/`
-- Latest GitHub Flow evidence: Milestone 18 phases merged through PR #9 (`1f9305a`) with transition bookkeeping on `main`; milestone completion aligned the release baseline to `pi-ptc-advanced@0.17.0`
+- Latest GitHub Flow evidence: Phase 54 merged through PR #11 (`5bd2108`) with transition bookkeeping on `main`; Milestone 19 is active at Phase 55 planning.
 
 ## Constraints
 ### Technical Constraints
@@ -163,6 +165,8 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 | Scope `ptc.run_tests(pattern)` to Node `node --test` only for Phase 53 | A focused single-runner helper meets the Milestone 18 ergonomics goal without expanding the helper surface or adding dependencies; cross-runner support can grow as new helpers (e.g., `ptc.run_pytest`) later | 2026-05-12 | Active |
 | Treat missing `node` and timeouts as report data (`runner_available=false` / `timed_out=true`) instead of Python errors | Agents calling the helper inside Docker / minimal sandboxes should still get a structured answer; only invalid arguments raise `ValueError`, matching the Phase 50 reporting style | 2026-05-12 | Active |
 | Scrub `NODE_TEST_CONTEXT` / `NODE_RUN_SCRIPT_NAME` from the helper's child env | External-process helpers must drop the parent's reentry markers so calling `ptc.run_tests` from inside a Node test run does not trigger "node:test run() is being called recursively" and miscount totals as zero | 2026-05-12 | Active |
+| Keep `ptc.run_tests` Node-only while making runner availability explicit | Phase 54 adds scalar runner resolution metadata and quoted command display without widening into package-script or cross-runner support | 2026-05-13 | Active |
+| Keep README live payload examples aligned to normalized hashline payloads | CI caught drift in the edit example's `diffData`; README examples must include the same structured shape asserted by contract tests | 2026-05-13 | Active |
 
 ## Success Metrics
 | Metric | Target | Current | Status |
@@ -204,4 +208,4 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 
 ---
 *PROJECT.md — Updated when requirements or context change*
-*Last updated: 2026-05-12 after Milestone 18 completion (`0.17.0`); awaiting next milestone definition*
+*Last updated: 2026-05-13 after Phase 54 completion and transition to Phase 55 planning*

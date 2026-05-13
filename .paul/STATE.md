@@ -4,15 +4,15 @@
 See: `.paul/PROJECT.md`
 
 **Core value:** `pi-ptc-next` should execute the same active Pi tool implementations that the user sees in chat.
-**Current focus:** Phase 54 UNIFY artifacts complete for Milestone 19 — Live Runtime Helper Hardening (`0.18.0`); GitHub Flow merge gate pending.
+**Current focus:** Phase 55 planning for Milestone 19 — Live Runtime Helper Hardening (`0.18.0`).
 ## Current Position
 Milestone: Milestone 19 — Live Runtime Helper Hardening (`0.18.0`)
-Phase: 54 of 57 (Runner Availability and Command Reporting)
-Plan: `54-01-PLAN.md`
-Status: UNIFY artifacts complete — GitHub Flow merge gate pending
-Last activity: 2026-05-13 — Fixed PR #11 GitHub Flow CI blocker by aligning README edit example `diffData` with the normalized live payload; local `npm run verify:ci` now passes.
+Phase: 55 of 57 (Callable Wrapper Contract Consistency)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-05-13 — PR #11 merged (`5bd2108`) and local `main` fast-forwarded; Phase 54 complete and Phase 55 ready to plan.
 Progress:
-- Milestone 19 — Live Runtime Helper Hardening: [██░░░░░░░░] 20% (Phase 54 ◕ UNIFY artifacts complete / merge gate pending; Phase 55 ○; Phase 56 ○; Phase 57 ○)
+- Milestone 19 — Live Runtime Helper Hardening: [███░░░░░░░] 25% (Phase 54 ✓; Phase 55 ○ ready to plan; Phase 56 ○; Phase 57 ○)
 - Milestone 17 — Pi Compatibility and Prompt Integration Audit: [██████████] 100% ✓ (Phase 45 ✓, Phase 46 ✓, Phase 47 ✓, Phase 48 ✓)
 - Phase 45 — Pi API and Documentation Delta Audit: [██████████] 100% ✓
 - Phase 46 — Extension Runtime Compatibility Alignment: [██████████] 100% ✓
@@ -58,7 +58,7 @@ Progress:
 Current loop state:
 ```text
 PLAN ──▶ APPLY ──▶ UNIFY
-  ●        ●        ◕     [Phase 54 UNIFY artifacts complete — merge gate pending]
+  ○        ○        ○     [Phase 55 ready to plan]
 ```
 
 ## Accumulated Context
@@ -158,21 +158,20 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - PR #7: MERGED — https://github.com/coctostan/pi-ptc-next/pull/7; GitHub Actions `Verify release baseline` and Socket checks SUCCESS.
 - PR #8: MERGED — https://github.com/coctostan/pi-ptc-next/pull/8; squash merge `b91d71d` to `main`; GitHub Actions `Verify release baseline` and Socket checks SUCCESS; remote feature branch deleted by merge automation.
 - PR #9: MERGED — https://github.com/coctostan/pi-ptc-next/pull/9; squash merge `1f9305a` to `main`; GitHub Actions `Verify release baseline` SUCCESS; feature branch `feature/53-test-runner-verb` deleted by merge automation; local `main` fast-forwarded.
-- PR #11: OPEN — https://github.com/coctostan/pi-ptc-next/pull/11 for Phase 54 `feature/54-runner-availability-command-reporting`; local CI blocker fixed and pushed pending remote CI recheck.
+- PR #11: MERGED — https://github.com/coctostan/pi-ptc-next/pull/11; squash merge `5bd2108` to `main`; GitHub Actions `Verify release baseline` and Socket checks SUCCESS; local `main` fast-forwarded; remote/local feature branch deleted.
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; no `0.16.0` tag created (publish remains manual)
 ## Session Continuity
 Last session: 2026-05-13
-Stopped at: Phase 54 UNIFY artifacts complete; GitHub Flow merge gate pending remote CI recheck after local fix.
-Next action: Recheck PR #11 remote CI; if passing, complete GitHub Flow merge gate.
-Resume file: `.paul/phases/54-runner-availability-and-command-reporting/54-01-SUMMARY.md`
+Stopped at: Phase 54 complete; ready to plan Phase 55.
+Next action: /paul:plan for Phase 55 (Callable Wrapper Contract Consistency).
+Resume file: `.paul/ROADMAP.md`
 wip_result: skipped — on base branch `main`; PAUSE does not create WIP commits on base branch
 Resume context:
-- Summary: `.paul/phases/54-runner-availability-and-command-reporting/54-01-SUMMARY.md`.
-- Focused verification passed: `PI_RTK_BYPASS=1 npm run build && PI_RTK_BYPASS=1 node --test test/run-tests-helper.test.ts test/index.test.ts` (16/16).
-- Merge-gate fix aligned README edit example with normalized live `diffData` payload shape; local `npm run verify:ci` now passes.
-- Audit: `npm audit --json` remains 0 critical / 0 high / 3 moderate.
-- Post-unify histories updated: `.paul/QUALITY-HISTORY.md`, `.paul/CODI-HISTORY.md`.
-- PR #11: https://github.com/coctostan/pi-ptc-next/pull/11; merge gate pending remote CI recheck before merge/phase transition.
+- Phase 54 complete via PR #11 merge commit `5bd2108`.
+- Phase 54 shipped `ptc.run_tests(pattern)` runner resolution metadata, quoted command display, and active-runtime Node availability guidance.
+- Merge-gate fix aligned README edit example with normalized live `diffData` payload shape; remote CI passed before merge.
+- Next phase: Phase 55 — Callable Wrapper Contract Consistency.
+- Continue with /paul:plan for Phase 55.
 
 ---
-*STATE.md — Updated after Phase 54 UNIFY reconciliation (last updated: 2026-05-13)*
+*STATE.md — Updated after Phase 54 completion and transition to Phase 55 planning (last updated: 2026-05-13)*

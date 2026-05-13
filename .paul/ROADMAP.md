@@ -6,7 +6,7 @@ Brownfield PALS adoption for `pi-ptc-next`, focused on hashline-native runtime i
 ## Current Milestone
 **Milestone 19 — Live Runtime Helper Hardening** (`0.18.0`)
 Status: 🚧 In Progress
-Phases: 0 of 4 complete
+Phases: 1 of 4 complete
 
 Focus: Convert live `code_execution` manual-test findings into tighter runtime behavior, clearer helper contracts, and regression proof.
 
@@ -14,8 +14,8 @@ Source findings: [`docs/issues/2026-05-13-code-execution-helper-edge-cases.md`](
 
 | Phase | Name | Plans | Status | Completed |
 |-------|------|-------|--------|-----------|
-| 54 | Runner Availability and Command Reporting | 1/1 | Unifying / merge gate pending | PR #11 |
-| 55 | Callable Wrapper Contract Consistency | TBD | Not started | - |
+| 54 | Runner Availability and Command Reporting | 1/1 | ✅ Complete | 2026-05-13 |
+| 55 | Callable Wrapper Contract Consistency | TBD | Ready to plan | - |
 | 56 | Result Normalization and Partial-Error Semantics | TBD | Not started | - |
 | 57 | Live Proof and Release Readiness | TBD | Not started | - |
 
@@ -275,4 +275,4 @@ Suggested implementation branch from project docs:
 - `feat/hashline-native-interop`
 
 ---
-*Last updated: 2026-05-13 after Phase 54 UNIFY reconciliation and PR #11 merge-gate routing*
+*Last updated: 2026-05-13 after completing Phase 54 and routing to Phase 55 planning*
