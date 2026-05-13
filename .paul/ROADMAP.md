@@ -6,7 +6,7 @@ Brownfield PALS adoption for `pi-ptc-next`, focused on hashline-native runtime i
 ## Current Milestone
 **Milestone 19 — Live Runtime Helper Hardening** (`0.18.0`)
 Status: 🚧 In Progress
-Phases: 1 of 4 complete
+Phases: 2 of 4 complete
 
 Focus: Convert live `code_execution` manual-test findings into tighter runtime behavior, clearer helper contracts, and regression proof.
 
@@ -15,8 +15,8 @@ Source findings: [`docs/issues/2026-05-13-code-execution-helper-edge-cases.md`](
 | Phase | Name | Plans | Status | Completed |
 |-------|------|-------|--------|-----------|
 | 54 | Runner Availability and Command Reporting | 1/1 | ✅ Complete | 2026-05-13 |
-| 55 | Callable Wrapper Contract Consistency | TBD | Ready to plan | - |
-| 56 | Result Normalization and Partial-Error Semantics | TBD | Not started | - |
+| 55 | Callable Wrapper Contract Consistency | 1/1 | ✅ Complete | 2026-05-13 |
+| 56 | Result Normalization and Partial-Error Semantics | TBD | Ready to plan | - |
 | 57 | Live Proof and Release Readiness | TBD | Not started | - |
 
 ### Phase 54: Runner Availability and Command Reporting
@@ -25,7 +25,7 @@ Plans: `54-01-PLAN.md`
 
 ### Phase 55: Callable Wrapper Contract Consistency
 Focus: Normalize or explicitly document callable wrapper async/positional behavior and generated signatures for `read`, `grep`, `find`, `glob`, and `ls`.
-Plans: TBD (defined during /paul:plan)
+Plans: `55-01-PLAN.md`
 
 ### Phase 56: Result Normalization and Partial-Error Semantics
 Focus: Tighten structured result shape/path normalization plus `read_many` and `batch_tool(..., on_error='collect')` treatment of tool-level error payloads.
@@ -275,4 +275,4 @@ Suggested implementation branch from project docs:
 - `feat/hashline-native-interop`
 
 ---
-*Last updated: 2026-05-13 after completing Phase 54 and routing to Phase 55 planning*
+*Last updated: 2026-05-13 after completing Phase 55 and routing to Phase 56 planning*

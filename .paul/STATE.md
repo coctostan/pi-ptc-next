@@ -4,15 +4,15 @@
 See: `.paul/PROJECT.md`
 
 **Core value:** `pi-ptc-next` should execute the same active Pi tool implementations that the user sees in chat.
-**Current focus:** Phase 55 planning for Milestone 19 — Live Runtime Helper Hardening (`0.18.0`).
+**Current focus:** Phase 56 ready to plan for Milestone 19 — Live Runtime Helper Hardening (`0.18.0`).
 ## Current Position
 Milestone: Milestone 19 — Live Runtime Helper Hardening (`0.18.0`)
-Phase: 55 of 57 (Callable Wrapper Contract Consistency)
+Phase: 56 of 57 (Result Normalization and Partial-Error Semantics)
 Plan: Not started
 Status: Ready to plan
-Last activity: 2026-05-13 — PR #11 merged (`5bd2108`) and local `main` fast-forwarded; Phase 54 complete and Phase 55 ready to plan.
+Last activity: 2026-05-13 — Phase 55 unified, PR #12 merged, and Milestone 19 transitioned to Phase 56 planning readiness.
 Progress:
-- Milestone 19 — Live Runtime Helper Hardening: [███░░░░░░░] 25% (Phase 54 ✓; Phase 55 ○ ready to plan; Phase 56 ○; Phase 57 ○)
+- Milestone 19 — Live Runtime Helper Hardening: [██████░░░░] 60% (Phase 54 ✓; Phase 55 ✓; Phase 56 PLAN ○ / APPLY ○ / UNIFY ○; Phase 57 ○)
 - Milestone 17 — Pi Compatibility and Prompt Integration Audit: [██████████] 100% ✓ (Phase 45 ✓, Phase 46 ✓, Phase 47 ✓, Phase 48 ✓)
 - Phase 45 — Pi API and Documentation Delta Audit: [██████████] 100% ✓
 - Phase 46 — Extension Runtime Compatibility Alignment: [██████████] 100% ✓
@@ -58,11 +58,12 @@ Progress:
 Current loop state:
 ```text
 PLAN ──▶ APPLY ──▶ UNIFY
-  ○        ○        ○     [Phase 55 ready to plan]
+  ○        ○        ○     [Phase 56 ready to plan]
 ```
 
 ## Accumulated Context
 ### Decisions
+- Phase 55 normalized callable-wrapper contract guidance: direct callable Pi wrappers remain awaitable, `grep("pattern", path="...")` is supported in the runtime adapter, and Phase 56 keeps result/path/error semantics separate.
 - Personal fork ownership is now the primary path; upstream PR preparation is retained only as optional reference material
 - Phase 39 APPLY fixed `ptc.find_files()` to avoid `glob(limit=...)` dependency and normalize string/list glob payloads before slicing, then converted the three Phase 36 known-bug assertions into passing bounded regression proof
 - Phase 39 UNIFY reconciled plan-vs-actual into `39-01-SUMMARY.md`, recorded post-unify quality history, and transitioned the project to Phase 40
@@ -162,16 +163,16 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; no `0.16.0` tag created (publish remains manual)
 ## Session Continuity
 Last session: 2026-05-13
-Stopped at: Phase 54 complete; ready to plan Phase 55.
-Next action: /paul:plan for Phase 55 (Callable Wrapper Contract Consistency).
+Stopped at: Phase 55 complete; ready to plan Phase 56.
+Next action: `/paul:plan` for Phase 56 (Result Normalization and Partial-Error Semantics).
 Resume file: `.paul/ROADMAP.md`
-wip_result: skipped — on base branch `main`; PAUSE does not create WIP commits on base branch
+wip_result: skipped - on base branch `main`; PAUSE does not create WIP commits on base branch
 Resume context:
-- Phase 54 complete via PR #11 merge commit `5bd2108`.
-- Phase 54 shipped `ptc.run_tests(pattern)` runner resolution metadata, quoted command display, and active-runtime Node availability guidance.
-- Merge-gate fix aligned README edit example with normalized live `diffData` payload shape; remote CI passed before merge.
-- Next phase: Phase 55 — Callable Wrapper Contract Consistency.
-- Continue with /paul:plan for Phase 55.
+- Phase 55 completed and reconciled in `.paul/phases/55-callable-wrapper-contract-consistency/55-01-SUMMARY.md`.
+- Source commit: `2524fab`; UNIFY metadata commit records summary/history/transition artifacts.
+- PR #12 merged after CI passed.
+- Verification passed: focused wrapper command 42/42, full `npm test` 239/239, audit 0 critical / 0 high / 3 known moderate.
+- Next phase: Phase 56 should handle result normalization, path consistency, missing-file partial behavior, and batch_tool tool-level failure semantics.
 
 ---
-*STATE.md — Updated after Phase 54 completion and transition to Phase 55 planning (last updated: 2026-05-13)*
+*STATE.md — Updated after Phase 55 completion and transition to Phase 56 (last updated: 2026-05-13)*

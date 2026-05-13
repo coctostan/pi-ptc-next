@@ -125,17 +125,17 @@ This implementation now focuses on provider-agnostic reliability:
 
 ## Available Python functions
 
-By default, Python code inside `code_execution` can call a safe built-in subset:
+By default, Python code inside `code_execution` can call a safe built-in subset. Direct callable Pi tool wrappers are async: use `await read(...)`, `await grep(...)`, and so on. The separate `ptc.*` helpers follow their listed sync/async signatures.
 
-- `read(path, *, offset=None, limit=None, symbol=None, map=None) -> Union[str, ReadResult]`
-- `glob(pattern, path='.', limit=1000) -> list[str]`
-- `find(pattern, path='.', limit=1000) -> list[str]`
-- `grep(...) -> Union[List[GrepMatch], GrepResult]`
-- `ls(path='.', limit=500) -> list[str]`
+- `await read(path, *, offset=None, limit=None, symbol=None, map=None) -> Union[str, ReadResult]`
+- `await glob(pattern, path='.', limit=1000) -> list[str]`
+- `await find(pattern, path='.', limit=1000) -> list[str]`
+- `await grep(...) -> Union[List[GrepMatch], GrepResult]`; use `await grep(pattern="pattern", path='...')` or positional shorthand `await grep("pattern", path='...')`
+- `await ls(path='.', limit=500) -> list[str]`
 
 Optional tools can be enabled via environment/config policy:
 
-- `sg(pattern, *, lang=None, path=None) -> SgResult` (requires explicit opt-in via `PTC_CALLABLE_TOOLS=...,sg` and Pi still has to expose it to PTC with callable runtime + metadata)
+- `await sg(pattern, *, lang=None, path=None) -> SgResult` (requires explicit opt-in via `PTC_CALLABLE_TOOLS=...,sg` and Pi still has to expose it to PTC with callable runtime + metadata)
 - `bash(...) -> dict`
 - `edit(...) -> AnchoredEditResult`
 - `write(...) -> dict`

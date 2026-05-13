@@ -212,7 +212,7 @@ const exec = (executor: any, code: string) => {
 
 test("audit: read() returns file content", async () => {
   const executor = createAuditExecutor();
-  const result = await exec(executor, 'r = read("file-a.txt")\nreturn str(type(r)) + "|" + str(len(str(r)) > 0)');
+  const result = await exec(executor, 'r = await read("file-a.txt")\nreturn str(type(r)) + "|" + str(len(str(r)) > 0)');
   assert.ok(result.output.includes("True"), `read() should return content, got: ${result.output}`);
 });
 
@@ -220,6 +220,13 @@ test("audit: grep() returns matches", async () => {
   const executor = createAuditExecutor();
   const result = await exec(executor, 'r = await grep(pattern="line", path=".")\nreturn str(type(r)) + "|" + str(len(str(r)) > 0)');
   assert.ok(result.output.includes("True"), `grep() should return matches, got: ${result.output}`);
+});
+
+
+test("audit: grep() accepts primary pattern as a positional argument", async () => {
+  const executor = createAuditExecutor();
+  const result = await exec(executor, 'r = await grep("line", path=".")\nreturn str(type(r)) + "|" + str(len(str(r)) > 0)');
+  assert.ok(result.output.includes("True"), `grep() positional pattern should return matches, got: ${result.output}`);
 });
 
 test("audit: find() returns file paths", async () => {

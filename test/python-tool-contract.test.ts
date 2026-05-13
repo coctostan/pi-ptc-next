@@ -168,6 +168,24 @@ test("helper descriptions and wrappers expose read(symbol=..., map=...) passthro
   assert.equal(describePythonHelper(createTool({ name: "edit" })), "edit(query: str, *, limit: Optional[int] = None, tags: Optional[List[str]] = None) -> AnchoredEditResult");
 });
 
+
+test("generated callable wrappers are async and descriptions are ready for await guidance", () => {
+  const grepTool = createTool({
+    name: "grep",
+    parameters: Type.Object({
+      pattern: Type.String(),
+      path: Type.Optional(Type.Union([Type.String(), Type.Null()])),
+    }, { additionalProperties: false }),
+    source: "builtin",
+    isReadOnly: true,
+  });
+
+  assert.equal(describePythonHelper(grepTool), "grep(pattern: str, *, path: Optional[str] = None) -> Union[List[GrepMatch], GrepResult]");
+  const wrapperCode = generateToolWrappersForTests([grepTool]);
+  assert.match(wrapperCode, /async def grep\(/);
+  assert.match(wrapperCode, /pattern: str/);
+});
+
 test("generated wrappers expose edit semantic summary metadata", () => {
   const wrapperCode = generateToolWrappersForTests([]);
   assert.match(wrapperCode, /class SemanticSummary\(TypedDict, total=False\):/);

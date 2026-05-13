@@ -11,3 +11,4 @@ See modules/codi/references/codi-instrumentation.md for schema, outcome taxonomy
 | 52-01 | 2026-05-12 | no-dispatch-found | — | — | — | — | n |
 | 53-01 | 2026-05-12 | injected | 1 | 0 | 4 | buildToolDescription, generateToolWrappers | y |
 | 54-01 | 2026-05-13 | skipped-no-symbols | — | — | — | — | n |
+| 55-01 | 2026-05-13 | injected | 4 | 0 | 5 | buildGenericToolWrapper, buildReadWrapper, describePythonHelper, buildToolDescription | y |
