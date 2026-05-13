@@ -4,15 +4,36 @@
 Brownfield PALS adoption for `pi-ptc-next`, focused on hashline-native runtime interop and structured Python integration.
 
 ## Current Milestone
-**No active milestone**
-Status: Awaiting next milestone definition
+**Milestone 19 — Live Runtime Helper Hardening** (`0.18.0`)
+Status: 🚧 In Progress
+Phases: 0 of 4 complete
 
-Last completed: **Milestone 18 — PTC Leverage and Output Shape** (`0.17.0`) — ✅ Complete
-Completed: 2026-05-12
-Archive: [milestones/0.17.0-ROADMAP.md](milestones/0.17.0-ROADMAP.md)
+Focus: Convert live `code_execution` manual-test findings into tighter runtime behavior, clearer helper contracts, and regression proof.
 
-## Next Milestone
-Run `/paul:discuss-milestone` or `/paul:milestone` to define.
+Source findings: [`docs/issues/2026-05-13-code-execution-helper-edge-cases.md`](../docs/issues/2026-05-13-code-execution-helper-edge-cases.md)
+
+| Phase | Name | Plans | Status | Completed |
+|-------|------|-------|--------|-----------|
+| 54 | Runner Availability and Command Reporting | 1/1 | Applying | - |
+| 55 | Callable Wrapper Contract Consistency | TBD | Not started | - |
+| 56 | Result Normalization and Partial-Error Semantics | TBD | Not started | - |
+| 57 | Live Proof and Release Readiness | TBD | Not started | - |
+
+### Phase 54: Runner Availability and Command Reporting
+Focus: Decide and implement the default-runtime story for `ptc.run_tests(pattern)`, including Node availability, runner-unavailable guidance, and unambiguous command metadata.
+Plans: `54-01-PLAN.md`
+
+### Phase 55: Callable Wrapper Contract Consistency
+Focus: Normalize or explicitly document callable wrapper async/positional behavior and generated signatures for `read`, `grep`, `find`, `glob`, and `ls`.
+Plans: TBD (defined during /paul:plan)
+
+### Phase 56: Result Normalization and Partial-Error Semantics
+Focus: Tighten structured result shape/path normalization plus `read_many` and `batch_tool(..., on_error='collect')` treatment of tool-level error payloads.
+Plans: TBD (defined during /paul:plan)
+
+### Phase 57: Live Proof and Release Readiness
+Focus: Add focused live/manual-style regression proof, refresh docs and release notes, and verify the `0.18.0` package baseline.
+Plans: TBD (defined during /paul:plan)
 
 ## Completed Milestones
 <details>
@@ -254,4 +275,4 @@ Suggested implementation branch from project docs:
 - `feat/hashline-native-interop`
 
 ---
-*Last updated: 2026-05-12 after Milestone 18 completion; awaiting next milestone definition*
+*Last updated: 2026-05-13 after completing Phase 54 APPLY for Milestone 19*
