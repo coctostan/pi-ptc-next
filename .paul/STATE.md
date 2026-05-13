@@ -170,7 +170,7 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - PR #12: MERGED — https://github.com/coctostan/pi-ptc-next/pull/12; squash merge `bb54af2` to `main`; GitHub Actions `Verify release baseline` and Socket checks SUCCESS; remote/local feature branch deleted (Phase 55).
 - PR #13: MERGED — https://github.com/coctostan/pi-ptc-next/pull/13; squash merge `b1a42a9` to `main`; GitHub Actions `Verify release baseline` ×2 and Socket Security ×2 SUCCESS; remote/local feature branch deleted (Phase 56).
 - PR #14: MERGED — https://github.com/coctostan/pi-ptc-next/pull/14; squash merge `3a1ffbf` to `main`; GitHub Actions `Verify release baseline` ×2 and Socket Security ×2 SUCCESS; remote feature branch deleted by merge automation; local `main` fast-forwarded.
-- PR #15: OPEN — https://github.com/coctostan/pi-ptc-next/pull/15; branch `feature/58-public-identity-rename`; Phase 58 task + UNIFY artifacts pushed; GitHub Actions `Verify release baseline` ×2 and Socket Security ×2 SUCCESS before merge gate.
+- PR #15: MERGED — https://github.com/coctostan/pi-ptc-next/pull/15; squash merge `a574a6d` to `main`; GitHub Actions `Verify release baseline` ×2 and Socket Security ×2 SUCCESS; remote feature branch deleted by merge automation; local `main` fast-forwarded.
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; no `0.16.0` tag created (publish remains manual)
 ## Session Continuity
 Last session: 2026-05-13
@@ -181,7 +181,7 @@ wip_result: skipped — current branch is base branch `main`; PAUSE does not cre
 Resume context:
 - Phase 58 plan 58-01 UNIFY closed with `.paul/phases/58-public-identity-rename/58-01-SUMMARY.md`.
 - Phase 58 shipped the public identity baseline: metadata/tests/docs now target `pi-ptc-advanced@1.0.0` and intended `coctostan/pi-ptc-advanced`; manual publish/repo-rename boundaries remain explicit.
-- Verification: `node --test test/release-readiness.test.ts`, `npm run build`, `bash scripts/verify-release-package.sh`; PR #15 GitHub Actions and Socket checks passed before merge gate.
+- Verification: `node --test test/release-readiness.test.ts`, `npm run build`, `bash scripts/verify-release-package.sh`; PR #15 GitHub Actions and Socket checks passed, then PR #15 merged to `main`.
 - Expected resume action: `/paul:plan` for Phase 59 — README and Docs Polish.
 
 ---
