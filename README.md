@@ -359,7 +359,7 @@ The runtime also exposes a `ptc` helper object:
 - `ptc.get_tool_schema(name) -> dict[str, Any]`
 - `ptc.help(tool_name) -> dict[str, Any]`
 - `ptc.run_tests(pattern) -> dict[str, Any]`
-  - Runs Node's built-in `node --test <pattern>` from inside `code_execution` and returns a `ptc_report` with pass/fail/duration metrics, a bounded failures table, and a `runner_available` flag. Node-only for this phase: no vitest/jest/pytest, no package-script dispatch, no Docker image changes; missing `node` is reported as `runner_available: false` rather than raising. Use it for focused test reporting, not as a replacement for normal repo verification commands like `npm test`, `npm run build`, or PALS verification gates.
+  - Runs Node's built-in `node --test <pattern>` from inside `code_execution` and returns a `ptc_report` with pass/fail/duration metrics, quoted command metadata, scalar `runner_path`/`runner_resolution` fields, a bounded failures table, and a `runner_available` flag. Requires Node in the active runtime; Python-only or Docker runtimes may report `runner_available: false` as structured data rather than raising. Node-only for this phase: no vitest/jest/pytest, no package-script dispatch, no Docker image changes. Use it for focused test reporting, not as a replacement for normal repo verification commands like `npm test`, `npm run build`, or PALS verification gates.
 - `ptc.extract_handles(value, kind=None) -> list[SupportedHandle]`
 - `ptc.first_handle(value, kind=None) -> Optional[SupportedHandle]`
 - `ptc.json_dump(value)`

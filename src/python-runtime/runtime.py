@@ -3,6 +3,8 @@ import json as _ptc_json
 import os as _ptc_os
 import sys as _ptc_sys
 import re as _ptc_re
+import shlex as _ptc_shlex
+import shutil as _ptc_shutil
 import subprocess as _ptc_subprocess
 import time as _ptc_time
 import traceback as _ptc_traceback
@@ -1108,48 +1110,59 @@ class _PtcHelpers:
             for key, value in _ptc_os.environ.items()
             if key not in ("NODE_TEST_CONTEXT", "NODE_RUN_SCRIPT_NAME")
         }
+        runner_path = _ptc_shutil.which("node", path=child_env.get("PATH"))
+        runner_resolution = "path" if runner_path else "missing_on_path"
         warnings_list: list[str] = []
-        runner_available = True
+        runner_available = runner_path is not None
         exit_code: int | None = None
         stdout = ""
         stderr = ""
         timed_out = False
         start = _ptc_time.monotonic()
-        try:
-            completed = _ptc_subprocess.run(
-                command,
-                cwd=_PTC_RUNTIME_WORKSPACE_ROOT,
-                text=True,
-                capture_output=True,
-                shell=False,
-                check=False,
-                env=child_env,
-                timeout=_NODE_TEST_RUNNER_TIMEOUT_SECONDS,
-            )
-        except FileNotFoundError:
-            runner_available = False
-            warnings_list.append(
-                "node executable not found in the active runtime; ptc.run_tests reports an empty report and runner_available=false."
-            )
-        except _ptc_subprocess.TimeoutExpired as timeout_error:
-            timed_out = True
-            stdout = timeout_error.stdout if isinstance(timeout_error.stdout, str) else ""
-            stderr = timeout_error.stderr if isinstance(timeout_error.stderr, str) else ""
-            warnings_list.append(
-                f"node --test exceeded the {_NODE_TEST_RUNNER_TIMEOUT_SECONDS}s timeout and was terminated; metrics may be partial."
-            )
+        if runner_available:
+            try:
+                completed = _ptc_subprocess.run(
+                    command,
+                    cwd=_PTC_RUNTIME_WORKSPACE_ROOT,
+                    text=True,
+                    capture_output=True,
+                    shell=False,
+                    check=False,
+                    env=child_env,
+                    timeout=_NODE_TEST_RUNNER_TIMEOUT_SECONDS,
+                )
+            except FileNotFoundError:
+                runner_available = False
+                runner_path = None
+                runner_resolution = "missing_on_path"
+                warnings_list.append(
+                    "Node was not found in the active runtime PATH; Python-only or Docker runtimes may report runner_available=false unless configured with Node."
+                )
+            except _ptc_subprocess.TimeoutExpired as timeout_error:
+                timed_out = True
+                stdout = timeout_error.stdout if isinstance(timeout_error.stdout, str) else ""
+                stderr = timeout_error.stderr if isinstance(timeout_error.stderr, str) else ""
+                warnings_list.append(
+                    f"node --test exceeded the {_NODE_TEST_RUNNER_TIMEOUT_SECONDS}s timeout and was terminated; metrics may be partial."
+                )
+            else:
+                stdout = completed.stdout or ""
+                stderr = completed.stderr or ""
+                exit_code = completed.returncode
         else:
-            stdout = completed.stdout or ""
-            stderr = completed.stderr or ""
-            exit_code = completed.returncode
+            warnings_list.append(
+                "Node was not found in the active runtime PATH; Python-only or Docker runtimes may report runner_available=false unless configured with Node."
+            )
         duration_ms = max(0, int((_ptc_time.monotonic() - start) * 1000))
 
         metrics: dict[str, Any] = {
             "runner": "node --test",
             "runner_available": runner_available,
+            "runner_path": runner_path,
+            "runner_resolution": runner_resolution,
             "pattern": pattern,
             "cwd": ".",
-            "command": " ".join(command),
+            "command": _ptc_shlex.join(command),
             "exit_code": exit_code,
             "total": 0,
             "passed": 0,
