@@ -396,13 +396,17 @@ Important runtime rules:
 The runtime also exposes a `ptc` helper object:
 
 - `await ptc.gather_limit(coros, limit=8)`
-- `await ptc.read_many(paths, max_concurrency=None, offset=None, line_limit=None)`
+- `await ptc.read_many(paths, max_concurrency=None, offset=None, line_limit=None, on_error=None) -> list[str] | dict[str, Any]`
+  - Default returns `list[str]`; missing/unreadable entries become a bounded `"[read_many error] ..."` marker instead of leaking a traceback.
+  - Pass `on_error='collect'` for a typed envelope: `kind="read_many_partial"` with per-entry `{index, path, ok, value | error}` and `stats {total, succeeded, failed}`.
 - `await ptc.read_tree(pattern, path='.', max_files=1000, concurrency=None, offset=None, line_limit=None, relative=False, relative_to=None)`
 - `await ptc.find_files(pattern, path='.', max_files=1000, relative=True, relative_to=None)`
 - `await ptc.find_files_abs(pattern, path='.', max_files=1000, relative=False, relative_to=None)`
 - `await ptc.read_text(path, offset=None, limit=None)`
 - `await ptc.batch_tool(calls, max_concurrency=None, on_error=None) -> list[Any] | dict[str, Any]`
   - Use `on_error='collect'` for bounded partial mode (`kind="batch_partial"`) with per-call success/error entries instead of raising on first failure
+  - In `on_error='collect'`, tool-level normalized error payloads (`{ok: false, error: ...}` or `kind: "execution_error"`) are classified as failed entries (`ok: false`, `error` summary) while the raw payload is preserved under `value`. Default `on_error='raise'` is unchanged.
+  - Path-normalization invariant: direct `read()`/`grep()` wrappers, `ptc.read_*` helpers, and `ptc.batch_tool` `read`/`grep` payloads all return workspace-relative `path` fields when the target is under the host workspace root (out-of-workspace absolute paths are preserved as-is).
 - `await ptc.first_success(calls, max_concurrency=None) -> Any`
 - `await ptc.reduce_tool(calls, reducer, initial, max_concurrency=None) -> Any`
 - `ptc.fit_output(value, max_chars=None, max_items=None, max_depth=None) -> dict[str, Any]`

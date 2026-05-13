@@ -9,3 +9,4 @@ package-lock.json
 .paul/handoffs/
 __pycache__/
 *.pyc
+runs/

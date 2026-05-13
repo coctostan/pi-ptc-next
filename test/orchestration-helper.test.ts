@@ -197,6 +197,114 @@ test("ptc.batch_tool collect mode returns bounded partial results without raisin
   assert.match(parsed.results[1].error, /boom/);
 });
 
+test("ptc.batch_tool collect mode classifies tool-level normalized error payloads as failed (AC-4)", async () => {
+  const stats: RuntimeStats = { activeCalls: 0, maxActiveCalls: 0, seenCalls: [] };
+  // Extend the executor with an extra tool that returns a normalized
+  // error payload via a successful RPC call (no exception thrown).
+  const sandboxManager = {
+    spawn(code: string, cwd: string) {
+      return spawn("python3", ["-u", "-c", code], { cwd, env: { ...process.env } });
+    },
+    getRuntimeWorkspaceRoot(cwd: string) { return cwd; },
+    async cleanup() {},
+  };
+  const tools: OrchestrationToolStub[] = [
+    {
+      name: "record_value",
+      description: "Return a structured record",
+      parameters: {
+        type: "object",
+        properties: { value: { type: "string" } },
+        required: ["value"],
+        additionalProperties: false,
+      },
+      source: "extension",
+      isReadOnly: true,
+    },
+    {
+      name: "soft_fail",
+      description: "Return a normalized ok:false payload without raising",
+      parameters: {
+        type: "object",
+        properties: { reason: { type: "string" } },
+        required: ["reason"],
+        additionalProperties: false,
+      },
+      source: "extension",
+      isReadOnly: true,
+    },
+  ];
+  const toolRegistry = {
+    createCallableToolRuntime() {
+      return {
+        tools,
+        runTool: async (toolName: string, params: Record<string, unknown>) => {
+          stats.seenCalls.push(`${toolName}:${String(params.value ?? params.reason ?? "")}`);
+          if (toolName === "record_value") {
+            const value = String(params.value ?? "");
+            return {
+              content: [{ type: "text", text: JSON.stringify({ value }) }],
+              details: { ptcValue: { tool: toolName, value } },
+            };
+          }
+          if (toolName === "soft_fail") {
+            const reason = String(params.reason ?? "unknown");
+            // Normalized error payload: transport call SUCCEEDS, but the
+            // tool returns `{ok: false, error: ...}` semantics via ptcValue.
+            return {
+              content: [{ type: "text", text: JSON.stringify({ ok: false, error: reason }) }],
+              details: { ptcValue: { ok: false, error: reason } },
+            };
+          }
+          throw new Error(`Unexpected tool: ${toolName}`);
+        },
+      };
+    },
+  };
+  const executor = new CodeExecutor(
+    sandboxManager,
+    toolRegistry as any,
+    {
+      executionTimeoutMs: 10_000,
+      maxOutputChars: 10_000,
+      allowMutations: false,
+      allowBash: false,
+      maxParallelToolCalls: 4,
+      useDocker: false,
+      allowUnsandboxedSubprocess: true,
+      debugLogging: false,
+      autoRoute: false,
+      trustedReadOnlyTools: undefined,
+      callableTools: undefined,
+      blockedTools: undefined,
+    },
+    process.cwd(),
+  );
+
+  const result = await executor.execute(
+    [
+      "partial = await ptc.batch_tool([",
+      '  {"tool": "record_value", "params": {"value": "ok"}},',
+      '  {"tool": "soft_fail", "params": {"reason": "nope"}},',
+      "], on_error='collect')",
+      "return partial",
+    ].join("\n"),
+    { cwd: process.cwd(), ctx: ({ cwd: process.cwd() } as any) },
+  );
+  const parsed = JSON.parse(result.output);
+  assert.equal(parsed.kind, "batch_partial");
+  assert.equal(parsed.stats.total, 2);
+  assert.equal(parsed.stats.succeeded, 1, "soft_fail tool-error payload should NOT count as succeeded");
+  assert.equal(parsed.stats.failed, 1);
+  assert.equal(parsed.results[0].ok, true);
+  assert.equal(parsed.results[1].ok, false, "soft_fail entry should be ok:false");
+  assert.equal(parsed.results[1].tool, "soft_fail");
+  assert.equal(typeof parsed.results[1].error, "string");
+  assert.match(parsed.results[1].error, /nope/);
+  // Original payload preserved under value for caller inspection.
+  assert.ok(parsed.results[1].value, "raw tool payload should remain under value");
+});
+
 test("ptc.first_success returns the first successful ordered candidate and stops after success", async () => {
   const stats: RuntimeStats = { activeCalls: 0, maxActiveCalls: 0, seenCalls: [] };
   const executor = createExecutor(stats);

@@ -4,15 +4,15 @@
 See: `.paul/PROJECT.md`
 
 **Core value:** `pi-ptc-next` should execute the same active Pi tool implementations that the user sees in chat.
-**Current focus:** Phase 56 ready to plan for Milestone 19 — Live Runtime Helper Hardening (`0.18.0`).
+**Current focus:** Phase 56 PLAN complete; ready for APPLY in Milestone 19 — Live Runtime Helper Hardening (`0.18.0`).
 ## Current Position
 Milestone: Milestone 19 — Live Runtime Helper Hardening (`0.18.0`)
 Phase: 56 of 57 (Result Normalization and Partial-Error Semantics)
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-05-13 — Phase 55 unified, PR #12 merged, and Milestone 19 transitioned to Phase 56 planning readiness.
+Plan: 56-01-PLAN.md created
+Status: PLAN complete; ready for APPLY
+Last activity: 2026-05-13 — Phase 56 PLAN created at `.paul/phases/56-result-normalization-and-partial-error-semantics/56-01-PLAN.md`.
 Progress:
-- Milestone 19 — Live Runtime Helper Hardening: [██████░░░░] 60% (Phase 54 ✓; Phase 55 ✓; Phase 56 PLAN ○ / APPLY ○ / UNIFY ○; Phase 57 ○)
+- Milestone 19 — Live Runtime Helper Hardening: [██████░░░░] 60% (Phase 54 ✓; Phase 55 ✓; Phase 56 PLAN ✓ / APPLY ○ / UNIFY ○; Phase 57 ○)
 - Milestone 17 — Pi Compatibility and Prompt Integration Audit: [██████████] 100% ✓ (Phase 45 ✓, Phase 46 ✓, Phase 47 ✓, Phase 48 ✓)
 - Phase 45 — Pi API and Documentation Delta Audit: [██████████] 100% ✓
 - Phase 46 — Extension Runtime Compatibility Alignment: [██████████] 100% ✓
@@ -58,7 +58,7 @@ Progress:
 Current loop state:
 ```text
 PLAN ──▶ APPLY ──▶ UNIFY
-  ○        ○        ○     [Phase 56 ready to plan]
+  ✓        ○        ○     [Phase 56 PLAN complete; ready for APPLY]
 ```
 
 ## Accumulated Context
@@ -163,16 +163,15 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; no `0.16.0` tag created (publish remains manual)
 ## Session Continuity
 Last session: 2026-05-13
-Stopped at: Phase 55 complete; ready to plan Phase 56.
-Next action: `/paul:plan` for Phase 56 (Result Normalization and Partial-Error Semantics).
-Resume file: `.paul/ROADMAP.md`
+Stopped at: Phase 56 PLAN complete; ready for APPLY.
+Next action: `/paul:apply` for Phase 56 Plan 01 (Result Normalization and Partial-Error Semantics).
+Resume file: `.paul/phases/56-result-normalization-and-partial-error-semantics/56-01-PLAN.md`
 wip_result: skipped - on base branch `main`; PAUSE does not create WIP commits on base branch
 Resume context:
-- Phase 55 completed and reconciled in `.paul/phases/55-callable-wrapper-contract-consistency/55-01-SUMMARY.md`.
-- Source commit: `2524fab`; UNIFY metadata commit records summary/history/transition artifacts.
-- PR #12 merged after CI passed.
-- Verification passed: focused wrapper command 42/42, full `npm test` 239/239, audit 0 critical / 0 high / 3 known moderate.
-- Next phase: Phase 56 should handle result normalization, path consistency, missing-file partial behavior, and batch_tool tool-level failure semantics.
+- Phase 55 completed and reconciled in `.paul/phases/55-callable-wrapper-contract-consistency/55-01-SUMMARY.md`; PR #12 merged and local `main` is in sync with `origin/main`.
+- Phase 56 PLAN 01 created (TDD): path-normalization parity for read/read_many/batch_tool, opt-in `read_many` partial envelope, and `batch_tool(..., on_error='collect')` tool-level failure classification; scope bounded to `runtime.py`, `src/index.ts`, README, and three test files.
+- DEAN pre-plan enforcement passed: `npm audit` is 0 critical / 0 high / 3 moderate, strictly better than `.paul/dean-baseline.json` baseline.
+- Expected resume action: `/paul:apply` for Phase 56 Plan 01.
 
 ---
-*STATE.md — Updated after Phase 55 completion and transition to Phase 56 (last updated: 2026-05-13)*
+*STATE.md — Updated for Phase 56 PLAN complete (last updated: 2026-05-13)*

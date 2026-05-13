@@ -169,13 +169,15 @@ Prefer these patterns:
 Python helpers currently available in this session:
 - ${awaitableCallableHelperLines.join("\n- ")}
 - ptc.gather_limit(coros, limit=...) -> list
-- ptc.read_many(paths, max_concurrency=..., offset=None, line_limit=None) -> list[str]
+- ptc.read_many(paths, max_concurrency=..., offset=None, line_limit=None, on_error=None) -> list[str] | dict[str, Any]
+-   - Default returns list[str]; missing/unreadable entries become a bounded "[read_many error] ..." marker instead of leaking a traceback. Pass on_error='collect' for a typed envelope: kind="read_many_partial" with per-entry {index, path, ok, value | error} and stats {total, succeeded, failed}.
 - ptc.read_tree(pattern=..., path='.', max_files=1000, concurrency=..., offset=None, line_limit=None, relative=False, relative_to=None) -> list[dict[str, Any]]
 - ptc.find_files(pattern='**/*', path='.', max_files=1000, relative=True, relative_to=None) -> list[str]
 - ptc.find_files_abs(pattern='**/*', path='.', max_files=1000, relative=False, relative_to=None) -> list[str]
 - ptc.read_text(path, offset=None, limit=None) -> str
 - await ptc.batch_tool(calls, max_concurrency=None, on_error=None) -> list[Any] | dict[str, Any]
 -   - on_error='collect' returns a kind="batch_partial" envelope with per-call success/error entries instead of raising on first failure
+-   - In on_error='collect', tool-level normalized error payloads ({ok: false, error: ...} or kind="execution_error") are classified as failed entries (ok: false, error: summary) while the raw payload is preserved under value. Default on_error='raise' is unchanged.
 - await ptc.first_success(calls, max_concurrency=None) -> Any
 - await ptc.reduce_tool(calls, reducer, initial, max_concurrency=None) -> Any
 - ptc.fit_output(value, max_chars=None, max_items=None, max_depth=None) -> dict[str, Any]
@@ -199,6 +201,7 @@ Python helpers currently available in this session:
 Prefer these for string content:
 - ptc.read_text(path) always returns str (extracts raw text from structured results)
 - ptc.read_many(paths) always returns list[str]
+- Direct read()/grep() wrappers, ptc.read_* helpers, and ptc.batch_tool read/grep payloads all return workspace-relative path fields when the target is under the host workspace root (out-of-workspace absolute paths are preserved as-is).
 - ptc.read_tree(pattern) returns list[dict] where each entry["content"] is str
 - Use ptc.help(tool_name) only when optional callable-tool prompt metadata is needed to choose or parameterize a tool; do not run introspection as a routine prelude.
 - ptc.tabulate(...) and ptc.diff(...) are bridge helpers for report payloads and explicit before/after comparisons; prefer nu for grouping, histograms, ranking, or pipeline-style data analysis.

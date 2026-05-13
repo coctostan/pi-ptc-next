@@ -127,6 +127,57 @@ def _normalize_grep_result(result: Any) -> Any:
             record["path"] = _relativize_path(record["path"])
     return result
 
+
+def _normalize_read_result(result: Any) -> Any:
+    """Normalize read result paths to be workspace-relative when under root.
+
+    Mirrors `_normalize_grep_result`'s policy so direct `read()`, `ptc.read_text()`,
+    `ptc.read_many()`, and any `read` payload surfaced through `ptc.batch_tool(...)`
+    return identical `path` shapes. Out-of-workspace absolute paths are preserved.
+    """
+    if not isinstance(result, dict):
+        return result
+    if isinstance(result.get("path"), str):
+        result["path"] = _relativize_path(result["path"])
+    lines = result.get("lines")
+    if isinstance(lines, list):
+        for entry in lines:
+            if isinstance(entry, dict) and isinstance(entry.get("path"), str):
+                entry["path"] = _relativize_path(entry["path"])
+    return result
+
+
+_TOOL_ERROR_EXECUTION_KIND = "execution_error"
+
+
+def _classify_tool_error_payload(value: Any) -> str | None:
+    """Detect normalized tool-error payloads inside an otherwise-successful RPC value.
+
+    Returns a bounded error summary string when `value` carries `{ok: False, error: ...}`
+    semantics or `kind == "execution_error"`, and `None` otherwise. Callers use this to
+    surface tool-level failures inside `ptc.batch_tool(..., on_error="collect")` without
+    reclassifying transport-level successes.
+    """
+    if not isinstance(value, dict):
+        return None
+    kind = value.get("kind")
+    if isinstance(kind, str) and kind == _TOOL_ERROR_EXECUTION_KIND:
+        raw_error = value.get("error") or value.get("message") or _TOOL_ERROR_EXECUTION_KIND
+    elif value.get("ok") is False and ("error" in value or "message" in value):
+        raw_error = value.get("error") or value.get("message")
+    else:
+        return None
+    if isinstance(raw_error, dict):
+        summary = raw_error.get("message") or raw_error.get("error") or _ptc_json.dumps(raw_error, ensure_ascii=False)
+    else:
+        summary = raw_error if isinstance(raw_error, str) else str(raw_error)
+    summary = " ".join(summary.splitlines()).strip()
+    if not summary:
+        summary = _TOOL_ERROR_EXECUTION_KIND
+    if len(summary) > 160:
+        return summary[:157] + "..."
+    return summary
+
 _SUPPORTED_HANDLE_KINDS = {"response", "file"}
 _DEFAULT_FIT_OUTPUT_MAX_ITEMS = 10
 _DEFAULT_FIT_OUTPUT_MAX_DEPTH = 3
@@ -609,6 +660,19 @@ def _summarize_orchestration_error(error: Exception) -> str:
     return summary
 
 
+async def _safe_read_for_many(path: str, *, offset: int | None = None, limit: int | None = None) -> dict[str, Any]:
+    """Call the module-level read() and return a uniform success/error envelope.
+
+    Used by `ptc.read_many` to convert raw exceptions into a bounded structured
+    record without leaking a Python traceback into list-of-strings output.
+    """
+    try:
+        value = await read(path=path, offset=offset, limit=limit)
+        return {"ok": True, "value": value}
+    except Exception as error:  # noqa: BLE001 - any tool/transport failure is captured
+        return {"ok": False, "error": _summarize_orchestration_error(error)}
+
+
 def _normalize_positive_int(name: str, value: Any, default: int) -> int:
     if value is None:
         return default
@@ -869,12 +933,52 @@ class _PtcHelpers:
         *,
         offset: int | None = None,
         line_limit: int | None = None,
-    ) -> Sequence[str]:
-        results = await self.gather_limit(
-            [read(path=path, offset=offset, limit=line_limit) for path in paths],
+        on_error: str | None = None,
+    ) -> Any:
+        path_list = list(paths)
+        mode = _normalize_batch_on_error(on_error)
+        collected_raw = await self.gather_limit(
+            [_safe_read_for_many(path, offset=offset, limit=line_limit) for path in path_list],
             limit=max_concurrency,
         )
-        return [_extract_text(r) for r in results]
+        if mode == _BATCH_ON_ERROR_RAISE:
+            output: list[str] = []
+            for entry in collected_raw:
+                if entry["ok"]:
+                    output.append(_extract_text(entry["value"]))
+                else:
+                    output.append(f"[read_many error] {entry['error']}")
+            return output
+        # collect: typed partial envelope
+        results: list[dict[str, Any]] = []
+        succeeded = 0
+        for index, entry in enumerate(collected_raw):
+            path_val = path_list[index]
+            if entry["ok"]:
+                results.append({
+                    "index": index,
+                    "path": path_val,
+                    "ok": True,
+                    "value": _extract_text(entry["value"]),
+                })
+                succeeded += 1
+            else:
+                results.append({
+                    "index": index,
+                    "path": path_val,
+                    "ok": False,
+                    "error": entry["error"],
+                })
+        return {
+            "kind": "read_many_partial",
+            "mode": mode,
+            "results": results,
+            "stats": {
+                "total": len(collected_raw),
+                "succeeded": succeeded,
+                "failed": len(collected_raw) - succeeded,
+            },
+        }
 
 
     async def batch_tool(
@@ -896,20 +1000,40 @@ class _PtcHelpers:
                 }
             return []
         concurrency = _normalize_orchestration_limit(max_concurrency, self.max_parallel_tool_calls)
+        def _normalize_batch_value(tool_name: str, value: Any) -> Any:
+            if tool_name == "read":
+                return _normalize_read_result(value)
+            if tool_name == "grep":
+                return _normalize_grep_result(value)
+            return value
+
         if mode == _BATCH_ON_ERROR_RAISE:
-            results = await self.gather_limit(
+            raw_results = await self.gather_limit(
                 [_rpc_call(entry["tool"], dict(entry["params"])) for entry in normalized_calls],
                 limit=concurrency,
             )
-            return list(results)
+            return [
+                _normalize_batch_value(entry["tool"], value)
+                for entry, value in zip(normalized_calls, raw_results)
+            ]
         async def _collect_call(entry: dict[str, Any], index: int) -> dict[str, Any]:
             try:
                 value = await _rpc_call(entry["tool"], dict(entry["params"]))
+                normalized_value = _normalize_batch_value(entry["tool"], value)
+                tool_error = _classify_tool_error_payload(normalized_value)
+                if tool_error is not None:
+                    return {
+                        "index": index,
+                        "tool": entry["tool"],
+                        "ok": False,
+                        "value": normalized_value,
+                        "error": tool_error,
+                    }
                 return {
                     "index": index,
                     "tool": entry["tool"],
                     "ok": True,
-                    "value": value,
+                    "value": normalized_value,
                 }
             except Exception as error:
                 return {
@@ -1323,6 +1447,22 @@ if callable(_generated_grep):
             kwargs["pattern"] = args[0]
         result = await _generated_grep(**kwargs)
         return _normalize_grep_result(result)
+
+
+# Post-process wrapper: normalize read result paths to workspace-relative.
+# Mirrors the grep wrapper above so direct read(), ptc.read_text(), ptc.read_many(),
+# and any read/grep payload surfaced through ptc.batch_tool(...) share one policy.
+_generated_read = globals().get("read")
+if callable(_generated_read):
+    async def read(*args, **kwargs):
+        if len(args) > 1:
+            raise TypeError(f"read() takes at most 1 positional argument ({len(args)} given)")
+        if args:
+            if "path" in kwargs:
+                raise TypeError("read() got multiple values for argument 'path'")
+            kwargs["path"] = args[0]
+        result = await _generated_read(**kwargs)
+        return _normalize_read_result(result)
 
 
 def _stringify_output(value: Any) -> str:

@@ -16,7 +16,7 @@ Source findings: [`docs/issues/2026-05-13-code-execution-helper-edge-cases.md`](
 |-------|------|-------|--------|-----------|
 | 54 | Runner Availability and Command Reporting | 1/1 | ✅ Complete | 2026-05-13 |
 | 55 | Callable Wrapper Contract Consistency | 1/1 | ✅ Complete | 2026-05-13 |
-| 56 | Result Normalization and Partial-Error Semantics | TBD | Ready to plan | - |
+| 56 | Result Normalization and Partial-Error Semantics | 1 (planned) | Planning | - |
 | 57 | Live Proof and Release Readiness | TBD | Not started | - |
 
 ### Phase 54: Runner Availability and Command Reporting
@@ -29,7 +29,7 @@ Plans: `55-01-PLAN.md`
 
 ### Phase 56: Result Normalization and Partial-Error Semantics
 Focus: Tighten structured result shape/path normalization plus `read_many` and `batch_tool(..., on_error='collect')` treatment of tool-level error payloads.
-Plans: TBD (defined during /paul:plan)
+Plans: `56-01-PLAN.md`
 
 ### Phase 57: Live Proof and Release Readiness
 Focus: Add focused live/manual-style regression proof, refresh docs and release notes, and verify the `0.18.0` package baseline.
@@ -275,4 +275,4 @@ Suggested implementation branch from project docs:
 - `feat/hashline-native-interop`
 
 ---
-*Last updated: 2026-05-13 after completing Phase 55 and routing to Phase 56 planning*
+*Last updated: 2026-05-13 after creating Phase 56 Plan 01*
