@@ -1314,7 +1314,13 @@ ptc = _PtcHelpers(
 # are absolute. This wrapper normalizes them.
 _generated_grep = globals().get("grep")
 if callable(_generated_grep):
-    async def grep(**kwargs):
+    async def grep(*args, **kwargs):
+        if len(args) > 1:
+            raise TypeError(f"grep() takes at most 1 positional argument ({len(args)} given)")
+        if args:
+            if "pattern" in kwargs:
+                raise TypeError("grep() got multiple values for argument 'pattern'")
+            kwargs["pattern"] = args[0]
         result = await _generated_grep(**kwargs)
         return _normalize_grep_result(result)
 

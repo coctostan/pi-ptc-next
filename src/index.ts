@@ -137,6 +137,7 @@ function renderCompletedOutput(
 function buildToolDescription(currentSettings: PtcSettings, callableTools: ToolInfo[]): string {
   const callableHelperLines = describePythonHelpers(callableTools);
   const callable = callableTools.map((tool) => tool.ptc?.pythonName || tool.name).join(", ");
+  const awaitableCallableHelperLines = callableHelperLines.map((line) => `await ${line}`);
   const dockerBehavior = currentSettings.useDocker
     ? "- Docker isolation is required for this session; if Docker is unavailable, execution fails instead of falling back to subprocess."
     : "- Local subprocess mode is active because PTC_ALLOW_UNSANDBOXED_SUBPROCESS=true. Nested tool policy still applies, but Python itself is not isolated by Docker in this mode.";
@@ -154,6 +155,7 @@ Examples:
 Important rules:
 - Top-level await is already available. Do not call asyncio.run(...).
 - Use generated helpers such as read(), glob(), find(), grep(), ls(), and ptc.* helpers. Do not call _rpc_call(...) directly.
+- Direct callable Pi tool wrappers are async; call them with await, e.g. await read(path: str, ...) or await grep("pattern", path="..."). ptc.* helpers follow their listed sync/async signatures.
 - Return a compact final answer only. If you return a dict/list, it will be JSON-serialized automatically.
 - Intermediate tool results stay local to this tool run and are not sent back to the model unless you include them in the final output.
 - Prefer compact JSON summaries over raw dumps.
@@ -165,7 +167,7 @@ Prefer these patterns:
 - Relative file discovery: glob(...) or ptc.find_files(..., relative=True, relative_to=None)
 - Absolute file discovery for later read()/write(): ptc.find_files_abs(..., relative=False)
 Python helpers currently available in this session:
-- ${callableHelperLines.join("\n- ")}
+- ${awaitableCallableHelperLines.join("\n- ")}
 - ptc.gather_limit(coros, limit=...) -> list
 - ptc.read_many(paths, max_concurrency=..., offset=None, line_limit=None) -> list[str]
 - ptc.read_tree(pattern=..., path='.', max_files=1000, concurrency=..., offset=None, line_limit=None, relative=False, relative_to=None) -> list[dict[str, Any]]
