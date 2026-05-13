@@ -55,6 +55,7 @@ key-decisions:
 | `npm test` pre-apply baseline | PASS_WITH_BASELINE_FAILURE | 235 pass / 1 fail; failure was `test/hashline-edit-contract.test.ts` README edit example expecting `diffData` in the normalized edit payload. |
 | `npm test` post-apply | PASS_WITH_SAME_BASELINE_FAILURE | 236 pass / 1 fail; same `test/hashline-edit-contract.test.ts` README edit example failure, no new Phase 54 failures. |
 | `npm audit --json` | PASS_WITH_KNOWN_MODERATES | 0 critical / 0 high / 3 moderate (`brace-expansion`, `file-type`, `yaml`), matching the known moderate-only baseline; no new critical/high vulnerabilities. |
+| GitHub Flow postflight | PASS_WITH_PENDING_CI | Branch pushed to `origin/feature/54-runner-availability-command-reporting`; PR #11 opened at https://github.com/coctostan/pi-ptc-next/pull/11; `Verify release baseline` pending at creation time. |
 
 ## Module Execution Reports
 
@@ -91,7 +92,7 @@ key-decisions:
 |------|--------|-------------|
 | Task 1 | `5f5d861` | Added RED expectations for runner reporting and guidance. |
 | Task 2 | `d336087` | Implemented runner metadata, quoted command display, and docs/generated guidance updates. |
-| Task 3 | pending lifecycle commit | Summary, state, and postflight lifecycle updates. |
+| Task 3 | `0a9bc5e` | Summary, state, and postflight lifecycle updates. |
 
 ## Deviations and Follow-up
 

@@ -158,6 +158,7 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - PR #7: MERGED — https://github.com/coctostan/pi-ptc-next/pull/7; GitHub Actions `Verify release baseline` and Socket checks SUCCESS.
 - PR #8: MERGED — https://github.com/coctostan/pi-ptc-next/pull/8; squash merge `b91d71d` to `main`; GitHub Actions `Verify release baseline` and Socket checks SUCCESS; remote feature branch deleted by merge automation.
 - PR #9: MERGED — https://github.com/coctostan/pi-ptc-next/pull/9; squash merge `1f9305a` to `main`; GitHub Actions `Verify release baseline` SUCCESS; feature branch `feature/53-test-runner-verb` deleted by merge automation; local `main` fast-forwarded.
+- PR #11: OPEN — https://github.com/coctostan/pi-ptc-next/pull/11 for Phase 54 `feature/54-runner-availability-command-reporting`; GitHub Actions `Verify release baseline` pending at APPLY postflight creation.
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; no `0.16.0` tag created (publish remains manual)
 ## Session Continuity
 Last session: 2026-05-13
