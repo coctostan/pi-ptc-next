@@ -10,7 +10,7 @@ Milestone: Milestone 19 — Live Runtime Helper Hardening (`0.18.0`)
 Phase: 54 of 57 (Runner Availability and Command Reporting)
 Plan: `54-01-PLAN.md`
 Status: UNIFY artifacts complete — GitHub Flow merge gate pending
-Last activity: 2026-05-13 — Reconciled Phase 54 UNIFY, finalized `.paul/phases/54-runner-availability-and-command-reporting/54-01-SUMMARY.md`, updated quality/CODI histories, and prepared PR #11 for GitHub Flow merge gate.
+Last activity: 2026-05-13 — Fixed PR #11 GitHub Flow CI blocker by aligning README edit example `diffData` with the normalized live payload; local `npm run verify:ci` now passes.
 Progress:
 - Milestone 19 — Live Runtime Helper Hardening: [██░░░░░░░░] 20% (Phase 54 ◕ UNIFY artifacts complete / merge gate pending; Phase 55 ○; Phase 56 ○; Phase 57 ○)
 - Milestone 17 — Pi Compatibility and Prompt Integration Audit: [██████████] 100% ✓ (Phase 45 ✓, Phase 46 ✓, Phase 47 ✓, Phase 48 ✓)
@@ -158,21 +158,21 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - PR #7: MERGED — https://github.com/coctostan/pi-ptc-next/pull/7; GitHub Actions `Verify release baseline` and Socket checks SUCCESS.
 - PR #8: MERGED — https://github.com/coctostan/pi-ptc-next/pull/8; squash merge `b91d71d` to `main`; GitHub Actions `Verify release baseline` and Socket checks SUCCESS; remote feature branch deleted by merge automation.
 - PR #9: MERGED — https://github.com/coctostan/pi-ptc-next/pull/9; squash merge `1f9305a` to `main`; GitHub Actions `Verify release baseline` SUCCESS; feature branch `feature/53-test-runner-verb` deleted by merge automation; local `main` fast-forwarded.
-- PR #11: OPEN — https://github.com/coctostan/pi-ptc-next/pull/11 for Phase 54 `feature/54-runner-availability-command-reporting`; UNIFY artifacts pushed; merge gate pending required CI/check reporting.
+- PR #11: OPEN — https://github.com/coctostan/pi-ptc-next/pull/11 for Phase 54 `feature/54-runner-availability-command-reporting`; local CI blocker fixed and pushed pending remote CI recheck.
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; no `0.16.0` tag created (publish remains manual)
 ## Session Continuity
 Last session: 2026-05-13
-Stopped at: Phase 54 UNIFY artifacts complete; GitHub Flow merge gate pending CI/check reporting.
-Next action: Recheck PR #11 checks and complete GitHub Flow merge gate when CI is available/passing.
+Stopped at: Phase 54 UNIFY artifacts complete; GitHub Flow merge gate pending remote CI recheck after local fix.
+Next action: Recheck PR #11 remote CI; if passing, complete GitHub Flow merge gate.
 Resume file: `.paul/phases/54-runner-availability-and-command-reporting/54-01-SUMMARY.md`
 wip_result: skipped — on base branch `main`; PAUSE does not create WIP commits on base branch
 Resume context:
 - Summary: `.paul/phases/54-runner-availability-and-command-reporting/54-01-SUMMARY.md`.
 - Focused verification passed: `PI_RTK_BYPASS=1 npm run build && PI_RTK_BYPASS=1 node --test test/run-tests-helper.test.ts test/index.test.ts` (16/16).
-- Full `npm test` retains the same unrelated baseline failure in `test/hashline-edit-contract.test.ts` README edit-example `diffData` mismatch (236 pass / 1 fail post-apply vs 235 pass / 1 fail pre-apply).
+- Merge-gate fix aligned README edit example with normalized live `diffData` payload shape; local `npm run verify:ci` now passes.
 - Audit: `npm audit --json` remains 0 critical / 0 high / 3 moderate.
 - Post-unify histories updated: `.paul/QUALITY-HISTORY.md`, `.paul/CODI-HISTORY.md`.
-- PR #11: https://github.com/coctostan/pi-ptc-next/pull/11; merge gate pending required CI/check reporting before merge/phase transition.
+- PR #11: https://github.com/coctostan/pi-ptc-next/pull/11; merge gate pending remote CI recheck before merge/phase transition.
 
 ---
 *STATE.md — Updated after Phase 54 UNIFY reconciliation (last updated: 2026-05-13)*

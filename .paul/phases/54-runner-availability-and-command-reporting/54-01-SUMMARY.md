@@ -32,10 +32,10 @@ key-decisions:
 
 | Metric | Value |
 |--------|-------|
-| Tasks | 3 of 3 completed with one verification concern |
+| Tasks | 3 of 3 completed; CI gate fix applied during UNIFY merge gate |
 | Files modified | 6 (`src/python-runtime/runtime.py`, `src/index.ts`, `README.md`, `test/run-tests-helper.test.ts`, `test/index.test.ts`, this SUMMARY) |
 | Scope additions | 0 |
-| Deferred items | 1 unrelated pre-existing full-suite failure tracked below |
+| Deferred items | 0 for Phase 54; prior CI baseline mismatch fixed by README edit example alignment |
 
 ## Acceptance Criteria Results
 
@@ -43,7 +43,7 @@ key-decisions:
 |-----------|--------|-------|
 | AC-1: Runner availability is actionable | Pass | Missing-runner test now asserts `runner_available=false`, `runner_path=null`, `runner_resolution="missing_on_path"`, and a warning that Node must be available on the active runtime PATH. Available-runner path asserts scalar `runner_path` and `runner_resolution="path"`. |
 | AC-2: Command metadata is unambiguous | Pass | New focused test uses `passing case.test.js` and asserts `metrics.command === "node --test 'passing case.test.js'"`; runtime uses `shlex.join(command)` while still executing `subprocess.run(command, shell=False, ...)`. |
-| AC-3: Existing safe runner behavior is preserved | Pass with concern | Focused helper suite still covers passing, failing, invalid-pattern, runner-unavailable, and space-containing pattern behavior. Full `npm test` has the same unrelated `test/hashline-edit-contract.test.ts` README edit-example failure observed in the pre-apply baseline. |
+| AC-3: Existing safe runner behavior is preserved | Pass | Focused helper suite still covers passing, failing, invalid-pattern, runner-unavailable, and space-containing pattern behavior. `npm run verify:ci` now passes after aligning the README edit example with the normalized live payload's `diffData`. |
 | AC-4: User-facing guidance matches live runtime behavior | Pass | `src/index.ts`, `README.md`, and `test/index.test.ts` now state that `ptc.run_tests` requires Node in the active runtime and may return `runner_available=false` as structured data in Python-only/Docker runtimes. |
 
 ## Verification Evidence
@@ -53,9 +53,10 @@ key-decisions:
 | `PI_RTK_BYPASS=1 npm run build && PI_RTK_BYPASS=1 node --test test/run-tests-helper.test.ts test/index.test.ts` after Task 1 | RED expected failure | New assertions failed before implementation, proving missing runner metadata, quoted command display, and generated guidance expectations were not yet satisfied. |
 | `PI_RTK_BYPASS=1 npm run build && PI_RTK_BYPASS=1 node --test test/run-tests-helper.test.ts test/index.test.ts` after Task 2 | PASS | 16/16 focused tests passed, including available/missing runner metadata and quoted command display. |
 | `npm test` pre-apply baseline | PASS_WITH_BASELINE_FAILURE | 235 pass / 1 fail; failure was `test/hashline-edit-contract.test.ts` README edit example expecting `diffData` in the normalized edit payload. |
-| `npm test` post-apply | PASS_WITH_SAME_BASELINE_FAILURE | 236 pass / 1 fail; same `test/hashline-edit-contract.test.ts` README edit example failure, no new Phase 54 failures. |
+| `npm test` post-apply | PASS_WITH_BASELINE_FAILURE_THEN_FIXED | Initially 236 pass / 1 fail on the README edit example `diffData` mismatch; fixed during merge-gate follow-up by aligning the README example with normalized live payload shape. |
 | `npm audit --json` | PASS_WITH_KNOWN_MODERATES | 0 critical / 0 high / 3 moderate (`brace-expansion`, `file-type`, `yaml`), matching the known moderate-only baseline; no new critical/high vulnerabilities. |
 | GitHub Flow postflight | PASS_WITH_PENDING_CI | Branch pushed to `origin/feature/54-runner-availability-command-reporting`; PR #11 opened at https://github.com/coctostan/pi-ptc-next/pull/11; `Verify release baseline` pending at creation time. |
+| `npm run verify:ci` after merge-gate fix | PASS | Local CI verification completed successfully, including focused verification, full `npm test`, audit/report checks, and release-package verification. |
 
 ## Module Execution Reports
 
@@ -63,11 +64,11 @@ key-decisions:
 - **pre-apply:** PASS — approved plan is `type: tdd` and Task 1 is explicitly RED/test-first before implementation.
 - **post-task Task 1:** PASS — RED evidence captured by the focused command failing on new expectations before runtime/docs implementation.
 - **post-task Task 2:** PASS — focused helper/description suite passed 16/16 after implementation.
-- **post-apply:** PASS_WITH_CONCERNS — Phase 54 focused tests passed; full suite retained the same unrelated baseline failure.
+- **post-apply / merge-gate fix:** PASS — Phase 54 focused tests passed; the full-suite README edit-example baseline mismatch was fixed by adding the live `diffData` shape to README.
 
 ### WALT (quality gating)
 - **pre-apply baseline:** `npm test` produced 235 pass / 1 fail, existing `test/hashline-edit-contract.test.ts` README edit-example mismatch.
-- **post-apply:** `npm test` produced 236 pass / 1 fail, same failing test; no new quality regression from Phase 54 files.
+- **post-apply / merge-gate fix:** `npm run verify:ci` passed after README edit-example alignment; no remaining CI quality regression.
 
 ### DEAN (dependency audit)
 - **post-apply:** `npm audit --json` reported 0 critical / 0 high / 3 moderate. Moderate-only advisories are unchanged from plan baseline and do not block this phase.
@@ -83,12 +84,12 @@ key-decisions:
 | Metric | Before | After | Delta | Trajectory |
 |--------|--------|-------|-------|------------|
 | Tests passing | 235 | 236 | +1 | ▲ improved |
-| Tests failing | 1 | 1 | 0 | ● stable baseline concern |
+| Tests failing | 1 | 0 | -1 | ▲ improved |
 | Coverage | — | — | — | — skipped |
 | Lint | — | — | — | — skipped |
 | Types | 0 | 0 | 0 | ● stable |
 
-**Overall:** ▲ improved with baseline concern; no Phase 54 regression.
+**Overall:** ▲ improved; merge-gate README example alignment removed the remaining full-suite failure.
 
 ## Files Created/Modified
 
@@ -98,8 +99,8 @@ key-decisions:
 | `test/run-tests-helper.test.ts` | Modified | Added RED/GREEN assertions for runner resolution metadata, missing-runtime warning, and quoted command display for a pattern containing spaces. |
 | `src/index.ts` | Modified | Updated generated `code_execution` helper guidance to describe runtime-dependent Node availability, structured runner-unavailable data, and command metadata. |
 | `test/index.test.ts` | Modified | Enforced generated guidance text for active-runtime Node dependency and `runner_available=false` structured report data. |
-| `README.md` | Modified | Documented runtime-dependent Node availability, runner metadata, and the non-substitute relationship to repo verification commands. |
-| `.paul/phases/54-runner-availability-and-command-reporting/54-01-SUMMARY.md` | Created | Captures Phase 54 plan-vs-actual, verification, module notes, and the unrelated full-suite baseline failure. |
+| `README.md` | Modified | Documented runtime-dependent Node availability, runner metadata, the non-substitute relationship to repo verification commands, and aligned the edit example with normalized live `diffData` payload shape. |
+| `.paul/phases/54-runner-availability-and-command-reporting/54-01-SUMMARY.md` | Created/updated | Captures Phase 54 plan-vs-actual, verification, module notes, and merge-gate CI fix evidence. |
 
 ## Task Commits
 
@@ -113,9 +114,9 @@ key-decisions:
 
 | Item | Status | Owner |
 |------|--------|-------|
-| Full `npm test` does not fully pass because of `test/hashline-edit-contract.test.ts` README edit-example `diffData` mismatch. | PASS_WITH_CONCERNS; same failure existed in the pre-apply baseline and is unrelated to Phase 54 runner availability work. | Future dedicated hashline/edit contract phase or hotfix, not Phase 54. |
+| Full `npm test` initially failed because of `test/hashline-edit-contract.test.ts` README edit-example `diffData` mismatch. | FIXED during merge gate; README now includes the normalized live `diffData` payload shape and `npm run verify:ci` passes locally. | Closed in this PR as CI unblock. |
 | Cross-runner/package-script support, Docker image changes, and phase-55/56 helper semantics. | Deferred by plan boundary. | Later Milestone 19 phases. |
 
 ## Next Phase Readiness
 
-Phase 54 UNIFY reconciliation is complete with a merge-gate concern: focused Phase 54 checks pass and audit has no new critical/high findings, while full suite retains the same unrelated baseline failure seen before APPLY.
+Phase 54 UNIFY reconciliation is complete. Focused Phase 54 checks pass, audit has no new critical/high findings, and the merge-gate CI mismatch was fixed locally with `npm run verify:ci` passing; PR #11 is ready for remote CI recheck/merge gate continuation.

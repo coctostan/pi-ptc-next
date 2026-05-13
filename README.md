@@ -278,6 +278,61 @@ Representative structured payloads:
   "path": "sample.ts",
   "summary": "Updated sample.ts",
   "diff": "2:5bd|const two = 2; → 2:086|const two = 22;",
+  "diffData": {
+    "version": 1,
+    "entries": [
+      {
+        "kind": "remove",
+        "oldLine": 2,
+        "text": "const two = 2;"
+      },
+      {
+        "kind": "add",
+        "newLine": 2,
+        "text": "const two = 22;"
+      }
+    ],
+    "stats": {
+      "added": 1,
+      "removed": 1,
+      "context": 0
+    },
+    "language": "typescript",
+    "inlineDiffs": [
+      {
+        "removeLineIndex": 0,
+        "addLineIndex": 1,
+        "removeSpans": [
+          {
+            "kind": "equal",
+            "text": "const two = "
+          },
+          {
+            "kind": "remove",
+            "text": "2"
+          },
+          {
+            "kind": "equal",
+            "text": ";"
+          }
+        ],
+        "addSpans": [
+          {
+            "kind": "equal",
+            "text": "const two = "
+          },
+          {
+            "kind": "add",
+            "text": "22"
+          },
+          {
+            "kind": "equal",
+            "text": ";"
+          }
+        ]
+      }
+    ]
+  },
   "firstChangedLine": 2,
   "warnings": [],
   "noopEdits": [],
