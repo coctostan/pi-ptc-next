@@ -17,8 +17,8 @@ if (pkg.name !== 'pi-ptc-advanced') {
   console.error(`[verify:release-package] expected package name pi-ptc-advanced, found ${pkg.name}`);
   process.exit(1);
 }
-if (pkg.version !== '0.18.0') {
-  console.error(`[verify:release-package] expected version 0.18.0, found ${pkg.version}`);
+if (pkg.version !== '1.0.0') {
+  console.error(`[verify:release-package] expected version 1.0.0, found ${pkg.version}`);
   process.exit(1);
 }
 NODE
@@ -69,8 +69,8 @@ if (pkg.name !== 'pi-ptc-advanced') {
   console.error(`[verify:release-package] installed package name mismatch: ${pkg.name}`);
   process.exit(1);
 }
-if (pkg.version !== '0.18.0') {
-  console.error(`[verify:release-package] installed package version mismatch: ${pkg.version}`);
+if (pkg.version !== '1.0.0') {
+  console.error(`[verify:release-package] installed package version mismatch: expected 1.0.0, found ${pkg.version}`);
   process.exit(1);
 }
 for (const rel of ['dist/index.js', 'src/python-runtime/runtime.py', 'src/python-runtime/rpc.py']) {

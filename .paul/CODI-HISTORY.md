@@ -14,3 +14,4 @@ See modules/codi/references/codi-instrumentation.md for schema, outcome taxonomy
 | 55-01 | 2026-05-13 | injected | 4 | 0 | 5 | buildGenericToolWrapper, buildReadWrapper, describePythonHelper, buildToolDescription | y |
 | 56-01 | 2026-05-13 | injected | 4 | 0 | 5 | _normalize_read_result, read_many, batch_tool, _classify_tool_error_payload | y |
 | 57-01 | 2026-05-13 | injected-degraded | — | — | — | list_callable_tools, run_tests, read_many | y |
+| 58-01 | 2026-05-13 | no-dispatch-found | — | — | — | — | n |

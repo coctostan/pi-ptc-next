@@ -1,42 +1,29 @@
-# pi-ptc-next
-`pi-ptc-next` is the repository and fork lineage for the Pi Programmatic Tool Calling extension that now publishes its package surface as **`pi-ptc-advanced`**. The extension adds a provider-agnostic `code_execution` tool to pi: the model writes Python code, Python calls local pi tools through an internal RPC bridge, and only the final Python output is returned to the model context.
+# pi-ptc-advanced
+`pi-ptc-advanced` is a public Programmatic Tool Calling extension for pi-coding-agent. It adds a provider-agnostic `code_execution` tool: the model writes Python code, Python calls local pi tools through an internal RPC bridge, and only the final Python output is returned to the model context.
 
 This is **not** Anthropic's provider-native PTC wire protocol. Instead, it implements the same core local behavior in a way that can work across multiple labs and models such as GPT-5.4, GLM-5, and Claude-class models.
 
-## Fork history and credits
-
-This codebase started from the original [`cegersdoerfer/pi-ptc`](https://github.com/cegersdoerfer/pi-ptc) by [@cegersdoerfer](https://github.com/cegersdoerfer) (Chris Egersdoerfer).
-
-The current repository then continued as the public fork/repo identity **`pi-ptc-next`** before the package/release surface was renamed to **`pi-ptc-advanced`** for the publishable-fork baseline. The repo name and package name therefore differ intentionally:
-
-- upstream origin: `cegersdoerfer/pi-ptc`
-- prior fork/repo lineage: `coctostan/pi-ptc-next`
-- current package publish target: `pi-ptc-advanced`
-
-The main work done here includes:
-- refactoring the codebase into clearer execution, contract, and tool submodules
-- replacing the split loader/watcher flow with an authoritative custom tool manager
-- tightening the runtime protocol and execution error boundaries
-- making subprocess execution explicit opt-in and improving Docker behavior
-- adding direct behavioral tests for the core execution/runtime/tooling paths
-- improving package loading, vendoring local reference material for PTC/advanced tool use, and benchmarking real pi usage
-If you are looking for the original starting point for this fork, see the upstream repository above. If you are looking for the immediately prior public fork identity, use this repository history.
+The current release baseline is **`pi-ptc-advanced@1.0.0`**. The GitHub repository is intended to be renamed to `coctostan/pi-ptc-advanced`; until that repository rename is performed, historical links may still appear in credits and older release material.
 
 ## Installation
 
-Install the current publish target directly from GitHub:
+Install the public package identity:
 
 ```bash
-pi install git:github.com/coctostan/pi-ptc-next
+pi install pi-ptc-advanced
 ```
 
-The repository remains `pi-ptc-next`, but the package metadata and release baseline now target **`pi-ptc-advanced@0.18.0`**. Until a separate registry publishing flow exists, the GitHub install path above remains the canonical install/update route documented by this repo.
+For GitHub-based installs after the repository rename, use:
+
+```bash
+pi install git:github.com/coctostan/pi-ptc-advanced
+```
+
+The repo-local release verification path validates the package metadata, tarball contents, and clean install proof for **`pi-ptc-advanced@1.0.0`**. Actual `npm publish`, git tags, GitHub releases, and the GitHub repository rename remain manual/user-owned operations.
 
 ## Personal fork maintenance
 
-If this fork is primarily for your own workstation, use the repo-local maintenance workflow instead of relying on `.paul/**` history.
-
-The current documented release baseline for that workflow is **`pi-ptc-advanced@0.18.0`**. Routine maintenance, CI-parity verification, and release-surface checks now live in the repo:
+Use the repo-local maintenance workflow for routine verification and release-surface checks:
 ```bash
 ./scripts/start-pi-ptc-full-tools.sh
 npm run verify:personal
@@ -48,14 +35,33 @@ npm run verify:release-package
 - `npm run verify:personal` runs the focused maintenance verification bundle
 - `npm run verify:personal:full` runs the higher-confidence full verification path
 - `npm run verify:ci` runs the repo-owned CI parity bundle used by `.github/workflows/ci.yml`
-- `npm run verify:release-package` validates the package metadata and `npm pack --dry-run` tarball surface for the `pi-ptc-advanced@0.18.0` baseline
+- `npm run verify:release-package` validates the package metadata and `npm pack --dry-run` tarball surface for the `pi-ptc-advanced@1.0.0` baseline
 For the full maintainer runbook, including the explicit manual git sync/upgrade boundary and how the verification-only workflow at [`.github/workflows/ci.yml`](.github/workflows/ci.yml) fits beside still-manual release/publish concerns, see [`docs/personal-fork-maintenance.md`](docs/personal-fork-maintenance.md).
 Release docs for the active baseline:
 - [`CHANGELOG.md`](CHANGELOG.md)
-- [`docs/releases/0.18.0.md`](docs/releases/0.18.0.md)
-- Previous baseline: [`docs/releases/0.16.0.md`](docs/releases/0.16.0.md)
+- [`docs/releases/1.0.0.md`](docs/releases/1.0.0.md)
+- Previous baseline: [`docs/releases/0.18.0.md`](docs/releases/0.18.0.md)
+- Historical baseline: [`docs/releases/0.16.0.md`](docs/releases/0.16.0.md)
 - Historical baseline: [`docs/releases/0.15.0.md`](docs/releases/0.15.0.md)
 - Historical baseline: [`docs/releases/0.8.0.md`](docs/releases/0.8.0.md)
+
+## Credits and lineage
+
+This codebase started from the original [`cegersdoerfer/pi-ptc`](https://github.com/cegersdoerfer/pi-ptc) by [@cegersdoerfer](https://github.com/cegersdoerfer) (Chris Egersdoerfer).
+
+It later continued through the `coctostan/pi-ptc-next` fork/repo lineage before the package and release surface moved to **`pi-ptc-advanced`** for the public 1.0 baseline. Credit and history remain part of the project:
+
+- upstream origin: `cegersdoerfer/pi-ptc`
+- prior fork/repo lineage: `coctostan/pi-ptc-next`
+- current public package identity: `pi-ptc-advanced`
+
+The main work done here includes:
+- refactoring the codebase into clearer execution, contract, and tool submodules
+- replacing the split loader/watcher flow with an authoritative custom tool manager
+- tightening the runtime protocol and execution error boundaries
+- making subprocess execution explicit opt-in and improving Docker behavior
+- adding direct behavioral tests for the core execution/runtime/tooling paths
+- improving package loading, vendoring local reference material for PTC/advanced tool use, and benchmarking real pi usage
 ## Combined stack notes
 
 If you pair this extension with `pi-hashline-readmap`, the first-pass maintainer story is:
@@ -660,7 +666,7 @@ npm run verify:personal:full
 npm run verify:release-package
 ```
 
-The package check validates the current **`pi-ptc-advanced@0.18.0`** release baseline without introducing changelog, CI, or publish automation.
+The package check validates the current **`pi-ptc-advanced@1.0.0`** release baseline without running publish automation.
 The profile is still constrained by Pi runtime visibility: if Pi does not expose one of those requested tools to PTC with callable metadata in the current session, the tool will stay unavailable inside `code_execution` and PTC will emit a warning describing the gap.
 See [`docs/personal-fork-maintenance.md`](docs/personal-fork-maintenance.md) for the full maintainer workflow and the explicit manual git sync/upgrade boundary.
 

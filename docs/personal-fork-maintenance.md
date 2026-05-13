@@ -1,14 +1,14 @@
-# Personal Fork Maintenance
+# Public Release Maintenance
 
-This document is the maintainer runbook for the `pi-ptc-next` fork repository and its current publish target, `pi-ptc-advanced`.
-It covers the repo-local workflow that should remain stable across sessions:
+This document is the maintainer runbook for the public `pi-ptc-advanced` package identity and the repo-local release-readiness workflow.
+It covers the workflow that should remain stable across sessions:
 - start Pi with the preferred personal analysis profile
 - run the routine verification bundle for day-to-day checks
 - run the full verification bundle when confidence needs to be higher
 - run the CI-parity verification bundle used by GitHub Actions
-- run a release-package verification pass for the current `pi-ptc-advanced@0.18.0` baseline
-- handle sync and upgrade work as explicit manual git operations instead of hidden automation
-The current documented release target for this fork is **`pi-ptc-advanced@0.18.0`**. This runbook covers verification-only CI automation and the package-surface verification needed for that baseline while still leaving publishing and broader git workflow operations as explicit manual concerns. The Milestone 18 baseline adds the `code_execution` report/helper surface while preserving the acknowledged dependency-audit baseline; see [`docs/releases/0.18.0.md`](./releases/0.18.0.md) for details.
+- run a release-package verification pass for the current `pi-ptc-advanced@1.0.0` baseline
+- handle sync, publishing, and repo rename work as explicit manual operations instead of hidden automation
+The current documented release target is **`pi-ptc-advanced@1.0.0`**. This runbook covers verification-only CI automation and the package-surface verification needed for that baseline while still leaving `npm publish`, tagging, GitHub releases, and the GitHub repository rename as explicit manual concerns; see [`docs/releases/1.0.0.md`](./releases/1.0.0.md) for details.
 ## Day-to-day workflow
 ### 1. Start Pi with the personal analysis profile
 
@@ -34,7 +34,7 @@ Current focused coverage:
 - `node --test test/tool-registry.test.ts test/hashline-default-exposure.test.ts test/utils.test.ts test/hashline-interop-smoke.test.ts`
 Use this after routine local changes, dependency refreshes that are expected to be low risk, or Pi/tool-surface checks.
 ### 3. Run the higher-confidence verification path when needed
-For larger updates or before treating the fork as revalidated, run:
+For larger updates or before treating the package as revalidated, run:
 ```bash
 npm run verify:personal:full
 ```
@@ -53,7 +53,7 @@ npm run verify:ci
 
 This command chains the focused verification bundle, the full test suite, and the release-package verification path. The repository workflow at [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) uses this repo-owned command so local and GitHub verification stay aligned.
 
-Use it before relying on the new CI workflow, after changing verification scripts, or when release-readiness needs one command that mirrors GitHub's automation.
+Use it before relying on the CI workflow, after changing verification scripts, or when release-readiness needs one command that mirrors GitHub's automation.
 
 ### 5. Verify the release package surface when preparing a release candidate
 
@@ -63,14 +63,15 @@ When you want to confirm what would actually ship for the current release baseli
 npm run verify:release-package
 ```
 
-This command builds the repo, validates the expected package metadata, checks the `npm pack --dry-run` tarball surface for the current **`pi-ptc-advanced@0.18.0`** target, and proves a clean install from the packed tarball in a temporary directory.
+This command builds the repo, validates the expected package metadata, checks the `npm pack --dry-run` tarball surface for the current **`pi-ptc-advanced@1.0.0`** target, and proves a clean install from the packed tarball in a temporary directory.
 
-Use it before treating the fork as release-ready, after metadata changes, or after documentation/dependency updates that may affect the published package surface or installability proof.
+Use it before treating the package as release-ready, after metadata changes, or after documentation/dependency updates that may affect the published package surface or installability proof.
 
 Release reference docs for the active baseline:
 - [`CHANGELOG.md`](../CHANGELOG.md)
-- [`docs/releases/0.18.0.md`](./releases/0.18.0.md)
-- Previous baseline: [`docs/releases/0.16.0.md`](./releases/0.16.0.md)
+- [`docs/releases/1.0.0.md`](./releases/1.0.0.md)
+- Previous baseline: [`docs/releases/0.18.0.md`](./releases/0.18.0.md)
+- Historical baseline: [`docs/releases/0.16.0.md`](./releases/0.16.0.md)
 - Historical baseline: [`docs/releases/0.15.0.md`](./releases/0.15.0.md)
 - Historical baseline: [`docs/releases/0.8.0.md`](./releases/0.8.0.md)
 ## Manual sync and upgrade boundary

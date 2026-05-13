@@ -4,37 +4,34 @@
 Brownfield PALS adoption for `pi-ptc-next`, focused on hashline-native runtime interop and structured Python integration.
 
 ## Current Milestone
-**Milestone 19 — Live Runtime Helper Hardening** (`0.18.0`)
-Status: ✅ Complete — release baseline ready; manual publish boundary preserved
-Phases: 4 of 4 complete
+**Milestone 20 — `pi-ptc-advanced` 1.0 Public NPM Release** (`1.0.0`)
+Status: 🚧 In Progress
+Phases: 1 of 4 complete
 
-Focus: Convert live `code_execution` manual-test findings into tighter runtime behavior, clearer helper contracts, and regression proof.
-
-Source findings: [`docs/issues/2026-05-13-code-execution-helper-edge-cases.md`](../docs/issues/2026-05-13-code-execution-helper-edge-cases.md)
+Focus: Make `pi-ptc-advanced@1.0.0` cleanly publishable and understandable as a standalone public npm package, with fork lineage credited but no longer dominating the user-facing product surface.
 
 | Phase | Name | Plans | Status | Completed |
 |-------|------|-------|--------|-----------|
-| 54 | Runner Availability and Command Reporting | 1/1 | ✅ Complete | 2026-05-13 |
-| 55 | Callable Wrapper Contract Consistency | 1/1 | ✅ Complete | 2026-05-13 |
-| 56 | Result Normalization and Partial-Error Semantics | 1/1 | ✅ Complete | 2026-05-13 |
-| 57 | Live Proof and Release Readiness | 1/1 | ✅ Complete | 2026-05-13 |
+| 58 | Public Identity Rename | 1/1 | ✅ Complete | 2026-05-13 |
+| 59 | README and Docs Polish | TBD | 🔵 Ready to plan | - |
+| 60 | 1.0 Release Gate | TBD | Not started | - |
+| 61 | Repo Rename and Migration Proof | TBD | Not started | - |
 
-### Phase 54: Runner Availability and Command Reporting
-Focus: Decide and implement the default-runtime story for `ptc.run_tests(pattern)`, including Node availability, runner-unavailable guidance, and unambiguous command metadata.
-Plans: `54-01-PLAN.md`
+### Phase 58: Public Identity Rename
+Focus: Rename repo-facing/package metadata from `pi-ptc-next` / fork framing to `pi-ptc-advanced`; update package URLs, docs references, install path assumptions, package description/keywords, and release baseline to `1.0.0`.
+Plans: `58-01-PLAN.md` (TDD; 1.0.0 package/public identity baseline) — complete
 
-### Phase 55: Callable Wrapper Contract Consistency
-Focus: Normalize or explicitly document callable wrapper async/positional behavior and generated signatures for `read`, `grep`, `find`, `glob`, and `ls`.
-Plans: `55-01-PLAN.md`
+### Phase 59: README and Docs Polish
+Focus: Rewrite README for actual users: what it does, install, quickstart, examples, helper surface, verification, limitations. Move fork lineage/credits to a bottom section; update/remove “personal fork” framing in public-facing docs.
+Plans: TBD (defined during /paul:plan)
 
-### Phase 56: Result Normalization and Partial-Error Semantics
-Focus: Tighten structured result shape/path normalization plus `read_many` and `batch_tool(..., on_error='collect')` treatment of tool-level error payloads.
-Plans: `56-01-PLAN.md`
+### Phase 60: 1.0 Release Gate
+Focus: Add/refresh 1.0 release notes, changelog, release-readiness tests, npm pack/publish dry-run checklist, and manual publish instructions. Verification stops before actual `npm publish`.
+Plans: TBD (defined during /paul:plan)
 
-### Phase 57: Live Proof and Release Readiness
-Focus: Add focused live/manual-style regression proof, refresh docs and release notes, and verify the `0.18.0` package baseline.
-Plans: `57-01-PLAN.md` (TDD; live-audit closeout for issues 1, 4, 5, 8, 9 + `0.18.0` release readiness)
-Summary: `57-01-SUMMARY.md` — live-audit closeout, `ptc.list_helpers()`, and `0.18.0` release baseline.
+### Phase 61: Repo Rename and Migration Proof
+Focus: Prepare/verify post-rename assumptions: GitHub URL references, install instructions, redirects/old-name notes, CI/package metadata after rename. Include a human-action checkpoint for actual GitHub repo rename if needed.
+Plans: TBD (defined during /paul:plan)
 
 ## Completed Milestones
 
@@ -294,4 +291,4 @@ Suggested implementation branch from project docs:
 - `feat/hashline-native-interop`
 
 ---
-*Last updated: 2026-05-13 after creating Phase 57 plan 57-01 and routing to APPLY*
+*Last updated: 2026-05-13 after completing Phase 58 and routing to Phase 59 planning*

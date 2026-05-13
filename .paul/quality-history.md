@@ -1,39 +1,17 @@
-| Date | Phase | Tests | Lint | Typecheck | Coverage | Trend |
-|------|-------|-------|------|-----------|----------|-------|
-| 2026-03-24 | 19-personal-runtime-profile-and-tool-surface | 105 passing / 0 failing (`npm test`) | not run separately | clean via `npm run build` | n/a | ↑ improving |
-| 2026-03-24 | 20-fork-workflow-and-local-maintenance | 105 passing / 0 failing (`npm run verify:personal:full`) | not run separately | clean via `npm run build` | n/a | → stable |
-| 2026-03-24 | 21-optional-cleanup-of-upstream-pr-artifacts | 105 passing / 0 failing (`npm run verify:personal:full`) | not run separately | clean via `npm run build` | n/a | → stable |
-| 2026-03-25 | 22-release-version-and-packaging | 105 passing / 0 failing (`npm run verify:personal:full`) | not run separately | clean via `npm run build` | n/a | → stable |
-| 2026-03-25 | 23-changelog-and-release-notes | 105 passing / 0 failing (`npm test`) | not run separately | clean via `npm run build` | n/a | → stable |
-| 2026-03-25 | 24-ci-and-release-verification | 105 passing / 0 failing (`npm run verify:ci`) | not run separately | clean via `npm run build` | n/a | → stable |
-| 2026-03-25 | 25-response-and-file-handle-contract | 110 passing / 0 failing (`npm test`) | not run separately | clean via `npm run build` | n/a | → stable |
-| 2026-03-25 | 26-python-helpers-proof-and-docs | 112 passing / 0 failing (`npm test`) | not run separately | clean via `npm run build` | n/a | ↑ improving |
-| 2026-03-26 | 27-result-kind-assertions | 115 passing / 0 failing (`npm test`) | not run separately | clean via `npm run build` | n/a | ↑ improving |
-| 2026-03-26 | 28-python-tool-introspection | 116 passing / 0 failing (`npm test`) | not run separately | clean via `npm run build` | n/a | ↑ improving |
-| 2026-03-26 | 29-proof-and-docs | 119 passing / 0 failing (`npm test`) | not run separately | clean via `npm run build` | n/a | ↑ improving |
-| 2026-03-26 | 30-core-orchestration-primitives | 123 passing / 0 failing (`npm test`) | not run separately | clean via `npm run build` | n/a | ↑ improving |
-| 2026-03-26 | 31-bounded-reduction-and-output-budget-helpers | 127 passing / 0 failing (`npm test`) | not run separately | clean via `npm run build` | n/a | ↑ improving |
-| 2026-03-26 | 32-proof-and-ecosystem-docs | 132 passing / 0 failing (`npm test`) | not run separately | clean via `npm run build` | n/a | ↑ improving |
-| 2026-03-26 | 33-recipe-targets-and-example-contracts | 135 passing / 0 failing (`npm test`) | not run separately (IRIS/RUBY fallback: current ESLint no-config CLI path unsupported) | clean via `npm run build` | n/a | ↑ improving |
-| 2026-03-26 | 34-cross-repo-recipes-and-benchmark-fixtures | 139 passing / 1 failing (`node --test`; unchanged unrelated `test/hashline-real-interop.mjs` failure) | clean on focused changed files via `npx eslint --no-config-lookup ...` | clean via `npm run build` | n/a | ↑ improving |
-| 2026-03-26 | 35-proof-and-ecosystem-documentation | 152 passing / 1 failing (`node --test`; unchanged pre-existing `test/hashline-real-interop.mjs` failure) | not run separately | clean via `npm run build` | n/a | ↑ improving |
-| 2026-03-26 | 36-systematic-functionality-audit | 181 passing / 1 failing (`node --test`; unchanged pre-existing failure) | not run separately | clean via `npm run build` | n/a | ↑ improving |
-| 2026-03-26 | 37-stress-and-edge-case-testing | 196 passing / 1 failing (`node --test`; unchanged pre-existing failure) | not run separately | clean via `npm run build` | n/a | ↑ improving |
-| 2026-03-26 | 38-composition-patterns-and-audit-scorecard | 203 passing / 1 failing (`node --test`; unchanged pre-existing failure) | not run separately | clean via `npm run build` | n/a | ↑ improving |
-| 2026-03-27 | 39-p0-file-discovery-repair | 203 passing / 0 failing (`npm test`) | clean on focused changed files via `npx eslint --no-config-lookup --rule 'complexity: [warn, 10]' --rule 'no-unused-vars: warn' --format json test/live-audit-helpers.test.ts` | clean via `npm run build` | n/a | ↑ improving |
-| 2026-03-27 | 40-error-handling-hardening | 205 passing / 0 failing (`npm test`) | clean on focused changed files via `npx eslint --no-config-lookup --rule 'complexity: [warn, 10]' --rule 'no-unused-vars: warn' --format json src/rpc-protocol.ts test/rpc-protocol.test.ts test/live-audit-pipeline.test.ts` | clean via `npm run build` | n/a | ↑ improving |
-| 2026-03-27 | 41-behavior-consistency-and-follow-up-proof | 207 passing / 0 failing (`npm test`) | clean on focused changed files via `npx eslint --no-config-lookup --rule 'complexity: [warn, 10]' --rule 'no-unused-vars: warn' --format json src/utils.ts src/index.ts test/orchestration-helper.test.ts test/live-audit-stress.test.ts test/live-audit-pipeline.test.ts test/utils.test.ts test/index.test.ts test/orchestration-ecosystem-contract.test.ts` | clean via `npm run build` | n/a | ↑ improving |
-| 2026-03-27 | 42-rename-and-package-identity | 207 passing / 0 failing (`npm test`) | not run separately (metadata/shell/package-lock slice; no changed TS implementation files) | clean via `npm run build` | n/a | → stable |
-| 2026-03-29 | 43-publish-metadata-and-documentation | 207 passing / 0 failing (`npm test`) | not run separately (documentation-only slice; no changed TS implementation files) | clean via `npm run build` | n/a | → stable |
-| 2026-03-29 | 44-release-verification-and-publish-readiness | 207 passing / 0 failing (`npm test`) | not run separately (package/shell/docs verification slice; no new TS implementation scope) | clean via `npm run build` | n/a | → stable |
-| 2026-05-11 | 46-extension-runtime-compatibility-alignment | 210 passing / 0 failing (`npm test`) | clean via `npx eslint --no-config-lookup --rule 'complexity: [warn, 10]' --format json ...` | clean via `npm run build` | n/a | ↑ improving |
-| 2026-05-11 | 47-system-prompt-and-tool-guidance-optimization | 213 passing / 0 failing (`npm test`) | not run separately (no project lint script; RUBY fallback line/debt screening recorded in summary) | clean via `npm run build` | n/a | ↑ improving |
-| 2026-05-12 | 49-pi-tui-audit-and-collapsible-code-body | 223 passing / 0 failing (`npm test`) | clean via focused `npx eslint --no-config-lookup ...` on changed TS files | clean via `npm run build` | n/a | ↑ improving |
-| 2026-05-12 | 50-structured-report-type | 228 passing / 0 failing (`npm test`) | clean via focused `npx eslint --no-config-lookup ...` on changed TS/test files | clean via `npm run build` | n/a | ↑ improving |
-| 2026-05-12 | 51-path-ergonomics-and-bridge-helpers | 230 passing / 0 failing (`npm test`) | clean via focused `npx eslint --no-config-lookup --rule 'complexity: [warn, 10]' --format json src/index.ts test/live-audit-helpers.test.ts test/orchestration-ecosystem-contract.test.ts` | clean via `npm run build` | n/a | ↑ improving |
-| 2026-05-12 | 52-callable-tool-introspection | 230 passing / 0 failing (`npm test`) | clean via focused `npx eslint --no-config-lookup --rule 'complexity: [warn, 10]' --format json ...` on changed TS/test files | clean via `npm run build` | n/a | → stable |
-| 2026-05-12 | 53-test-runner-verb | 236 passing / 0 failing (`npm test`, +6 new) | RUBY fallback (`wc -l` on changed files): no growth crossed 500-line or +100-line thresholds | clean via `npm run build` | n/a | ↑ improving |
-| 2026-05-13 | 54-runner-availability-and-command-reporting | CI green locally (`npm run verify:ci`), full suite fixed after README edit-example `diffData` alignment; focused Phase 54 checks 16/16 passing | not run separately | clean via `npm run build` | n/a | ↑ improving |
-| 2026-05-13 | 55-callable-wrapper-contract-consistency | 239 passing / 0 failing (`npm test`); focused wrapper checks 42/42 passing | not run separately (focused grep/read guidance tests and full suite passed) | clean via `npm run build` | n/a | ↑ improving |
-| 2026-05-13 | 56-result-normalization-and-partial-error-semantics | 245 passing / 0 failing (`npm test`); focused Phase 56 checks 11/11 passing | not run separately (RUBY note: `runtime.py` grew +140 lines, over plan's 40–80 budget, no extraction) | clean via `npm run build` | n/a | ↑ improving |
-| 2026-05-13 | 57-live-proof-and-release-readiness | Local APPLY: 241 passing / 9 pre-existing Node 26 transform-type environment failures (`npm test`); focused live-audit helpers 29/29 passing; PR #14 CI `Verify release baseline` SUCCESS | not run separately (RUBY note: `runtime.py` is 1601 lines after +97 bounded additive helper-inventory work, no extraction) | clean via `npm run build` | n/a | → stable release gate |
+# Quality History
+
+## Cumulative Trajectory
+
+Tests: 250 pass
+Coverage: —
+Lint: —
+Types: —
+
+## Plan History
+
+| Plan | Date | Tests | Coverage | Lint | Types | Verdict |
+|------|------|-------|----------|------|-------|---------|
+| 58-01 | 2026-05-13 | 250 pass | — | — | — | ● stable |
+
+---
+*Updated after every /paul:unify*

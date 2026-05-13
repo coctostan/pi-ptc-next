@@ -6,6 +6,21 @@ This changelog tracks notable release-facing changes for the fork repository `pi
 
 _No unreleased changes yet._
 
+## 1.0.0 — 2026-05-13
+
+`1.0.0` establishes the public `pi-ptc-advanced` identity baseline. Package metadata, package-lock root metadata, release verification, and active user-facing release docs now target `pi-ptc-advanced@1.0.0` and the intended `coctostan/pi-ptc-advanced` public repository identity.
+
+### Changed
+
+- Package repository, homepage, bugs URL, version, and lockfile metadata now target `pi-ptc-advanced@1.0.0`.
+- Release-readiness tests and `scripts/verify-release-package.sh` enforce the 1.0.0 baseline.
+- README and maintainer runbook now open with public package/product framing instead of fork-first `pi-ptc-next` framing.
+- Active release docs point to `docs/releases/1.0.0.md`; older release notes remain historical context.
+
+### Deferred / not included
+
+- Automated `npm publish`, git tags, GitHub releases, and the actual GitHub repository rename remain manual/user-owned and were not performed by this baseline update.
+
 ## 0.18.0 — 2026-05-13
 
 `0.18.0` closes Milestone 19 — Live Runtime Helper Hardening. The release tightens the live `code_execution` surface (runner availability and shell-quoted command reporting, async callable wrapper contract, consistent positional-argument behavior across wrappers, normalized read results, and opt-in partial-error envelopes for `read_many` / `batch_tool`), closes out the live-audit issue note, and adds a curated `ptc.list_helpers()` inventory as the counterpart to `ptc.list_callable_tools()`.

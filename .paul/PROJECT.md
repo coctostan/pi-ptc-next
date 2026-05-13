@@ -9,9 +9,9 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 ## Current State
 | Attribute | Value |
 |-----------|-------|
-| Version | 0.18.0 release baseline complete (Milestone 19) |
-| Status | Milestone 19 complete — ready for next milestone or manual release decision |
-| Last Updated | 2026-05-13 after Phase 57 UNIFY |
+| Version | 1.0.0 release readiness in progress (Milestone 20) |
+| Status | Active Milestone 20 — Phase 59 ready to plan |
+| Last Updated | 2026-05-13 after Phase 58 public identity baseline |
 
 ## Requirements
 ### Validated (Shipped)
@@ -47,7 +47,7 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 - [x] Added bounded Python reduction and output-budget helpers `ptc.reduce_tool(...)` / `ptc.fit_output(...)` aligned to the session output cap, with focused execution proof — Phase 31
 - [x] Added execution-level ecosystem proof plus README/tool-description guidance for `ptc.batch_tool(...)`, `ptc.first_success(...)`, `ptc.reduce_tool(...)`, and `ptc.fit_output(...)`, including compact hashline/codegraph/web composition examples — Phase 32
 ### Active (In Progress)
-- None — Milestone 19 is complete; next milestone has not started.
+- [ ] Milestone 20 — `pi-ptc-advanced` 1.0 Public NPM Release (Phase 59 ready to plan; Phase 58 complete)
 ### Validated (Shipped)
 - [x] Restored the P0 file-discovery helper path by removing `glob(limit=...)` dependency and proving bounded success for `ptc.read_tree()`, `ptc.find_files()`, and `ptc.find_files_abs()` in live audit coverage — Phase 39
 - [x] Improved syntax/compile-time error surfacing so pre-terminal Python failures now expose actionable `SyntaxError`/traceback context instead of generic RPC closure messaging — Phase 40
@@ -72,8 +72,9 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 - [x] Systematic live-tool audit of all 21 Python helpers and 8 pipeline capabilities — Phase 36
 - [x] Added user-facing recipe workflow documentation and ecosystem composition proof — Phase 35
 - [x] Added concrete cross-repo recipe artifacts plus deterministic benchmark baseline — Phase 34
+- [x] Retargeted the active public package/release baseline to `pi-ptc-advanced@1.0.0`, updated package metadata and release verification, and reframed active README/runbook/release docs around the public identity while preserving fork/upstream lineage and manual publish/repo-rename boundaries — Phase 58
 ### Planned (Next)
-- Next milestone / manual release decision TBD after PR #14 merge.
+- Phase 59 — README and Docs Polish
 ### Out of Scope
 - [ ] Long-term IR refactors during the early interop milestones
 - [ ] Broad helper ergonomics changes beyond what is required for trustworthy structured interop
@@ -137,6 +138,7 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 | Keep personal fork maintenance automation repo-local and verification-focused while leaving git sync/upgrade actions manual | The fork needs repeatable local verification and operator guidance, but remote/branch/rebase/push/PR actions still depend on user-specific remotes and history choices | 2026-03-24 | Active |
 | Archive the old upstream PR-prep material behind a single milestone-level guide instead of deleting it outright | Preserves the historical upstream rationale while making the personal maintenance workflow unambiguous for future sessions | 2026-03-24 | Active |
 | Keep Milestone 10 Phase 25 scoped to explicit response/file handles and expose them through separate extraction helpers instead of changing normalized tool values | Existing `pi-web-tools` response/file follow-up shapes are stable enough to adopt now, while preserving current `normalizeToolResult()` passthrough/fallback behavior avoids a breaking contract change for current consumers | 2026-03-25 | Active |
+| Treat `pi-ptc-advanced@1.0.0` as the active public package baseline while leaving `npm publish`, tags/releases, and actual GitHub repo rename manual | Phase 58 could make metadata, tests, and active docs coherent without claiming external publish/rename operations happened | 2026-05-13 | Active |
 | Keep Milestone 10 Phase 26 helper ergonomics bounded to `ptc.extract_handles()` / `ptc.first_handle()` over the existing response/file handle contract | A small helper surface makes supported follow-up flows practical in Python without changing normalized tool values or implying unsupported graph handles | 2026-03-25 | Active |
 | Keep Milestone 11 Phase 27 scoped to top-level result-kind assertions via `ptc.expect_kind(value, kind)` | Models need an explicit kind assertion primitive now, while broader schema validation and tool introspection should remain separate to avoid helper-framework creep | 2026-03-26 | Active |
 | Keep Milestone 11 Phase 28 introspection metadata derived from the live wrapper-generation `ToolInfo[]` surface instead of adding a second registry | Python-side introspection must reflect the actual callable session surface, including aliases, without exposing runtime executors or risking metadata drift | 2026-03-26 | Active |
@@ -172,6 +174,7 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 | Keep callable Pi wrappers explicitly awaitable while supporting obvious positional shorthand only at bounded adapter seams | Direct wrappers are async RPC calls; the grep runtime adapter already owns live grep normalization, so supporting `grep("pattern", path="...")` there avoids broader wrapper-generator churn and preserves Phase 56 result/error semantics for a separate pass | 2026-05-13 | Active |
 | Ship `ptc.list_helpers()` as the curated helper inventory, separate from `ptc.list_callable_tools()` | Models need a deterministic way to distinguish built-in `ptc.*` helper functions from live callable Pi tools; a literal inventory avoids reflection drift and keeps optional-tool branching clear | 2026-05-13 | Active |
 | Keep `details.ptcValue` guidance in README rather than generated `code_execution` prompt text | The generated description intentionally stays concise and preserves existing prompt-description invariants, while README remains the durable contract for this advanced boundary case | 2026-05-13 | Active |
+| Target `pi-ptc-advanced@1.0.0` as a clean public NPM release identity | The project is ready to move beyond fork-first framing; README/docs/package metadata should present a standalone product while preserving credit and lineage lower in the README | 2026-05-13 | Active |
 
 ## Success Metrics
 | Metric | Target | Current | Status |
@@ -214,4 +217,4 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 
 ---
 *PROJECT.md — Updated when requirements or context change*
-*Last updated: 2026-05-13 after Phase 57 UNIFY and Milestone 19 completion*
+*Last updated: 2026-05-13 after Milestone 20 creation and Phase 58 planning readiness*
