@@ -123,7 +123,7 @@ completed: 2026-05-13T15:50:51Z
 |------|--------|------|-------------|
 | Tasks 1-3 | `2524fab` | fix | Added RED/GREEN wrapper-contract coverage, implemented grep positional shorthand, updated generated guidance and README, and verified focused/full suites. |
 
-Plan metadata: pending UNIFY metadata commit.
+Plan metadata: `1d2f47d` (UNIFY summary, history, issue-source, and Phase 56 transition artifacts).
 
 ## Files Created/Modified
 
