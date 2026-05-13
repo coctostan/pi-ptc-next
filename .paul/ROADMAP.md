@@ -16,7 +16,7 @@ Source findings: [`docs/issues/2026-05-13-code-execution-helper-edge-cases.md`](
 |-------|------|-------|--------|-----------|
 | 54 | Runner Availability and Command Reporting | 1/1 | ✅ Complete | 2026-05-13 |
 | 55 | Callable Wrapper Contract Consistency | 1/1 | ✅ Complete | 2026-05-13 |
-| 56 | Result Normalization and Partial-Error Semantics | 1 (planned) | Planning | - |
+| 56 | Result Normalization and Partial-Error Semantics | 1/1 | ✅ Complete | 2026-05-13 |
 | 57 | Live Proof and Release Readiness | TBD | Not started | - |
 
 ### Phase 54: Runner Availability and Command Reporting
@@ -275,4 +275,4 @@ Suggested implementation branch from project docs:
 - `feat/hashline-native-interop`
 
 ---
-*Last updated: 2026-05-13 after creating Phase 56 Plan 01*
+*Last updated: 2026-05-13 after completing Phase 56 and routing to Phase 57 planning*
