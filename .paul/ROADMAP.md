@@ -17,7 +17,7 @@ Source findings: [`docs/issues/2026-05-13-code-execution-helper-edge-cases.md`](
 | 54 | Runner Availability and Command Reporting | 1/1 | ✅ Complete | 2026-05-13 |
 | 55 | Callable Wrapper Contract Consistency | 1/1 | ✅ Complete | 2026-05-13 |
 | 56 | Result Normalization and Partial-Error Semantics | 1/1 | ✅ Complete | 2026-05-13 |
-| 57 | Live Proof and Release Readiness | TBD | Not started | - |
+| 57 | Live Proof and Release Readiness | TBD | Ready to plan | - |
 
 ### Phase 54: Runner Availability and Command Reporting
 Focus: Decide and implement the default-runtime story for `ptc.run_tests(pattern)`, including Node availability, runner-unavailable guidance, and unambiguous command metadata.
