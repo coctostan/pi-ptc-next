@@ -15,3 +15,5 @@ See modules/codi/references/codi-instrumentation.md for schema, outcome taxonomy
 | 56-01 | 2026-05-13 | injected | 4 | 0 | 5 | _normalize_read_result, read_many, batch_tool, _classify_tool_error_payload | y |
 | 57-01 | 2026-05-13 | injected-degraded | — | — | — | list_callable_tools, run_tests, read_many | y |
 | 58-01 | 2026-05-13 | no-dispatch-found | — | — | — | — | n |
+
+| 62-01 | 2026-05-14 | no-dispatch-found | — | — | — | — | n |

@@ -10,8 +10,8 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 | Attribute | Value |
 |-----------|-------|
 | Version | Milestone 21 in progress after 1.0 release-readiness completion |
-| Status | Active Milestone 21 — Phase 62 ready to plan |
-| Last Updated | 2026-05-14 after Milestone 21 creation |
+| Status | Active Milestone 21 — Phase 63 ready to plan |
+| Last Updated | 2026-05-14 after Phase 62 current behavior audit |
 
 ## Requirements
 ### Validated (Shipped)
@@ -47,7 +47,7 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 - [x] Added bounded Python reduction and output-budget helpers `ptc.reduce_tool(...)` / `ptc.fit_output(...)` aligned to the session output cap, with focused execution proof — Phase 31
 - [x] Added execution-level ecosystem proof plus README/tool-description guidance for `ptc.batch_tool(...)`, `ptc.first_success(...)`, `ptc.reduce_tool(...)`, and `ptc.fit_output(...)`, including compact hashline/codegraph/web composition examples — Phase 32
 ### Active (In Progress)
-- [ ] Milestone 21 — Code Execution Source Visibility UX (Phase 62 ready to plan; Phases 63–65 planned)
+- [ ] Milestone 21 — Code Execution Source Visibility UX (Phase 62 audit complete; Phase 63 ready to plan; Phases 64–65 planned)
 ### Validated (Shipped)
 - [x] Restored the P0 file-discovery helper path by removing `glob(limit=...)` dependency and proving bounded success for `ptc.read_tree()`, `ptc.find_files()`, and `ptc.find_files_abs()` in live audit coverage — Phase 39
 - [x] Improved syntax/compile-time error surfacing so pre-terminal Python failures now expose actionable `SyntaxError`/traceback context instead of generic RPC closure messaging — Phase 40
@@ -76,8 +76,9 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 - [x] Polished public README, release documentation, and maintainer/runbook framing for `pi-ptc-advanced@1.0.0` while preserving manual npm-publish/repo-rename boundaries and drift guards — Phase 59
 - [x] Added a repo-owned `docs/releases/PUBLISH-CHECKLIST.md` plus release-readiness drift guards for the 1.0 release gate, documenting dry-run/manual publish steps without performing publish/tag/release/rename actions — Phase 60
 - [x] Confirmed and read-only verified the GitHub repository rename to `coctostan/pi-ptc-advanced`, added `docs/releases/REPO-RENAME-CHECKLIST.md`, and guarded active docs with Phase 61 release-readiness tests while preserving manual npm publish/tag/GitHub release boundaries — Phase 61
+- [x] Completed a current behavior audit for `code_execution` source visibility, classifying running, completed-success, and failed execution gaps and separating Phase 63 payload-contract work from Phase 64 TUI rendering work — Phase 62
 ### Planned (Next)
-- Phase 62 — Current Behavior Audit
+- Phase 63 — Stable Source Payload Contract
 ### Out of Scope
 - [ ] Long-term IR refactors during the early interop milestones
 - [ ] Broad helper ergonomics changes beyond what is required for trustworthy structured interop
@@ -101,7 +102,7 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 - Package name: `pi-ptc-advanced`
 - Key source areas: `src/index.ts`, `src/code-executor.ts`, `src/custom-tool-manager.ts`, `src/tool-registry.ts`, `src/tool-adapters.ts`, `src/rpc-protocol.ts`
 - Maintainer-facing integration docs now live in `README.md`; deeper local planning/history artifacts live under `.paul/`
-- Latest GitHub Flow evidence: Phase 57 PR #14 merged to `main` at squash commit `3a1ffbf`; GitHub Actions `Verify release baseline` and Socket checks passed before merge.
+- Latest GitHub Flow evidence: Phase 62 PR #19 passed GitHub Actions `Verify release baseline` and Socket checks before UNIFY merge gate.
 
 ## Constraints
 ### Technical Constraints
@@ -182,6 +183,7 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 | Preserve `docs/personal-fork-maintenance.md` filename while moving its content to public release maintenance framing | Existing inbound links and CI references stay valid; only the title/lead-paragraph framing is reframed, with manual git/sync/upgrade boundary intact | 2026-05-13 | Active |
 | Keep the 1.0 publish checklist repo-owned while stopping automated APPLY before actual publish/tag/release/rename operations | Phase 60 can prove release readiness and manual sequencing without performing irreversible external release operations; actual npm publish and post-publish steps remain user-owned | 2026-05-14 | Active |
 
+| Split source visibility remediation into payload/error/progress contract work first, then TUI collapsed/expanded rendering | Phase 62 found the renderer can display `details.userCode` when present, but completed success currently omits source from RPC completion details and failed executions bypass source-bearing result details; Phase 63 should stabilize metadata before Phase 64 changes presentation | 2026-05-14 | Active |
 ## Success Metrics
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
@@ -223,4 +225,4 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 
 ---
 *PROJECT.md — Updated when requirements or context change*
-*Last updated: 2026-05-14 after Milestone 21 creation (Code Execution Source Visibility UX)*
+*Last updated: 2026-05-14 after Phase 62 current behavior audit*

@@ -7,12 +7,12 @@ See: `.paul/PROJECT.md`
 **Current focus:** Milestone 21 begins: make `code_execution` Python source visible in Pi TUI with collapsed/expanded rendering backed by stable details metadata.
 ## Current Position
 Milestone: Milestone 21 — Code Execution Source Visibility UX
-Phase: 62 of 65 (Current Behavior Audit)
-Plan: 62-01 (research; current behavior audit for code_execution source visibility)
-Status: APPLY complete; ready for UNIFY on Phase 62 plan 62-01
-Last activity: 2026-05-14 — Phase 62 APPLY completed for `.paul/phases/62-current-behavior-audit/62-01-PLAN.md`; audit artifact and APPLY summary created.
+Phase: 63 of 65 (Stable Source Payload Contract)
+Plan: Not started
+Status: Phase 62 complete; ready to plan Phase 63
+Last activity: 2026-05-14 — Phase 62 UNIFY reconciled current behavior audit and transitioned to Phase 63 planning readiness.
 Progress:
-- Milestone 21 — Code Execution Source Visibility UX: [██░░░░░░░░] 25% (Phase 62 APPLY ✓; Phase 63 ○; Phase 64 ○; Phase 65 ○)
+- Milestone 21 — Code Execution Source Visibility UX: [███░░░░░░░] 25% (Phase 62 ✓; Phase 63 ready to plan; Phase 64 ○; Phase 65 ○)
 - Milestone 20 — `pi-ptc-advanced` 1.0 Public NPM Release: [██████████] 100% ✓ (Phase 58 ✓; Phase 59 ✓; Phase 60 ✓; Phase 61 ✓)
 - Milestone 19 — Live Runtime Helper Hardening: [██████████] 100% ✓ (Phase 54 ✓; Phase 55 ✓; Phase 56 ✓; Phase 57 ✓)
 - Milestone 17 — Pi Compatibility and Prompt Integration Audit: [██████████] 100% ✓ (Phase 45 ✓, Phase 46 ✓, Phase 47 ✓, Phase 48 ✓)
@@ -60,7 +60,7 @@ Progress:
 Current loop state:
 ```text
 PLAN ──▶ APPLY ──▶ UNIFY
-  ✓        ✓        ○     [Phase 62 plan 62-01 ready for UNIFY]
+  ○        ○        ○     [Phase 63 ready to plan]
 ```
 
 ## Accumulated Context
@@ -69,6 +69,7 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Scope includes running, successful, and failed execution states.
 - Source should be exposed through stable details/metadata for TUI/API/debug/test consumers, not injected into ordinary result text.
 - Phase 62 current behavior audit found the source-visibility gap is split across payload and rendering: running progress updates carry `details.userCode`, completed-success RPC details currently omit `userCode`, failed executions reject without source-bearing details, and collapsed rendering currently shows a count/hint rather than a first-line preview.
+- Phase 62 UNIFY completed the audit loop: `62-01-SOURCE-VISIBILITY-AUDIT.md` is the source-of-truth gap map for Phase 63 payload/error/progress contract planning and Phase 64 TUI rendering planning.
 ### Decisions
 - Phase 55 normalized callable-wrapper contract guidance: direct callable Pi wrappers remain awaitable, `grep("pattern", path="...")` is supported in the runtime adapter, and Phase 56 keeps result/path/error semantics separate.
 - Phase 57 shipped `ptc.list_helpers()` as the curated `ptc.*` helper inventory distinct from live callable-tool discovery via `ptc.list_callable_tools()`.
@@ -180,20 +181,19 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - PR #14: MERGED — https://github.com/coctostan/pi-ptc-next/pull/14; squash merge `3a1ffbf` to `main`; GitHub Actions `Verify release baseline` ×2 and Socket Security ×2 SUCCESS; remote feature branch deleted by merge automation; local `main` fast-forwarded.
 - PR #15: MERGED — https://github.com/coctostan/pi-ptc-next/pull/15; squash merge `a574a6d` to `main`; GitHub Actions `Verify release baseline` ×2 and Socket Security ×2 SUCCESS; remote feature branch deleted by merge automation; local `main` fast-forwarded.
 - PR #16: MERGED — https://github.com/coctostan/pi-ptc-next/pull/16; squash merge `50f99a9` to `main`; GitHub Actions `Verify release baseline` ×2 and Socket Security ×2 SUCCESS; remote feature branch `feature/59-readme-docs-polish` deleted by merge automation; local `main` fast-forwarded (Phase 59).
-- PR #19: OPEN — https://github.com/coctostan/pi-ptc-advanced/pull/19 from `feature/62-current-behavior-audit` to `main`; APPLY commit pushed; GitHub Actions `Verify release baseline` queued at APPLY completion.
+- PR #19: OPEN — https://github.com/coctostan/pi-ptc-advanced/pull/19 from `feature/62-current-behavior-audit` to `main`; CI and Socket checks SUCCESS before UNIFY merge gate.
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; no `0.16.0` tag created (publish remains manual)
 ## Session Continuity
 Last session: 2026-05-14
-Stopped at: Phase 62 APPLY complete; UNIFY not started.
-Next action: `/paul:unify .paul/phases/62-current-behavior-audit/62-01-PLAN.md`.
-Resume file: `.paul/phases/62-current-behavior-audit/62-01-SUMMARY.md`
-wip_result: not applicable — APPLY completed on feature branch `feature/62-current-behavior-audit`; GitHub Flow postflight handled phase artifacts.
+Stopped at: Phase 62 complete; ready to plan Phase 63.
+Next action: `/paul:plan` for Phase 63 Stable Source Payload Contract.
+Resume file: `.paul/ROADMAP.md`
+wip_result: not applicable — Phase 62 artifacts committed and PR merge gate handled by UNIFY.
 Resume context:
-- Milestone 21 active: Code Execution Source Visibility UX; Phase 62 APPLY produced the current behavior audit.
-- Phase 62 plan path: `.paul/phases/62-current-behavior-audit/62-01-PLAN.md`.
-- Phase 62 audit artifact: `.paul/phases/62-current-behavior-audit/62-01-SOURCE-VISIBILITY-AUDIT.md`.
-- Phase 62 summary path: `.paul/phases/62-current-behavior-audit/62-01-SUMMARY.md`.
-- Expected resume action: `/paul:unify .paul/phases/62-current-behavior-audit/62-01-PLAN.md`.
+- Milestone 21 active: Code Execution Source Visibility UX.
+- Phase 62 current behavior audit is complete and reconciled in `.paul/phases/62-current-behavior-audit/62-01-SUMMARY.md`.
+- Phase 63 should plan stable source payload/error/progress details using `.paul/phases/62-current-behavior-audit/62-01-SOURCE-VISIBILITY-AUDIT.md` as the evidence map.
+- Expected resume action: `/paul:plan` for Phase 63.
 
 ---
-*STATE.md — Updated for Phase 62 APPLY completion and PR #19 postflight (last updated: 2026-05-14)*
+*STATE.md — Updated for Phase 62 UNIFY completion and Phase 63 planning readiness (last updated: 2026-05-14)*

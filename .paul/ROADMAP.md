@@ -6,24 +6,24 @@ Brownfield PALS adoption for `pi-ptc-next`, focused on hashline-native runtime i
 ## Current Milestone
 **Milestone 21 — Code Execution Source Visibility UX**
 Status: 🚧 In Progress
-Phases: 0 of 4 complete
+Phases: 1 of 4 complete
 
 Focus: Make `code_execution` transparent in Pi TUI by showing generated Python source in a collapsed/expandable UI affordance, backed by a stable structured payload field for running, success, and failure states.
 
 | Phase | Name | Plans | Status | Completed |
 |-------|------|-------|--------|-----------|
-| 62 | Current Behavior Audit | 1/1 | 🚧 APPLY complete | - |
-| 63 | Stable Source Payload Contract | TBD | Not started | - |
+| 62 | Current Behavior Audit | 1/1 | ✅ Complete | 2026-05-14 |
+| 63 | Stable Source Payload Contract | TBD | 🔵 Ready to plan | - |
 | 64 | Pi TUI Collapsed/Expanded Rendering | TBD | Not started | - |
 | 65 | Regression Tests and Docs | TBD | Not started | - |
 
 ### Phase 62: Current Behavior Audit
 Focus: Reproduce current `code_execution` visibility for running, success, and failure states; locate where Python source is stored today; determine whether gaps are in payload, streaming state, TUI rendering, or collapsed presentation.
-Plans: `62-01-PLAN.md` (research; current behavior audit for code_execution source visibility) — APPLY complete; ready for UNIFY
+Plans: `62-01-PLAN.md` (research; current behavior audit for code_execution source visibility) — complete 2026-05-14
 
 ### Phase 63: Stable Source Payload Contract
 Focus: Ensure every `code_execution` invocation exposes source in a stable details/metadata field while keeping final result text compact and backward-compatible; cover running, success, and failure paths.
-Plans: TBD (defined during /paul:plan)
+Plans: Ready for `/paul:plan`
 
 ### Phase 64: Pi TUI Collapsed/Expanded Rendering
 Focus: Render Python source in Pi TUI as collapsed by default with a first-line preview; expand reveals full formatted source for running, completed success, and failed calls.

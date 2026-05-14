@@ -82,6 +82,7 @@ node --test test/code-execution-rendering.test.ts
 | Scope boundary review | PASS — product source, tests, README, package metadata, and installed Pi files were not modified. |
 
 ## Module Execution Reports
+[dispatch] pre-unify: 0 modules registered for this hook
 
 [dispatch] pre-apply: TODD skipped — plan type is research and no RED/test-first implementation task is present. WALT baseline skipped full runner detection as no vitest/jest profile applies; focused plan verification commands were run instead.
 
@@ -108,12 +109,19 @@ node --test test/code-execution-rendering.test.ts
 - DEAN: PASS/SKIP — no dependency manifests or package metadata changed; no new dependency risk introduced.
 - SETH: PASS — no source/config changes and no secret-like literals introduced in product code.
 
+[dispatch] post-unify:
+
+- WALT: appended `.paul/QUALITY-HISTORY.md` row for `62-01` with focused verification evidence (`5 pass` rendering test, `10 pass` RPC protocol test, typecheck PASS); verdict `● stable`.
+- CODI: appended `.paul/CODI-HISTORY.md` row for `62-01` with outcome `no-dispatch-found`; PLAN had pre-plan CODI seeds but no canonical blast-radius success/degraded evidence section.
+- SKIP: knowledge candidate captured — Phase 62 established that source-visibility work should split Phase 63 payload/error/progress contract from Phase 64 collapsed/expanded TUI UX.
+- RUBY: `NOT_APPLICABLE` — docs-only `.paul/*` audit artifact; no changed readable source files to inspect for code debt.
+
 ## GitHub Flow
 
 - Branch: `feature/62-current-behavior-audit`
 - Base: `main` / `origin/main`
 - Preflight: branch created from `main`; base refreshed; branch not behind base at APPLY start.
-- Postflight: APPLY commit pushed to `feature/62-current-behavior-audit`; PR #19 opened: https://github.com/coctostan/pi-ptc-advanced/pull/19; CI queued at APPLY completion.
+- Postflight: APPLY commit pushed to `feature/62-current-behavior-audit`; PR #19 opened: https://github.com/coctostan/pi-ptc-advanced/pull/19; CI and Socket checks passed before merge gate.
 
 ## Deviations and Decisions
 
@@ -123,4 +131,4 @@ The audit intentionally classifies the completed-success path as a payload gap d
 
 ## Next Step
 
-Continue to UNIFY after APPLY lifecycle updates and GitHub Flow postflight complete.
+Phase 62 is ready for transition to Phase 63 after GitHub Flow merge gate completion.
