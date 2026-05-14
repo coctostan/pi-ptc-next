@@ -9,8 +9,8 @@ See: `.paul/PROJECT.md`
 Milestone: Milestone 20 — `pi-ptc-advanced` 1.0 Public NPM Release (`1.0.0`)
 Phase: 60 of 61 (1.0 Release Gate)
 Plan: 60-01 (TDD; 1.0 release gate — publish checklist + drift guards)
-Status: APPLY complete; ready for UNIFY
-Last activity: 2026-05-13 — Phase 60 APPLY complete on branch `phase-60-release-gate` (commit 1a239ad); PR #17 open against main; release-readiness 17/17 PASS; full suite has 9 pre-existing Node-v26 env failures unrelated to scope.
+Status: UNIFY summary created; GitHub Flow merge gate in progress
+Last activity: 2026-05-13 — Phase 60 UNIFY summary created at `.paul/phases/60-1-0-release-gate/60-01-SUMMARY.md`; PR #17 checks green and merge gate in progress.
 Progress:
 - Milestone 20 — `pi-ptc-advanced` 1.0 Public NPM Release: [█████░░░░░] 50% (Phase 58 ✓; Phase 59 ✓; Phase 60 ○; Phase 61 ○)
 - Milestone 19 — Live Runtime Helper Hardening: [██████████] 100% ✓ (Phase 54 ✓; Phase 55 ✓; Phase 56 ✓; Phase 57 ✓)
@@ -59,7 +59,7 @@ Progress:
 Current loop state:
 ```text
 PLAN ──▶ APPLY ──▶ UNIFY
-  ✓        ✓        ○     [Phase 60 plan 60-01 APPLY complete; PR #17 open]
+  ✓        ✓        ◐     [Phase 60 plan 60-01 UNIFY summary created; merge gate in progress]
 ```
 
 ## Accumulated Context
