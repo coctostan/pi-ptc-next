@@ -8,6 +8,7 @@ const EXPECTED_VERSION = "1.0.0";
 const EXPECTED_REPO_SLUG = "coctostan/pi-ptc-advanced";
 const STALE_REPO_SLUG = "coctostan/pi-ptc-next";
 const EXPECTED_RELEASE_DOC = `docs/releases/${EXPECTED_VERSION}.md`;
+const PUBLISH_CHECKLIST_DOC = "docs/releases/PUBLISH-CHECKLIST.md";
 
 function resolveFromRoot(rel: string): string {
   return fileURLToPath(new URL(`../${rel}`, import.meta.url));
@@ -263,4 +264,68 @@ test("docs/releases/1.0.0.md describes the user-facing baseline and verification
   assert.match(note, /verify:release-package|verify-release-package/i, "release note must reference the release-package verifier");
   assert.match(note, /verify:ci|verify-ci|workflows\/ci\.yml/i, "release note must reference the CI parity verification path");
   assert.match(note, /repo rename|repository rename/i, "release note must reference the manual repo-rename boundary");
+});
+test("Phase 60 release gate: PUBLISH-CHECKLIST drift guards", () => {
+  assert.ok(
+    existsSync(resolveFromRoot(PUBLISH_CHECKLIST_DOC)),
+    `${PUBLISH_CHECKLIST_DOC} must exist as the repo-owned publish checklist`,
+  );
+  const checklist = read(PUBLISH_CHECKLIST_DOC);
+
+  for (const heading of [
+    "Preconditions",
+    "Dry-run",
+    "Manual publish",
+    "Post-publish manual steps",
+    "Stop here for automated APPLY",
+  ]) {
+    const pattern = new RegExp(`^##\\s+${heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "im");
+    assert.match(checklist, pattern, `PUBLISH-CHECKLIST.md must include heading "## ${heading}"`);
+  }
+
+  assert.match(checklist, /npm pack --dry-run/, "checklist must reference `npm pack --dry-run`");
+  assert.match(checklist, /npm publish --dry-run/, "checklist must reference `npm publish --dry-run`");
+  assert.ok(
+    checklist.includes(`${EXPECTED_PACKAGE_NAME}@${EXPECTED_VERSION}`),
+    `checklist must reference ${EXPECTED_PACKAGE_NAME}@${EXPECTED_VERSION} literally`,
+  );
+
+  for (const phrase of [
+    "has been published",
+    "is published on npm",
+    "tag created",
+    "release created",
+    "repo renamed",
+  ]) {
+    assert.ok(
+      !new RegExp(phrase, "i").test(checklist),
+      `checklist must NOT claim "${phrase}" — publish/tag/release/rename remain manual/user-owned`,
+    );
+  }
+});
+
+test("Phase 60 release gate: 1.0.0 release note links to PUBLISH-CHECKLIST", () => {
+  const note = read(EXPECTED_RELEASE_DOC);
+  const boundariesIdx = note.search(/^##\s+Manual boundaries\b/im);
+  assert.ok(boundariesIdx >= 0, "1.0.0 release note must have a `## Manual boundaries` section");
+  const boundariesSection = note.slice(boundariesIdx);
+  assert.match(
+    boundariesSection,
+    /\(\.\/PUBLISH-CHECKLIST\.md\)|PUBLISH-CHECKLIST\.md/,
+    "Manual boundaries section must link to PUBLISH-CHECKLIST.md",
+  );
+});
+
+test("Phase 60 release gate: CHANGELOG 1.0.0 entry mentions PUBLISH-CHECKLIST", () => {
+  const changelog = read("CHANGELOG.md");
+  const v100Idx = changelog.search(/^##\s+1\.0\.0\b/m);
+  assert.ok(v100Idx >= 0, "CHANGELOG.md must have a `## 1.0.0` heading");
+  const after = changelog.slice(v100Idx + 1);
+  const nextHeadingIdx = after.search(/^##\s+/m);
+  const entry = nextHeadingIdx >= 0 ? after.slice(0, nextHeadingIdx) : after;
+  assert.match(
+    entry,
+    /PUBLISH-CHECKLIST\.md|publish checklist/i,
+    "CHANGELOG.md 1.0.0 entry must reference the publish checklist",
+  );
 });
