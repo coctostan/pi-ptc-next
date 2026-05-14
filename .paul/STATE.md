@@ -9,8 +9,8 @@ See: `.paul/PROJECT.md`
 Milestone: Milestone 20 — `pi-ptc-advanced` 1.0 Public NPM Release (`1.0.0`)
 Phase: 60 of 61 (1.0 Release Gate)
 Plan: 60-01 (TDD; 1.0 release gate — publish checklist + drift guards)
-Status: Plan approved pending; ready for APPLY on user signal
-Last activity: 2026-05-13 — Phase 60 PLAN created at `.paul/phases/60-1-0-release-gate/60-01-PLAN.md` (tdd, 3 tasks, autonomous).
+Status: APPLY complete; ready for UNIFY
+Last activity: 2026-05-13 — Phase 60 APPLY complete on branch `phase-60-release-gate` (commit 1a239ad); PR #17 open against main; release-readiness 17/17 PASS; full suite has 9 pre-existing Node-v26 env failures unrelated to scope.
 Progress:
 - Milestone 20 — `pi-ptc-advanced` 1.0 Public NPM Release: [█████░░░░░] 50% (Phase 58 ✓; Phase 59 ✓; Phase 60 ○; Phase 61 ○)
 - Milestone 19 — Live Runtime Helper Hardening: [██████████] 100% ✓ (Phase 54 ✓; Phase 55 ✓; Phase 56 ✓; Phase 57 ✓)
@@ -59,7 +59,7 @@ Progress:
 Current loop state:
 ```text
 PLAN ──▶ APPLY ──▶ UNIFY
-  ✓        ○        ○     [Phase 60 plan 60-01 ready for APPLY]
+  ✓        ✓        ○     [Phase 60 plan 60-01 APPLY complete; PR #17 open]
 ```
 
 ## Accumulated Context
@@ -175,15 +175,15 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; no `0.16.0` tag created (publish remains manual)
 ## Session Continuity
 Last session: 2026-05-13
-Stopped at: Phase 60 PLAN created (60-01); awaiting APPLY routing decision.
-Next action: `/paul:apply` for Phase 60 plan 60-01 (TDD; release gate).
+Stopped at: Phase 60 APPLY complete on branch `phase-60-release-gate` (commit 1a239ad); PR #17 open against main awaiting CI + merge before UNIFY.
+Next action: `/paul:unify` for Phase 60 plan 60-01 after PR #17 CI green + merge.
 Resume file: `.paul/phases/60-1-0-release-gate/60-01-PLAN.md`
 wip_result: skipped — clean tree on base branch `main`; PAUSE does not create WIP commits without dirty state.
 Resume context:
 - Milestone 20 at 50%: Phase 58 ✓, Phase 59 ✓ (merged via PR #16 as 50f99a9), Phase 60 ○, Phase 61 ○.
 - Phase 60 focus per ROADMAP: 1.0 release gate — release notes, changelog, release-readiness tests, npm pack/publish dry-run checklist, manual publish instructions; stop before actual `npm publish`.
 - Existing baseline for Phase 60: `pi-ptc-advanced@1.0.0` metadata in `package.json` / `package-lock.json`; `scripts/verify-release-package.sh` proves metadata + tarball + clean-install; `docs/releases/1.0.0.md` polished; `CHANGELOG.md` carries the 1.0 entry; npm audit baseline 0c/0h/3m/0l.
-- Expected resume action: `/paul:apply` for Phase 60 plan 60-01.
+- Expected resume action: `/paul:unify` for Phase 60 plan 60-01 (post-merge).
 
 ---
-*STATE.md — Updated for Phase 60 plan 60-01 created (last updated: 2026-05-13)*
+*STATE.md — Updated for Phase 60 plan 60-01 APPLY complete; PR #17 open (last updated: 2026-05-13)*
