@@ -15,7 +15,7 @@ Focus: Make `pi-ptc-advanced@1.0.0` cleanly publishable and understandable as a 
 | 58 | Public Identity Rename | 1/1 | ✅ Complete | 2026-05-13 |
 | 59 | README and Docs Polish | 1/1 | ✅ Complete | 2026-05-13 |
 | 60 | 1.0 Release Gate | 1/1 | ✅ Complete | 2026-05-14 |
-| 61 | Repo Rename and Migration Proof | TBD | Ready to plan | - |
+| 61 | Repo Rename and Migration Proof | 1/1 | 🚧 Planning | - |
 
 ### Phase 58: Public Identity Rename
 Focus: Rename repo-facing/package metadata from `pi-ptc-next` / fork framing to `pi-ptc-advanced`; update package URLs, docs references, install path assumptions, package description/keywords, and release baseline to `1.0.0`.
@@ -31,7 +31,7 @@ Plans: `60-01-PLAN.md` (TDD; publish dry-run checklist + release-gate drift guar
 
 ### Phase 61: Repo Rename and Migration Proof
 Focus: Prepare/verify post-rename assumptions: GitHub URL references, install instructions, redirects/old-name notes, CI/package metadata after rename. Include a human-action checkpoint for actual GitHub repo rename if needed.
-Plans: TBD (defined during /paul:plan)
+Plans: `61-01-PLAN.md` (TDD; repo rename checklist + migration proof with human-action checkpoint) — ready for APPLY
 
 ## Completed Milestones
 

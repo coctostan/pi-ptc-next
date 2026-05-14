@@ -8,7 +8,8 @@ the final Python output is returned to the model context.
 
 This is **not** Anthropic's provider-native PTC wire protocol. Instead, it implements the same core local behavior in a way that can work across multiple labs and models such as GPT-5.4, GLM-5, and Claude-class models.
 
-The current release baseline is **`pi-ptc-advanced@1.0.0`**. The GitHub repository is intended to be renamed to `coctostan/pi-ptc-advanced`; until that repository rename is performed, historical links may still appear in credits and older release material.
+The current release baseline is **`pi-ptc-advanced@1.0.0`**. The GitHub repository now resolves at `coctostan/pi-ptc-advanced`; historical `coctostan/pi-ptc-next` links may still appear in credits and older release material as lineage or redirect context.
+The manual repository rename and migration sequence is documented in [`docs/releases/REPO-RENAME-CHECKLIST.md`](docs/releases/REPO-RENAME-CHECKLIST.md).
 
 > **Status:** the package is built from this repository only. It is not yet
 > available on the npm registry. Install from Git source using the paths
@@ -144,7 +145,7 @@ itself does **not**:
 
 - run `npm publish` or create npm dist-tags
 - create git tags or GitHub releases
-- perform the GitHub repository rename to `coctostan/pi-ptc-advanced`
+- mutate GitHub repository settings or rewrite local remotes automatically
 - automate remote creation, fetch, rebase, push, or PR strategy
 
 Runtime limitations:

@@ -9,6 +9,7 @@ const EXPECTED_REPO_SLUG = "coctostan/pi-ptc-advanced";
 const STALE_REPO_SLUG = "coctostan/pi-ptc-next";
 const EXPECTED_RELEASE_DOC = `docs/releases/${EXPECTED_VERSION}.md`;
 const PUBLISH_CHECKLIST_DOC = "docs/releases/PUBLISH-CHECKLIST.md";
+const REPO_RENAME_CHECKLIST_DOC = "docs/releases/REPO-RENAME-CHECKLIST.md";
 
 function resolveFromRoot(rel: string): string {
   return fileURLToPath(new URL(`../${rel}`, import.meta.url));
@@ -226,14 +227,12 @@ test("README does not use 'personal fork' as primary public release framing", ()
   );
 });
 
-test("README/runbook/release note do not claim publish, tags, releases, or repo rename happened", () => {
+test("README/runbook/release note do not claim publish, tags, or GitHub releases happened", () => {
   const claims = [
     /has been published to npm/i,
     /now available on the npm registry/i,
-    /the repository has been renamed/i,
-    /repo rename (is )?complete/i,
     /git tag .* (?:has been )?(?:created|pushed)/i,
-    /GitHub release (?:has been )?published/i,
+    /GitHub release (?:has been )?published/i
   ];
   for (const rel of ["README.md", "docs/personal-fork-maintenance.md", EXPECTED_RELEASE_DOC]) {
     const body = read(rel);
@@ -328,4 +327,60 @@ test("Phase 60 release gate: CHANGELOG 1.0.0 entry mentions PUBLISH-CHECKLIST", 
     /PUBLISH-CHECKLIST\.md|publish checklist/i,
     "CHANGELOG.md 1.0.0 entry must reference the publish checklist",
   );
+});
+
+
+test("Phase 61 repo rename gate: REPO-RENAME-CHECKLIST drift guards", () => {
+  assert.ok(
+    existsSync(resolveFromRoot(REPO_RENAME_CHECKLIST_DOC)),
+    `${REPO_RENAME_CHECKLIST_DOC} must exist as the repo-owned rename checklist`,
+  );
+  const checklist = read(REPO_RENAME_CHECKLIST_DOC);
+
+  for (const heading of [
+    "Preconditions",
+    "Human action: GitHub repository rename",
+    "Redirect and remote migration proof",
+    "Post-rename verification",
+    "Deferral or rollback",
+    "Stop here for automated APPLY",
+  ]) {
+    const pattern = new RegExp(`^##\\s+${heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "im");
+    assert.match(checklist, pattern, `REPO-RENAME-CHECKLIST.md must include heading "## ${heading}"`);
+  }
+
+  assert.ok(checklist.includes(STALE_REPO_SLUG), `checklist must mention ${STALE_REPO_SLUG}`);
+  assert.ok(checklist.includes(EXPECTED_REPO_SLUG), `checklist must mention ${EXPECTED_REPO_SLUG}`);
+  assert.match(checklist, /gh repo view coctostan\/pi-ptc-advanced/, "checklist must include GitHub visibility verification");
+  assert.match(checklist, /git remote -v/, "checklist must include local remote verification");
+  assert.match(checklist, /redirect/i, "checklist must include old-name redirect verification");
+  assert.match(checklist, /npm run verify:ci|CI/i, "checklist must include CI verification guidance");
+  assert.match(checklist, /package metadata|package\.json/i, "checklist must include package metadata verification guidance");
+
+  for (const phrase of [
+    "repository rename complete",
+    "repo rename complete",
+    "has been renamed",
+    "old repository removed",
+  ]) {
+    assert.ok(
+      !new RegExp(phrase, "i").test(checklist),
+      `checklist must NOT claim "${phrase}" — repository rename remains manual/user-owned until confirmed`,
+    );
+  }
+});
+
+test("Phase 61 repo rename gate: active docs link to REPO-RENAME-CHECKLIST", () => {
+  for (const doc of [
+    "README.md",
+    "docs/personal-fork-maintenance.md",
+    EXPECTED_RELEASE_DOC,
+    PUBLISH_CHECKLIST_DOC,
+  ]) {
+    assert.match(
+      read(doc),
+      /REPO-RENAME-CHECKLIST\.md/,
+      `${doc} must link to or name REPO-RENAME-CHECKLIST.md`,
+    );
+  }
 });

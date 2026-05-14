@@ -8,9 +8,9 @@ See: `.paul/PROJECT.md`
 ## Current Position
 Milestone: Milestone 20 — `pi-ptc-advanced` 1.0 Public NPM Release (`1.0.0`)
 Phase: 61 of 61 (Repo Rename and Migration Proof)
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-05-14 — Phase 60 complete; PR #17 squash-merged into main as fc30755; transitioned to Phase 61.
+Plan: 61-01 (TDD; repo rename checklist + migration proof)
+Status: APPLY complete; ready for UNIFY
+Last activity: 2026-05-14 — Phase 61 APPLY complete; repo rename manually confirmed and read-only verified; release-readiness 19/19 PASS; local verify:ci still has pre-existing Node-v26 live-harness failures.
 Progress:
 - Milestone 20 — `pi-ptc-advanced` 1.0 Public NPM Release: [████████░░] 75% (Phase 58 ✓; Phase 59 ✓; Phase 60 ✓; Phase 61 ○)
 - Milestone 19 — Live Runtime Helper Hardening: [██████████] 100% ✓ (Phase 54 ✓; Phase 55 ✓; Phase 56 ✓; Phase 57 ✓)
@@ -59,7 +59,7 @@ Progress:
 Current loop state:
 ```text
 PLAN ──▶ APPLY ──▶ UNIFY
-  ○        ○        ○     [Phase 61 ready to plan]
+  ✓        ✓        ○     [Phase 61 plan 61-01 APPLY complete; ready for UNIFY]
 ```
 
 ## Accumulated Context
@@ -68,6 +68,7 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Phase 57 shipped `ptc.list_helpers()` as the curated `ptc.*` helper inventory distinct from live callable-tool discovery via `ptc.list_callable_tools()`.
 - Phase 57 kept `details.ptcValue` guidance in README only, not the generated `code_execution` description, to preserve prompt-description invariants and avoid widening Pi-side prompt-injection behavior.
 - Phase 60 kept the 1.0 release gate as proof/documentation only: `docs/releases/PUBLISH-CHECKLIST.md` documents dry-run/manual publish sequencing, but actual npm publish, git tag, GitHub release, and repository rename remain user-owned/manual.
+- Phase 61 checkpoint result: `rename-confirmed`; `gh repo view coctostan/pi-ptc-advanced` resolves public repo and old slug `coctostan/pi-ptc-next` redirects to the new slug. Local `origin` still points at old URL and was not rewritten automatically.
 - Phase 57 left `.paul/dean-baseline.json` untouched as historical acknowledgement evidence while documenting that 0.18.0 materially supersedes the old audit posture with `0 critical / 0 high / 3 moderate / 0 low`.
 - Milestone 20 targets `pi-ptc-advanced@1.0.0`: public identity cleanup, README/docs polish, release-readiness proof, and repo rename/migration preparation; actual `npm publish` remains user-owned.
 - Phase 58 APPLY retargeted the active package/release baseline to `pi-ptc-advanced@1.0.0`, moved README/runbook opening copy to public product framing, preserved credit/lineage lower in README, and kept `npm publish`, tags/releases, and actual repo rename manual/user-owned.
@@ -176,15 +177,15 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; no `0.16.0` tag created (publish remains manual)
 ## Session Continuity
 Last session: 2026-05-14
-Stopped at: Phase 60 complete; local `main` fast-forwarded to squash merge fc30755.
-Next action: `/paul:plan` for Phase 61 (Repo Rename and Migration Proof).
-Resume file: `.paul/ROADMAP.md`
+Stopped at: Phase 61 APPLY complete on branch `phase-61-repo-rename-proof`; awaiting UNIFY.
+Next action: `/paul:unify` for Phase 61 plan 61-01.
+Resume file: `.paul/phases/61-repo-rename-and-migration-proof/61-01-PLAN.md`
 wip_result: skipped — clean tree on base branch `main`; PAUSE does not create WIP commits without dirty state.
 Resume context:
 - Milestone 20 at 75%: Phase 58 ✓, Phase 59 ✓, Phase 60 ✓ (merged via PR #17 as fc30755), Phase 61 ○.
-- Phase 60 result: `docs/releases/PUBLISH-CHECKLIST.md`, release-readiness drift guards, 1.0 release-note/CHANGELOG cross-links, and `60-01-SUMMARY.md`; actual publish/tag/release/rename not performed.
+- Phase 61 APPLY result: `docs/releases/REPO-RENAME-CHECKLIST.md`, Phase 61 drift guards, active-doc cross-links, and confirmed read-only GitHub rename proof; no automated repo settings mutation performed.
 - Phase 61 focus per ROADMAP: Repo Rename and Migration Proof — GitHub repo rename/migration documentation and verification after public release gate readiness.
-- Expected resume action: `/paul:plan` for Phase 61.
+- Expected resume action: `/paul:unify` for Phase 61 plan 61-01.
 
 ---
-*STATE.md — Updated for Phase 60 UNIFY closeout and Phase 61 readiness (last updated: 2026-05-14)*
+*STATE.md — Updated for Phase 61 plan 61-01 APPLY complete (last updated: 2026-05-14)*

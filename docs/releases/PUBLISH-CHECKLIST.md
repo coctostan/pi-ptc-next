@@ -53,7 +53,7 @@ After a confirmed successful publish, the user performs the following manual ste
    ```bash
    gh release create v1.0.0 --notes-file docs/releases/1.0.0.md --title "pi-ptc-advanced 1.0.0"
    ```
-3. **GitHub repo rename** (deferred to **Phase 61 — Repo Rename and Migration Proof**): renaming `coctostan/pi-ptc-next` → `coctostan/pi-ptc-advanced`, updating remotes, and refreshing README/runbook links happens under Phase 61, not as part of the publish itself.
+3. **GitHub repo rename** (deferred to the repo-rename checklist): renaming `coctostan/pi-ptc-next` → `coctostan/pi-ptc-advanced`, updating remotes, and refreshing README/runbook links follows [`REPO-RENAME-CHECKLIST.md`](./REPO-RENAME-CHECKLIST.md), not the publish checklist itself.
 4. **Update install instructions:** once publish is confirmed, README/runbook can switch from Git-source install language to `npm install pi-ptc-advanced` / `pi install pi-ptc-advanced`. That edit is a separate, user-confirmed change — not part of this checklist.
 
 ## Stop here for automated APPLY

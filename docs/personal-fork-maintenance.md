@@ -70,6 +70,8 @@ Use it before treating the package as release-ready, after metadata changes, or 
 Release reference docs for the active baseline:
 - [`CHANGELOG.md`](../CHANGELOG.md)
 - [`docs/releases/1.0.0.md`](./releases/1.0.0.md)
+- [`docs/releases/PUBLISH-CHECKLIST.md`](./releases/PUBLISH-CHECKLIST.md)
+- [`docs/releases/REPO-RENAME-CHECKLIST.md`](./releases/REPO-RENAME-CHECKLIST.md)
 - Previous baseline: [`docs/releases/0.18.0.md`](./releases/0.18.0.md)
 - Historical baseline: [`docs/releases/0.16.0.md`](./releases/0.16.0.md)
 - Historical baseline: [`docs/releases/0.15.0.md`](./releases/0.15.0.md)
@@ -86,6 +88,7 @@ That means this repo documents the process, but does **not** automate:
 - PR creation or merge
 
 Those steps stay user-directed because they depend on your remotes, branch policy, and tolerance for history rewriting.
+The GitHub repository rename/migration path from `coctostan/pi-ptc-next` to `coctostan/pi-ptc-advanced` is documented separately in [`docs/releases/REPO-RENAME-CHECKLIST.md`](./releases/REPO-RENAME-CHECKLIST.md).
 
 ### Suggested manual sync checklist
 
