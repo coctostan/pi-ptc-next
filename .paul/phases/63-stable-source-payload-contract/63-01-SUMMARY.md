@@ -2,7 +2,7 @@
 
 ## Status
 
-APPLY completed for `.paul/phases/63-stable-source-payload-contract/63-01-PLAN.md`.
+UNIFY completed for `.paul/phases/63-stable-source-payload-contract/63-01-PLAN.md`; GitHub Flow merge gate is pending PR checks.
 
 ## What changed
 
@@ -46,6 +46,11 @@ APPLY completed for `.paul/phases/63-stable-source-payload-contract/63-01-PLAN.m
 - `[dispatch] post-apply enforcement: DEAN PASS` — `npm audit --json` remained at 0 critical / 0 high / 3 moderate, matching the pre-plan baseline.
 - `[dispatch] post-apply enforcement: WALT PASS_WITH_CONCERNS` — no new focused regressions; full-suite failures are unchanged environmental Node-option failures.
 - `[dispatch] post-apply enforcement: TODD PASS_WITH_CONCERNS` — TDD scope complete; full suite baseline concern unchanged.
+- `[dispatch] pre-unify: 0 modules registered for this hook`.
+- `[dispatch] post-unify: WALT PASS_WITH_CONCERNS` — quality history updated for 33 focused passing tests and the unchanged full-suite Node-option failure baseline.
+- `[dispatch] post-unify: CODI no-dispatch-found` — PLAN had degraded pre-plan CODI evidence but no post-unify CODI dispatch block requiring new blast-radius history.
+- `[dispatch] post-unify: RUBY PASS` — no refactor follow-up beyond keeping Phase 64 rendering separate.
+- `[dispatch] post-unify: SKIP candidate recorded in SUMMARY only` — durable handoff is the stable `details.userCode`/`details.failure` contract for Phase 64; no separate knowledge artifact needed.
 
 ## Deviations
 

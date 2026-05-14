@@ -9,10 +9,10 @@ See: `.paul/PROJECT.md`
 Milestone: Milestone 21 — Code Execution Source Visibility UX
 Phase: 63 of 65 (Stable Source Payload Contract)
 Plan: `.paul/phases/63-stable-source-payload-contract/63-01-PLAN.md`
-Status: Phase 63 APPLY completed; ready for UNIFY
-Last activity: 2026-05-14 — Phase 63 APPLY completed stable `code_execution` source details for success, partial, and user-code Python failure payloads.
+Status: Phase 63 UNIFY completed; GitHub Flow merge gate pending PR checks
+Last activity: 2026-05-14 — Phase 63 UNIFY reconciled stable `code_execution` source payload contract and opened PR #20; awaiting GitHub Flow checks/merge before phase transition.
 Progress:
-- Milestone 21 — Code Execution Source Visibility UX: [████░░░░░░] 40% (Phase 62 ✓; Phase 63 PLAN ✓ / APPLY ✓ / UNIFY ○; Phase 64 ○; Phase 65 ○)
+- Milestone 21 — Code Execution Source Visibility UX: [█████░░░░░] 50% (Phase 62 ✓; Phase 63 PLAN ✓ / APPLY ✓ / UNIFY ✓; Phase 64 ○; Phase 65 ○)
 - Milestone 20 — `pi-ptc-advanced` 1.0 Public NPM Release: [██████████] 100% ✓ (Phase 58 ✓; Phase 59 ✓; Phase 60 ✓; Phase 61 ✓)
 - Milestone 19 — Live Runtime Helper Hardening: [██████████] 100% ✓ (Phase 54 ✓; Phase 55 ✓; Phase 56 ✓; Phase 57 ✓)
 - Milestone 17 — Pi Compatibility and Prompt Integration Audit: [██████████] 100% ✓ (Phase 45 ✓, Phase 46 ✓, Phase 47 ✓, Phase 48 ✓)
@@ -60,7 +60,7 @@ Progress:
 Current loop state:
 ```text
 PLAN ──▶ APPLY ──▶ UNIFY
-  ✓        ✓        ○     [Phase 63 apply complete; ready for unify]
+  ✓        ✓        ✓     [Phase 63 unify complete; merge gate pending PR checks]
 ```
 
 ## Accumulated Context
@@ -72,6 +72,7 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Phase 62 UNIFY completed the audit loop: `62-01-SOURCE-VISIBILITY-AUDIT.md` is the source-of-truth gap map for Phase 63 payload/error/progress contract planning and Phase 64 TUI rendering planning.
 - Phase 63 PLAN created `.paul/phases/63-stable-source-payload-contract/63-01-PLAN.md` as a TDD plan for source-bearing success, partial, and failure details while deferring collapsed/expanded rendering to Phase 64.
 - Phase 63 APPLY added stable source-bearing structured details for `code_execution` success, partial updates, nested tool-call updates, and user-code Python failures; focused verification passed, while full-suite `npm test` retains pre-existing local Node `--experimental-transform-types` failures in hashline live tests.
+- Phase 63 UNIFY reconciled plan-vs-actual into `63-01-SUMMARY.md`, recorded post-unify module evidence, committed/pushed PR #20, and is blocked from phase transition only by GitHub Flow PR checks/merge gate.
 ### Decisions
 - Phase 55 normalized callable-wrapper contract guidance: direct callable Pi wrappers remain awaitable, `grep("pattern", path="...")` is supported in the runtime adapter, and Phase 56 keeps result/path/error semantics separate.
 - Phase 57 shipped `ptc.list_helpers()` as the curated `ptc.*` helper inventory distinct from live callable-tool discovery via `ptc.list_callable_tools()`.

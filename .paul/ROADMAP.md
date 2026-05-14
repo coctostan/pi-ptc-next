@@ -23,7 +23,7 @@ Plans: `62-01-PLAN.md` (research; current behavior audit for code_execution sour
 
 ### Phase 63: Stable Source Payload Contract
 Focus: Ensure every `code_execution` invocation exposes source in a stable details/metadata field while keeping final result text compact and backward-compatible; cover running, success, and failure paths.
-Plans: `63-01-PLAN.md` (tdd; stable source payload/error/progress details contract) — ready for `/paul:apply`
+Plans: `63-01-PLAN.md` (tdd; stable source payload/error/progress details contract) — UNIFY complete; PR #20 merge gate pending checks
 
 ### Phase 64: Pi TUI Collapsed/Expanded Rendering
 Focus: Render Python source in Pi TUI as collapsed by default with a first-line preview; expand reveals full formatted source for running, completed success, and failed calls.
