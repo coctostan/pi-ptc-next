@@ -6,7 +6,7 @@ Brownfield PALS adoption for `pi-ptc-next`, focused on hashline-native runtime i
 ## Current Milestone
 **Milestone 20 — `pi-ptc-advanced` 1.0 Public NPM Release** (`1.0.0`)
 Status: 🚧 In Progress
-Phases: 1 of 4 complete
+Phases: 3 of 4 complete
 
 Focus: Make `pi-ptc-advanced@1.0.0` cleanly publishable and understandable as a standalone public npm package, with fork lineage credited but no longer dominating the user-facing product surface.
 
@@ -14,8 +14,8 @@ Focus: Make `pi-ptc-advanced@1.0.0` cleanly publishable and understandable as a 
 |-------|------|-------|--------|-----------|
 | 58 | Public Identity Rename | 1/1 | ✅ Complete | 2026-05-13 |
 | 59 | README and Docs Polish | 1/1 | ✅ Complete | 2026-05-13 |
-| 60 | 1.0 Release Gate | 1/1 | 🚧 Planning | - |
-| 61 | Repo Rename and Migration Proof | TBD | Not started | - |
+| 60 | 1.0 Release Gate | 1/1 | ✅ Complete | 2026-05-14 |
+| 61 | Repo Rename and Migration Proof | TBD | Ready to plan | - |
 
 ### Phase 58: Public Identity Rename
 Focus: Rename repo-facing/package metadata from `pi-ptc-next` / fork framing to `pi-ptc-advanced`; update package URLs, docs references, install path assumptions, package description/keywords, and release baseline to `1.0.0`.
@@ -27,7 +27,7 @@ Plans: `59-01-PLAN.md` (TDD; public README/docs polish) — complete (`59-01-SUM
 
 ### Phase 60: 1.0 Release Gate
 Focus: Add/refresh 1.0 release notes, changelog, release-readiness tests, npm pack/publish dry-run checklist, and manual publish instructions. Verification stops before actual `npm publish`.
-Plans: `60-01-PLAN.md` (TDD; publish dry-run checklist + release-gate drift guards) — ready for APPLY
+Plans: `60-01-PLAN.md` (TDD; publish dry-run checklist + release-gate drift guards) — complete (`60-01-SUMMARY.md`)
 
 ### Phase 61: Repo Rename and Migration Proof
 Focus: Prepare/verify post-rename assumptions: GitHub URL references, install instructions, redirects/old-name notes, CI/package metadata after rename. Include a human-action checkpoint for actual GitHub repo rename if needed.

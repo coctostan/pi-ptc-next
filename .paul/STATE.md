@@ -7,12 +7,12 @@ See: `.paul/PROJECT.md`
 **Current focus:** Milestone 20 begins: polish and rename the public package/repo/docs surface for `pi-ptc-advanced@1.0.0` NPM release readiness.
 ## Current Position
 Milestone: Milestone 20 — `pi-ptc-advanced` 1.0 Public NPM Release (`1.0.0`)
-Phase: 60 of 61 (1.0 Release Gate)
-Plan: 60-01 (TDD; 1.0 release gate — publish checklist + drift guards)
-Status: UNIFY summary created; GitHub Flow merge gate in progress
-Last activity: 2026-05-13 — Phase 60 UNIFY summary created at `.paul/phases/60-1-0-release-gate/60-01-SUMMARY.md`; PR #17 checks green and merge gate in progress.
+Phase: 61 of 61 (Repo Rename and Migration Proof)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-05-14 — Phase 60 complete; PR #17 squash-merged into main as fc30755; transitioned to Phase 61.
 Progress:
-- Milestone 20 — `pi-ptc-advanced` 1.0 Public NPM Release: [█████░░░░░] 50% (Phase 58 ✓; Phase 59 ✓; Phase 60 ○; Phase 61 ○)
+- Milestone 20 — `pi-ptc-advanced` 1.0 Public NPM Release: [████████░░] 75% (Phase 58 ✓; Phase 59 ✓; Phase 60 ✓; Phase 61 ○)
 - Milestone 19 — Live Runtime Helper Hardening: [██████████] 100% ✓ (Phase 54 ✓; Phase 55 ✓; Phase 56 ✓; Phase 57 ✓)
 - Milestone 17 — Pi Compatibility and Prompt Integration Audit: [██████████] 100% ✓ (Phase 45 ✓, Phase 46 ✓, Phase 47 ✓, Phase 48 ✓)
 - Phase 45 — Pi API and Documentation Delta Audit: [██████████] 100% ✓
@@ -59,7 +59,7 @@ Progress:
 Current loop state:
 ```text
 PLAN ──▶ APPLY ──▶ UNIFY
-  ✓        ✓        ◐     [Phase 60 plan 60-01 UNIFY summary created; merge gate in progress]
+  ○        ○        ○     [Phase 61 ready to plan]
 ```
 
 ## Accumulated Context
@@ -67,6 +67,7 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Phase 55 normalized callable-wrapper contract guidance: direct callable Pi wrappers remain awaitable, `grep("pattern", path="...")` is supported in the runtime adapter, and Phase 56 keeps result/path/error semantics separate.
 - Phase 57 shipped `ptc.list_helpers()` as the curated `ptc.*` helper inventory distinct from live callable-tool discovery via `ptc.list_callable_tools()`.
 - Phase 57 kept `details.ptcValue` guidance in README only, not the generated `code_execution` description, to preserve prompt-description invariants and avoid widening Pi-side prompt-injection behavior.
+- Phase 60 kept the 1.0 release gate as proof/documentation only: `docs/releases/PUBLISH-CHECKLIST.md` documents dry-run/manual publish sequencing, but actual npm publish, git tag, GitHub release, and repository rename remain user-owned/manual.
 - Phase 57 left `.paul/dean-baseline.json` untouched as historical acknowledgement evidence while documenting that 0.18.0 materially supersedes the old audit posture with `0 critical / 0 high / 3 moderate / 0 low`.
 - Milestone 20 targets `pi-ptc-advanced@1.0.0`: public identity cleanup, README/docs polish, release-readiness proof, and repo rename/migration preparation; actual `npm publish` remains user-owned.
 - Phase 58 APPLY retargeted the active package/release baseline to `pi-ptc-advanced@1.0.0`, moved README/runbook opening copy to public product framing, preserved credit/lineage lower in README, and kept `npm publish`, tags/releases, and actual repo rename manual/user-owned.
@@ -174,16 +175,16 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - PR #16: MERGED — https://github.com/coctostan/pi-ptc-next/pull/16; squash merge `50f99a9` to `main`; GitHub Actions `Verify release baseline` ×2 and Socket Security ×2 SUCCESS; remote feature branch `feature/59-readme-docs-polish` deleted by merge automation; local `main` fast-forwarded (Phase 59).
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; no `0.16.0` tag created (publish remains manual)
 ## Session Continuity
-Last session: 2026-05-13
-Stopped at: Phase 60 APPLY complete on branch `phase-60-release-gate` (commit 1a239ad); PR #17 open against main awaiting CI + merge before UNIFY.
-Next action: `/paul:unify` for Phase 60 plan 60-01 after PR #17 CI green + merge.
-Resume file: `.paul/phases/60-1-0-release-gate/60-01-PLAN.md`
+Last session: 2026-05-14
+Stopped at: Phase 60 complete; local `main` fast-forwarded to squash merge fc30755.
+Next action: `/paul:plan` for Phase 61 (Repo Rename and Migration Proof).
+Resume file: `.paul/ROADMAP.md`
 wip_result: skipped — clean tree on base branch `main`; PAUSE does not create WIP commits without dirty state.
 Resume context:
-- Milestone 20 at 50%: Phase 58 ✓, Phase 59 ✓ (merged via PR #16 as 50f99a9), Phase 60 ○, Phase 61 ○.
-- Phase 60 focus per ROADMAP: 1.0 release gate — release notes, changelog, release-readiness tests, npm pack/publish dry-run checklist, manual publish instructions; stop before actual `npm publish`.
-- Existing baseline for Phase 60: `pi-ptc-advanced@1.0.0` metadata in `package.json` / `package-lock.json`; `scripts/verify-release-package.sh` proves metadata + tarball + clean-install; `docs/releases/1.0.0.md` polished; `CHANGELOG.md` carries the 1.0 entry; npm audit baseline 0c/0h/3m/0l.
-- Expected resume action: `/paul:unify` for Phase 60 plan 60-01 (post-merge).
+- Milestone 20 at 75%: Phase 58 ✓, Phase 59 ✓, Phase 60 ✓ (merged via PR #17 as fc30755), Phase 61 ○.
+- Phase 60 result: `docs/releases/PUBLISH-CHECKLIST.md`, release-readiness drift guards, 1.0 release-note/CHANGELOG cross-links, and `60-01-SUMMARY.md`; actual publish/tag/release/rename not performed.
+- Phase 61 focus per ROADMAP: Repo Rename and Migration Proof — GitHub repo rename/migration documentation and verification after public release gate readiness.
+- Expected resume action: `/paul:plan` for Phase 61.
 
 ---
-*STATE.md — Updated for Phase 60 plan 60-01 APPLY complete; PR #17 open (last updated: 2026-05-13)*
+*STATE.md — Updated for Phase 60 UNIFY closeout and Phase 61 readiness (last updated: 2026-05-14)*

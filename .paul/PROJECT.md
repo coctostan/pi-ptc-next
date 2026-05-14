@@ -10,8 +10,8 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 | Attribute | Value |
 |-----------|-------|
 | Version | 1.0.0 release readiness in progress (Milestone 20) |
-| Status | Active Milestone 20 — Phase 59 ready to plan |
-| Last Updated | 2026-05-13 after Phase 59 README and docs polish |
+| Status | Active Milestone 20 — Phase 61 ready to plan |
+| Last Updated | 2026-05-14 after Phase 60 release gate |
 
 ## Requirements
 ### Validated (Shipped)
@@ -47,7 +47,7 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 - [x] Added bounded Python reduction and output-budget helpers `ptc.reduce_tool(...)` / `ptc.fit_output(...)` aligned to the session output cap, with focused execution proof — Phase 31
 - [x] Added execution-level ecosystem proof plus README/tool-description guidance for `ptc.batch_tool(...)`, `ptc.first_success(...)`, `ptc.reduce_tool(...)`, and `ptc.fit_output(...)`, including compact hashline/codegraph/web composition examples — Phase 32
 ### Active (In Progress)
-- [ ] Milestone 20 — `pi-ptc-advanced` 1.0 Public NPM Release (Phase 59 ready to plan; Phase 58 complete)
+- [ ] Milestone 20 — `pi-ptc-advanced` 1.0 Public NPM Release (Phase 61 ready to plan; Phases 58–60 complete)
 ### Validated (Shipped)
 - [x] Restored the P0 file-discovery helper path by removing `glob(limit=...)` dependency and proving bounded success for `ptc.read_tree()`, `ptc.find_files()`, and `ptc.find_files_abs()` in live audit coverage — Phase 39
 - [x] Improved syntax/compile-time error surfacing so pre-terminal Python failures now expose actionable `SyntaxError`/traceback context instead of generic RPC closure messaging — Phase 40
@@ -73,8 +73,10 @@ A `pi-ptc-next` enhancement that makes `code_execution` invoke the same active P
 - [x] Added user-facing recipe workflow documentation and ecosystem composition proof — Phase 35
 - [x] Added concrete cross-repo recipe artifacts plus deterministic benchmark baseline — Phase 34
 - [x] Retargeted the active public package/release baseline to `pi-ptc-advanced@1.0.0`, updated package metadata and release verification, and reframed active README/runbook/release docs around the public identity while preserving fork/upstream lineage and manual publish/repo-rename boundaries — Phase 58
+- [x] Polished public README, release documentation, and maintainer/runbook framing for `pi-ptc-advanced@1.0.0` while preserving manual npm-publish/repo-rename boundaries and drift guards — Phase 59
+- [x] Added a repo-owned `docs/releases/PUBLISH-CHECKLIST.md` plus release-readiness drift guards for the 1.0 release gate, documenting dry-run/manual publish steps without performing publish/tag/release/rename actions — Phase 60
 ### Planned (Next)
-- Phase 59 — README and Docs Polish
+- Phase 61 — Repo Rename and Migration Proof
 ### Out of Scope
 - [ ] Long-term IR refactors during the early interop milestones
 - [ ] Broad helper ergonomics changes beyond what is required for trustworthy structured interop
@@ -177,6 +179,7 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 | Target `pi-ptc-advanced@1.0.0` as a clean public NPM release identity | The project is ready to move beyond fork-first framing; README/docs/package metadata should present a standalone product while preserving credit and lineage lower in the README | 2026-05-13 | Active |
 | Defer `npm install pi-ptc-advanced` / `pi install pi-ptc-advanced` registry commands in public docs until actual npm publish is user-confirmed | Phase 59 ships public-package README/runbook/release-note framing without advertising an install path that does not yet work; Phase 60/61 can re-introduce a registry block once publish is confirmed | 2026-05-13 | Active |
 | Preserve `docs/personal-fork-maintenance.md` filename while moving its content to public release maintenance framing | Existing inbound links and CI references stay valid; only the title/lead-paragraph framing is reframed, with manual git/sync/upgrade boundary intact | 2026-05-13 | Active |
+| Keep the 1.0 publish checklist repo-owned while stopping automated APPLY before actual publish/tag/release/rename operations | Phase 60 can prove release readiness and manual sequencing without performing irreversible external release operations; actual npm publish and post-publish steps remain user-owned | 2026-05-14 | Active |
 
 ## Success Metrics
 | Metric | Target | Current | Status |
@@ -219,4 +222,4 @@ This work improves trustworthiness and interoperability across Pi extensions by 
 
 ---
 *PROJECT.md — Updated when requirements or context change*
-*Last updated: 2026-05-13 after Phase 59 UNIFY closeout (README and docs polish)*
+*Last updated: 2026-05-14 after Phase 60 UNIFY closeout (1.0 release gate)*
