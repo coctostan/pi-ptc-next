@@ -14,7 +14,7 @@ Focus: Make `pi-ptc-advanced@1.0.0` cleanly publishable and understandable as a 
 |-------|------|-------|--------|-----------|
 | 58 | Public Identity Rename | 1/1 | ✅ Complete | 2026-05-13 |
 | 59 | README and Docs Polish | 1/1 | ✅ Complete | 2026-05-13 |
-| 60 | 1.0 Release Gate | TBD | Not started | - |
+| 60 | 1.0 Release Gate | 1/1 | 🚧 Planning | - |
 | 61 | Repo Rename and Migration Proof | TBD | Not started | - |
 
 ### Phase 58: Public Identity Rename
@@ -27,7 +27,7 @@ Plans: `59-01-PLAN.md` (TDD; public README/docs polish) — complete (`59-01-SUM
 
 ### Phase 60: 1.0 Release Gate
 Focus: Add/refresh 1.0 release notes, changelog, release-readiness tests, npm pack/publish dry-run checklist, and manual publish instructions. Verification stops before actual `npm publish`.
-Plans: TBD (defined during /paul:plan)
+Plans: `60-01-PLAN.md` (TDD; publish dry-run checklist + release-gate drift guards) — ready for APPLY
 
 ### Phase 61: Repo Rename and Migration Proof
 Focus: Prepare/verify post-rename assumptions: GitHub URL references, install instructions, redirects/old-name notes, CI/package metadata after rename. Include a human-action checkpoint for actual GitHub repo rename if needed.

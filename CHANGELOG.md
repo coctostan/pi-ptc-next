@@ -17,6 +17,10 @@ _No unreleased changes yet._
 - README and maintainer runbook now open with public package/product framing instead of fork-first `pi-ptc-next` framing.
 - Active release docs point to `docs/releases/1.0.0.md`; older release notes remain historical context.
 
+### Release gate
+
+- Added `docs/releases/PUBLISH-CHECKLIST.md` as the repo-owned publish checklist (preconditions, dry-run command sequence, manual publish steps, and post-publish manual steps). Release-readiness drift tests guard its headings and language so 1.0.0 release-gate framing stays consistent across `CHANGELOG.md`, `docs/releases/1.0.0.md`, and `PUBLISH-CHECKLIST.md`.
+
 ### Deferred / not included
 
 - Automated `npm publish`, git tags, GitHub releases, and the actual GitHub repository rename remain manual/user-owned and were not performed by this baseline update.
