@@ -64,6 +64,94 @@ test("RpcProtocol normalizes nested tool results and reports details", async () 
   assert.equal(result.details.nestedResultCount, 1);
 });
 
+test("RpcProtocol includes original user source in complete details while preserving reports", async () => {
+  const proc = new FakeProcess();
+  const userCode = "rows = [1, 2]\nreturn rows";
+  const report = {
+    kind: "ptc_report",
+    version: 1,
+    title: "Rows",
+    metrics: { count: 2 },
+    tables: [],
+    samples: [],
+    warnings: [],
+  };
+  const protocol = new RpcProtocol(proc as unknown as ChildProcess, async () => null, userCode);
+
+  proc.stdout.write(JSON.stringify({ type: "complete", output: "done", report }) + "\n");
+
+  const result = await protocol.waitForCompletion();
+  assert.equal(result.output, "done");
+  assert.deepEqual(result.details.userCode, ["rows = [1, 2]", "return rows"]);
+  assert.equal(result.details.reportProduced, true);
+  assert.deepEqual(result.details.report, report);
+});
+
+test("RpcProtocol includes user source in every partial update detail payload", async () => {
+  const proc = new FakeProcess();
+  const updates: any[] = [];
+  const userCode = "await read(path='a.ts')\nreturn 1";
+  const protocol = new RpcProtocol(
+    proc as unknown as ChildProcess,
+    async () => ({ content: [{ type: "text", text: "nested" }], details: undefined }),
+    userCode,
+    undefined,
+    (update: any) => updates.push(update)
+  );
+
+  proc.stdout.write(JSON.stringify({ type: "execution_progress", line: 1, total_lines: 2 }) + "\n");
+  proc.stdout.write(JSON.stringify({ type: "update", message: "working" }) + "\n");
+  proc.stdout.write(JSON.stringify({ type: "tool_call", id: "nested-1", tool: "read", params: { path: "a.ts" } }) + "\n");
+
+  await new Promise((resolve) => setImmediate(resolve));
+  proc.stdout.write(JSON.stringify({ type: "complete", output: "done" }) + "\n");
+  await protocol.waitForCompletion();
+
+  assert.equal(updates.length, 3);
+  for (const update of updates) {
+    assert.deepEqual(update.details.userCode, ["await read(path='a.ts')", "return 1"]);
+  }
+  assert.equal(updates[0].details.currentLine, 1);
+  assert.equal(updates[0].details.totalLines, 2);
+});
+
+test("RpcProtocol attaches source-bearing details to framed Python errors", async () => {
+  const proc = new FakeProcess();
+  const userCode = "raise ValueError('bad')";
+  const protocol = new RpcProtocol(proc as unknown as ChildProcess, async () => null, userCode);
+
+  proc.stdout.write(JSON.stringify({ type: "error", message: "ValueError: bad", traceback: "Traceback details" }) + "\n");
+
+  await assert.rejects(protocol.waitForCompletion(), (err: any) => {
+    assert.equal(err.name, "PtcPythonError");
+    assert.deepEqual(err.details.userCode, ["raise ValueError('bad')"]);
+    assert.deepEqual(err.details.failure, {
+      type: "python",
+      message: "ValueError: bad",
+      traceback: "Traceback details",
+    });
+    return true;
+  });
+});
+
+test("RpcProtocol attaches source-bearing details to pre-terminal Python stderr failures", async () => {
+  const proc = new FakeProcess();
+  const userCode = "if True print('bad')";
+  const protocol = new RpcProtocol(proc as unknown as ChildProcess, async () => null, userCode);
+
+  proc.stderr.write("SyntaxError: invalid syntax\n");
+  proc.emit("exit", 1);
+  proc.stdout.end();
+
+  await assert.rejects(protocol.waitForCompletion(), (err: any) => {
+    assert.equal(err.name, "PtcPythonError");
+    assert.deepEqual(err.details.userCode, ["if True print('bad')"]);
+    assert.equal(err.details.failure.type, "python");
+    assert.match(err.details.failure.rawStderr, /SyntaxError/);
+    return true;
+  });
+});
+
 test("RpcProtocol forwards details.ptcValue from nested tool results unchanged", async () => {
   const proc = new FakeProcess();
   let sent = "";

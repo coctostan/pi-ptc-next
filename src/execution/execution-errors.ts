@@ -1,3 +1,5 @@
+import type { ExecutionDetails } from "../contracts/execution-types";
+
 function formatPythonErrorMessage(message: string, traceback?: string): string {
   if (traceback) {
     return `Python execution error:\n${message}\n\nTraceback:\n${traceback}`;
@@ -22,7 +24,8 @@ export class PtcPythonError extends PtcExecutionError {
 
   constructor(
     message: string,
-    readonly traceback?: string
+    readonly traceback?: string,
+    readonly details?: ExecutionDetails
   ) {
     super(formatPythonErrorMessage(message, traceback));
     this.rawMessage = message;

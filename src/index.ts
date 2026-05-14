@@ -288,9 +288,23 @@ function buildCodeExecutionTool(
           if (sessionState.recoveryAllowed && failureClass && armAutomaticRecovery(recoveryState, currentSettings, failureClass)) {
             sessionState.pendingRecoveryPrompt = buildCodeExecutionRecoveryPrompt(failureClass);
           }
+
+          noteCodeExecutionFailure(recoveryState);
+
+          if (error.details?.userCode?.length) {
+            return {
+              content: [{ type: "text" as const, text: error.message }],
+              details: {
+                ...error.details,
+                telemetry: buildPtcExecutionTelemetry(recoveryState),
+                recovery: buildPtcRecoveryDetails(recoveryState),
+              },
+            };
+          }
+        } else {
+          noteCodeExecutionFailure(recoveryState);
         }
 
-        noteCodeExecutionFailure(recoveryState);
         throw error;
       }
     },

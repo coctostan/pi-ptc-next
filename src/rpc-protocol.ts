@@ -318,7 +318,17 @@ export class RpcProtocol {
       const summary =
         extractPythonFailureSummary(stderrText) ||
         `Python process exited with ${this.getExitDescriptor()} before completing the RPC protocol.`;
-      return new PtcPythonError(summary, stderrText);
+      return new PtcPythonError(
+        summary,
+        stderrText,
+        this.buildExecutionDetails({
+          failure: {
+            type: "python",
+            message: summary,
+            rawStderr: stderrText,
+          },
+        })
+      );
     }
 
     return new PtcTransportError(this.buildUnexpectedTransportMessage(stderrText));
@@ -358,6 +368,7 @@ export class RpcProtocol {
       nestedErrors: this.nestedErrors,
       durationMs: Date.now() - this.startedAt,
       estimatedAvoidedTokens: estimateTokensFromChars(this.nestedResultChars),
+      userCode: this.userCodeLines,
       ...overrides,
     };
   }
@@ -415,7 +426,19 @@ export class RpcProtocol {
       }
 
       case "error":
-        this.rejectOnce(new PtcPythonError(msg.message, msg.traceback));
+        this.rejectOnce(
+          new PtcPythonError(
+            msg.message,
+            msg.traceback,
+            this.buildExecutionDetails({
+              failure: {
+                type: "python",
+                message: msg.message,
+                traceback: msg.traceback,
+              },
+            })
+          )
+        );
         break;
 
       case "update":

@@ -248,6 +248,120 @@ test("ptc extension bootstraps and cleans up runtime components", async () => {
   }
 });
 
+test("code_execution returns structured source-bearing results for user-code Python failures", async () => {
+  const { PtcPythonError } = require("../dist/execution/execution-errors.js");
+  const sandbox = {
+    async cleanup() {},
+    spawn() {
+      throw new Error("sandbox spawn should not be used in structured failure test");
+    },
+    getRuntimeWorkspaceRoot(cwd: string) {
+      return cwd;
+    },
+  };
+
+  const failureDetails = {
+    nestedToolCalls: 0,
+    nestedToolNames: [],
+    nestedResultChars: 0,
+    nestedResultCount: 0,
+    nestedErrors: 0,
+    durationMs: 2,
+    estimatedAvoidedTokens: 0,
+    userCode: ["raise ValueError('bad')"],
+    failure: {
+      type: "python",
+      message: "ValueError: bad",
+      traceback: "Traceback details",
+    },
+  };
+
+  class FakeCodeExecutor {
+    async execute() {
+      throw new PtcPythonError("ValueError: bad", "Traceback details", failureDetails);
+    }
+  }
+
+  const restoreSandbox = setModuleExports("../dist/sandbox-manager.js", {
+    createSandbox: async () => sandbox,
+  });
+  const restoreManager = setModuleExports("../dist/custom-tool-manager.js", {
+    CustomToolManager: class {
+      onToolSetChanged: () => void;
+      constructor(_extensionRoot: string, _pi: unknown, _toolRegistry: unknown, onToolSetChanged: () => void) {
+        this.onToolSetChanged = onToolSetChanged;
+      }
+      async start() {
+        this.onToolSetChanged();
+      }
+      close() {}
+    },
+  });
+  const restoreRegistry = setModuleExports("../dist/tool-registry.js", {
+    ToolRegistry: class {
+      getCallableTools() {
+        return [];
+      }
+      getAutoRoutableToolNames() {
+        return [];
+      }
+    },
+  });
+  const restoreExecutor = setModuleExports("../dist/code-executor.js", {
+    CodeExecutor: FakeCodeExecutor,
+  });
+
+  try {
+    delete require.cache[require.resolve("../dist/index.js")];
+    const extensionModule = require("../dist/index.js");
+    const ptcExtension = extensionModule.default || extensionModule;
+    const eventHandlers = new Map();
+    const registered: RegisteredTool[] = [];
+    const pi = {
+      registerTool(tool: RegisteredTool) {
+        registered.push(tool);
+      },
+      on(event: string, handler: SessionHandler) {
+        eventHandlers.set(event, handler);
+      },
+      getAllTools() {
+        return [];
+      },
+      getActiveTools() {
+        return [];
+      },
+      setActiveTools() {},
+    };
+
+    await ptcExtension(pi);
+    await eventHandlers.get("session_start")({}, { cwd: process.cwd() });
+    const codeExecutionTool = registered.find((tool) => tool.name === "code_execution");
+    assert.ok(codeExecutionTool);
+
+    const result = await codeExecutionTool.execute(
+      "call-structured-failure",
+      { code: "raise ValueError('bad')" },
+      new AbortController().signal,
+      undefined,
+      { cwd: process.cwd() }
+    );
+
+    assert.equal(result.content.length, 1);
+    assert.match(result.content[0].text, /Python execution error:/);
+    assert.doesNotMatch(result.content[0].text, /raise ValueError/);
+    assert.deepEqual(result.details.userCode, ["raise ValueError('bad')"]);
+    assert.deepEqual(result.details.failure, failureDetails.failure);
+    assert.equal(result.details.telemetry.terminalState, "failed_without_recovery");
+    assert.equal(result.details.recovery.eligible, false);
+  } finally {
+    restoreSandbox();
+    restoreManager();
+    restoreRegistry();
+    restoreExecutor();
+    delete require.cache[require.resolve("../dist/index.js")];
+  }
+});
+
 test("ptc extension auto-routes repo-wide analysis prompts toward code_execution", async () => {
   const sandbox = {
     async cleanup() {},

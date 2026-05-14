@@ -40,6 +40,14 @@ interface ExecutionMetrics {
   estimatedAvoidedTokens: number;
 }
 
+
+export interface ExecutionFailureDetails {
+  type: "python";
+  message: string;
+  traceback?: string;
+  rawStderr?: string;
+}
+
 export interface ExecutionOptions {
   cwd: string;
   ctx: ExtensionContext;
@@ -57,6 +65,7 @@ export interface ExecutionDetails extends ExecutionMetrics {
   recovery?: PtcRecoveryDetails;
   reportProduced?: boolean;
   report?: PtcReport;
+  failure?: ExecutionFailureDetails;
 }
 
 export interface CodeExecutionResult {

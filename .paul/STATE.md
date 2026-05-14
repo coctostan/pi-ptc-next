@@ -8,11 +8,11 @@ See: `.paul/PROJECT.md`
 ## Current Position
 Milestone: Milestone 21 — Code Execution Source Visibility UX
 Phase: 63 of 65 (Stable Source Payload Contract)
-Plan: Not started
-Status: Phase 62 complete; ready to plan Phase 63
-Last activity: 2026-05-14 — Phase 62 UNIFY reconciled current behavior audit and transitioned to Phase 63 planning readiness.
+Plan: `.paul/phases/63-stable-source-payload-contract/63-01-PLAN.md`
+Status: Phase 63 UNIFY completed; GitHub Flow merge gate pending PR checks
+Last activity: 2026-05-14 — Phase 63 UNIFY reconciled stable `code_execution` source payload contract and opened PR #20; awaiting GitHub Flow checks/merge before phase transition.
 Progress:
-- Milestone 21 — Code Execution Source Visibility UX: [███░░░░░░░] 25% (Phase 62 ✓; Phase 63 ready to plan; Phase 64 ○; Phase 65 ○)
+- Milestone 21 — Code Execution Source Visibility UX: [█████░░░░░] 50% (Phase 62 ✓; Phase 63 PLAN ✓ / APPLY ✓ / UNIFY ✓; Phase 64 ○; Phase 65 ○)
 - Milestone 20 — `pi-ptc-advanced` 1.0 Public NPM Release: [██████████] 100% ✓ (Phase 58 ✓; Phase 59 ✓; Phase 60 ✓; Phase 61 ✓)
 - Milestone 19 — Live Runtime Helper Hardening: [██████████] 100% ✓ (Phase 54 ✓; Phase 55 ✓; Phase 56 ✓; Phase 57 ✓)
 - Milestone 17 — Pi Compatibility and Prompt Integration Audit: [██████████] 100% ✓ (Phase 45 ✓, Phase 46 ✓, Phase 47 ✓, Phase 48 ✓)
@@ -60,7 +60,7 @@ Progress:
 Current loop state:
 ```text
 PLAN ──▶ APPLY ──▶ UNIFY
-  ○        ○        ○     [Phase 63 ready to plan]
+  ✓        ✓        ✓     [Phase 63 unify complete; merge gate pending PR checks]
 ```
 
 ## Accumulated Context
@@ -70,6 +70,9 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Source should be exposed through stable details/metadata for TUI/API/debug/test consumers, not injected into ordinary result text.
 - Phase 62 current behavior audit found the source-visibility gap is split across payload and rendering: running progress updates carry `details.userCode`, completed-success RPC details currently omit `userCode`, failed executions reject without source-bearing details, and collapsed rendering currently shows a count/hint rather than a first-line preview.
 - Phase 62 UNIFY completed the audit loop: `62-01-SOURCE-VISIBILITY-AUDIT.md` is the source-of-truth gap map for Phase 63 payload/error/progress contract planning and Phase 64 TUI rendering planning.
+- Phase 63 PLAN created `.paul/phases/63-stable-source-payload-contract/63-01-PLAN.md` as a TDD plan for source-bearing success, partial, and failure details while deferring collapsed/expanded rendering to Phase 64.
+- Phase 63 APPLY added stable source-bearing structured details for `code_execution` success, partial updates, nested tool-call updates, and user-code Python failures; focused verification passed, while full-suite `npm test` retains pre-existing local Node `--experimental-transform-types` failures in hashline live tests.
+- Phase 63 UNIFY reconciled plan-vs-actual into `63-01-SUMMARY.md`, recorded post-unify module evidence, committed/pushed PR #20, and is blocked from phase transition only by GitHub Flow PR checks/merge gate.
 ### Decisions
 - Phase 55 normalized callable-wrapper contract guidance: direct callable Pi wrappers remain awaitable, `grep("pattern", path="...")` is supported in the runtime adapter, and Phase 56 keeps result/path/error semantics separate.
 - Phase 57 shipped `ptc.list_helpers()` as the curated `ptc.*` helper inventory distinct from live callable-tool discovery via `ptc.list_callable_tools()`.
@@ -185,15 +188,16 @@ PLAN ──▶ APPLY ──▶ UNIFY
 - Tags: `0.14.0` remains on the earlier Milestone 14 handoff checkpoint; no `0.16.0` tag created (publish remains manual)
 ## Session Continuity
 Last session: 2026-05-14
-Stopped at: Phase 62 complete; ready to plan Phase 63.
-Next action: `/paul:plan` for Phase 63 Stable Source Payload Contract.
-Resume file: `.paul/ROADMAP.md`
-wip_result: clean — Phase 62 merged to `main` via PR #19 and local `main` fast-forwarded.
+Stopped at: Phase 63 PLAN created and pause handoff written; ready for APPLY.
+Next action: `/paul:apply .paul/phases/63-stable-source-payload-contract/63-01-PLAN.md`
+Resume file: `.paul/HANDOFF-2026-05-14-phase63-plan-ready-to-apply.md`
+wip_result: skipped — base-branch pause; uncommitted `.paul/*` lifecycle/plan changes remain in working tree
 Resume context:
 - Milestone 21 active: Code Execution Source Visibility UX.
-- Phase 62 current behavior audit is complete and reconciled in `.paul/phases/62-current-behavior-audit/62-01-SUMMARY.md`.
-- Phase 63 should plan stable source payload/error/progress details using `.paul/phases/62-current-behavior-audit/62-01-SOURCE-VISIBILITY-AUDIT.md` as the evidence map.
-- Expected resume action: `/paul:plan` for Phase 63.
+- Phase 63 PLAN is ready for APPLY at `.paul/phases/63-stable-source-payload-contract/63-01-PLAN.md`.
+- PLAN includes the resolved Q1/Q2 decisions: user-code Python failures should become structured failed results because Pi drops thrown-error details, and `src/code-executor.ts` is inspect/test-first/no-op unless tests prove otherwise.
+- Prior active handoff archived to `.paul/handoffs/archive/HANDOFF-2026-05-14-phase63-ready-to-plan.md`.
+- Expected resume action: `/paul:apply .paul/phases/63-stable-source-payload-contract/63-01-PLAN.md`.
 
 ---
-*STATE.md — Updated for Phase 62 UNIFY completion and Phase 63 planning readiness (last updated: 2026-05-14)*
+*STATE.md — Updated for Phase 63 pause handoff (last updated: 2026-05-14)*

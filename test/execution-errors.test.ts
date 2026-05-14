@@ -31,6 +31,31 @@ test("PtcPythonError formats traceback details and retains the raw message", () 
   assert.equal(errorWithoutTraceback.message, "Python execution error: plain failure");
 });
 
+test("PtcPythonError can carry structured execution details without changing formatting", () => {
+  const details = {
+    nestedToolCalls: 0,
+    nestedToolNames: [],
+    nestedResultChars: 0,
+    nestedResultCount: 0,
+    nestedErrors: 0,
+    durationMs: 1,
+    estimatedAvoidedTokens: 0,
+    userCode: ["print('hello')"],
+    failure: {
+      type: "python",
+      message: "NameError: name 'x' is not defined",
+      traceback: "Traceback line",
+    },
+  };
+
+  const error = new PtcPythonError("NameError: name 'x' is not defined", "Traceback line", details);
+
+  assert.equal(error.name, "PtcPythonError");
+  assert.equal(error.rawMessage, "NameError: name 'x' is not defined");
+  assert.match(error.message, /^Python execution error:/);
+  assert.deepEqual(error.details, details);
+});
+
 test("PtcNestedToolError prefers the provided stack when available", () => {
   const withStack = new PtcNestedToolError({
     type: "ToolFailure",
