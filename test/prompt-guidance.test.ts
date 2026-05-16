@@ -137,16 +137,15 @@ test("code_execution registers prompt metadata for Pi default system prompts", a
     const latestCodeExecutionTool = codeExecutionTools[codeExecutionTools.length - 1];
     assert.equal(
       latestCodeExecutionTool.promptSnippet,
-      "Run Python with local Pi tool calls for repo-wide analysis, batching, aggregation, and compact results."
+      "Run Python orchestration for repo-wide or batched analysis using local tool wrappers."
     );
 
     assert.deepEqual(latestCodeExecutionTool.promptGuidelines, [
-      "Use code_execution for repo-wide analysis, repeated tool calls, or compact aggregation; use direct tools for one-off reads/searches.",
-      "Keep intermediate results inside Python and return only compact JSON/text.",
+      "Use for repeated tool calls or aggregation; prefer direct tools for one-off reads/searches.",
     ]);
     assert.ok(
-      latestCodeExecutionTool.promptGuidelines.some((guideline) => /compact JSON\/text/i.test(guideline)),
-      "promptGuidelines should stay concise and focused on compact output"
+      latestCodeExecutionTool.promptGuidelines.every((guideline) => guideline.length < 100),
+      "promptGuidelines should stay concise"
     );
   } finally {
     harness.cleanup();

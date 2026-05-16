@@ -23,11 +23,10 @@ import type { ExecutionDetails, PtcSettings, PtcToolDefinition, SandboxManager, 
 import { debugLog, isMutationPrompt, loadSettingsFromEnv, shouldAutoRoutePromptToCodeExecution } from "./utils";
 
 const CODE_EXECUTION_PROMPT_SNIPPET =
-  "Run Python with local Pi tool calls for repo-wide analysis, batching, aggregation, and compact results.";
+  "Run Python orchestration for repo-wide or batched analysis using local tool wrappers.";
 
 const CODE_EXECUTION_PROMPT_GUIDELINES = [
-  "Use code_execution for repo-wide analysis, repeated tool calls, or compact aggregation; use direct tools for one-off reads/searches.",
-  "Keep intermediate results inside Python and return only compact JSON/text.",
+  "Use for repeated tool calls or aggregation; prefer direct tools for one-off reads/searches.",
 ];
 
 const CODE_EXECUTION_AUTO_ROUTE_PROMPT =
@@ -128,24 +127,8 @@ function renderCompletedOutput(
   return new Text(lines.join("\n"), 0, 0);
 }
 
-function buildToolDescription(currentSettings: PtcSettings, callableTools: ToolInfo[]): string {
-  const callable = callableTools.map((tool) => tool.ptc?.pythonName || tool.name).join(", ");
-  const dockerBehavior = currentSettings.useDocker
-    ? "Docker isolation required; unavailable Docker fails instead of falling back."
-    : "Local subprocess mode is active because PTC_ALLOW_UNSANDBOXED_SUBPROCESS=true.";
-  return `Execute Python with local programmatic tool calling for multi-file analysis, batching, aggregation, and compact results.
-
-Use when repeated tool calls or repo-wide analysis would otherwise fill chat context. Prefer direct tools for one-off reads/searches.
-
-Rules:
-- Top-level await is available; do not call asyncio.run().
-- Direct tool wrappers are async: await read(...), await grep(...).
-- Return compact JSON/text only; intermediate results stay inside Python.
-- Use ptc.list_helpers(), ptc.help(name), or ptc.list_callable_tools() for detailed helper/tool metadata.
-- ${dockerBehavior}
-
-Direct callable wrappers: ${callable || "(none)"}.
-Common helpers: ptc.read_many, ptc.read_tree, ptc.batch_tool, ptc.report, ptc.fit_output, ptc.json_dump.`;
+function buildToolDescription(): string {
+  return "Run Python orchestration for repo-wide or batched analysis using local tool wrappers. Use ptc.list_helpers() and ptc.help(name) for available helpers. Direct wrappers include read, grep, find, ls, and glob.";
 }
 function getExtensionRoot(): string {
   return __dirname.endsWith("/dist") || __dirname.endsWith("\\dist")
@@ -180,13 +163,12 @@ function buildCodeExecutionTool(
   return {
     name: "code_execution",
     label: "Code Execution",
-    description: buildToolDescription(currentSettings, callableTools),
+    description: buildToolDescription(),
     promptSnippet: CODE_EXECUTION_PROMPT_SNIPPET,
     promptGuidelines: CODE_EXECUTION_PROMPT_GUIDELINES,
     parameters: Type.Object({
       code: Type.String({
-        description:
-          "Python code to execute. Top-level await is supported; do not call asyncio.run(...). Prefer returning a compact final result.",
+        description: "Python code to execute."
       }),
     }),
     execute: async (toolCallId, { code }, signal, onUpdate, ctx) => {
